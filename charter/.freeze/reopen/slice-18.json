@@ -1,0 +1,63 @@
+{
+  "done_sha256": "b62b538417054d4b7181794ff40bc24058fde172b5ccb8257db212f07d18982b",
+  "entries": [
+    {
+      "evidence_sha256": "6ecb222899668545d412f8d2b5066955e1520ad79904d785393bad713b50a62a",
+      "proof": "1",
+      "recorded_utc": "2026-11-15T17:40:41Z",
+      "run_id": "20261115T172955Z-linux-vm"
+    },
+    {
+      "evidence_sha256": "6ecb222899668545d412f8d2b5066955e1520ad79904d785393bad713b50a62a",
+      "proof": "2",
+      "recorded_utc": "2026-11-15T17:40:41Z",
+      "run_id": "20261115T172955Z-linux-vm"
+    },
+    {
+      "evidence_sha256": "6ecb222899668545d412f8d2b5066955e1520ad79904d785393bad713b50a62a",
+      "proof": "3",
+      "recorded_utc": "2026-11-15T17:40:41Z",
+      "run_id": "20261115T172955Z-linux-vm"
+    },
+    {
+      "evidence_sha256": "6ecb222899668545d412f8d2b5066955e1520ad79904d785393bad713b50a62a",
+      "proof": "4",
+      "recorded_utc": "2026-11-15T17:40:41Z",
+      "run_id": "20261115T172955Z-linux-vm"
+    },
+    {
+      "evidence_sha256": "6ecb222899668545d412f8d2b5066955e1520ad79904d785393bad713b50a62a",
+      "proof": "5",
+      "recorded_utc": "2026-11-15T17:40:41Z",
+      "run_id": "20261115T172955Z-linux-vm"
+    },
+    {
+      "evidence_sha256": "6ecb222899668545d412f8d2b5066955e1520ad79904d785393bad713b50a62a",
+      "proof": "6",
+      "recorded_utc": "2026-11-15T17:40:41Z",
+      "run_id": "20261115T172955Z-linux-vm"
+    },
+    {
+      "evidence_sha256": "6ecb222899668545d412f8d2b5066955e1520ad79904d785393bad713b50a62a",
+      "proof": "7",
+      "recorded_utc": "2026-11-15T17:40:41Z",
+      "run_id": "20261115T172955Z-linux-vm"
+    },
+    {
+      "evidence_sha256": "6ecb222899668545d412f8d2b5066955e1520ad79904d785393bad713b50a62a",
+      "proof": "8",
+      "recorded_utc": "2026-11-15T17:40:41Z",
+      "run_id": "20261115T172955Z-linux-vm"
+    },
+    {
+      "evidence_sha256": "6ecb222899668545d412f8d2b5066955e1520ad79904d785393bad713b50a62a",
+      "proof": "9",
+      "recorded_utc": "2026-11-15T17:40:41Z",
+      "run_id": "20261115T172955Z-linux-vm"
+    }
+  ],
+  "head": "25e47a1cd527250ea3cffd9da58476792ff950bc",
+  "manifest_sha256": "d031f604d1943c512e53af523e23b5eb3cd10279a9d4714aad4b158b9e0aec91",
+  "schema_version": "charter.reopen/1",
+  "slice": "slice-18"
+}

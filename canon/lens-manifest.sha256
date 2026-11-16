@@ -1,0 +1,8 @@
+# Lens corpus manifest (holden.pin/1). Hashes only; the corpus itself is private.
+# Verify: holden canon verify --root <corpus dir> --pin <this file>
+format: holden.pin/1
+canon_version: holden.lens/1
+88b50269e777eb6a9d284a4604bf00812ca0ef69d8d6705da6e6b2b97b4dab87  cognitions.json
+a9750470e06847878897c103cc58f5791af9f6c39ece6fb4d76d3c8c18658705  concepts.json
+1d750d4cad50cc8da8f5b1e1f81df8b8cbaa05a78e5cc36fa3620e36c21b71e8  deltas.json
+3e824823f77fa409e14f32f7d424d43bf3d5458e099ba9fc959e72027253c8a0  retired.json

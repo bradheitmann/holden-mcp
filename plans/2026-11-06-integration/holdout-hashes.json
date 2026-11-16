@@ -1,0 +1,84 @@
+{
+  "schema": "holden-mcp.holdout-hashes/1",
+  "format_note": "Committed side of the sealed checkpoint holdouts. Each entry is filled by A/HLDT-1 before the checkpoint runs: logical_id, story_ref (graph node), public card, and the sha256 of the sealed instrument (plangraph holdout-instrument.authoring form) kept under the private root. Sealed content is never committed.",
+  "checkpoints": [
+    {
+      "logical_id": "HC-1",
+      "story_ref": "HOLDOUT-HC1",
+      "status": "ACCEPTED",
+      "public_card": "A first-time agent, using only what the server publishes, cannot finish the work, or it is allowed to take an action that belongs to the owner, or a failure shows how the check was made.",
+      "instrument_sha256": "ec31f60bec820e17770e989551b908fa0dbf3f94caa79c8a9217e41acafa9e8f",
+      "salt_sha256": "1143bfeb704809810e0726115821b83a840159a2f0d4611b246c46854f971cf2",
+      "instrument_author": "A/HLDT-1 (grok-4.7)",
+      "sealed_at": "2026-11-06",
+      "runs": [
+        {
+          "run": 1,
+          "main": "6b3dffbfd4aefb8fb55c176d5c97d61f07b5bec8",
+          "verdict": "FAILED",
+          "run_sha256": "1dd97dc9932e1f088b9976d415eb1afd5f90a36d6b64a631682e5e00c49c083d"
+        },
+        {
+          "run": 2,
+          "main": "0da2c0d02e301286401876c919454359a7a0ac06",
+          "verdict": "ACCEPTED",
+          "run_sha256": "73b169e4ae63e61833d8895d7544713b76d4a37912f529d52eef24860c3016ba"
+        }
+      ]
+    },
+    {
+      "logical_id": "HC-2",
+      "story_ref": "HOLDOUT-HC2",
+      "status": "ACCEPTED",
+      "public_card": "Holden does not follow another project's own plan, the single command does not carry the work, or a pinned plan is changed.",
+      "instrument_sha256": "b168e85cb3ecfadeedbcb944e14b57244186cd2a417fd45a1197c6a4c1fab4e6",
+      "salt_sha256": "fc1f81524a3440cb0b27cb475b87115c084c5b39c9c4db5669fd61d580177e6e",
+      "instrument_author": "A/HLDT-1 (grok-4.7)",
+      "sealed_at": "2026-11-06",
+      "runs": [
+        {
+          "run": 1,
+          "main": "036788036da3ea293ab83218ceb636620dfc3a36",
+          "verdict": "FAILED",
+          "run_sha256": "b22c20f97f5cae3581f22c16a259ea13d64373a3dbbe5f9bff2bb0ac40e85359"
+        },
+        {
+          "run": 2,
+          "main": "db02b6a92d8a251b2079533b9f08ddf8e540c0ee",
+          "verdict": "ACCEPTED",
+          "run_sha256": "cba45dc65f578dba4d5bb73cb5ffe6b620cc992d01015c5826091d1e5dca4ca7"
+        }
+      ]
+    },
+    {
+      "logical_id": "HC-3",
+      "story_ref": "HOLDOUT-HC3",
+      "status": "ACCEPTED",
+      "public_card": "The owner's mandate is not kept. The private element of a test can be known too soon, a test does not come from the owner's words and the situation, effectiveness is not measured, or the tool cannot be carried into another project under the limits the owner set.",
+      "instrument_sha256": "da79fffac056f4ff39a2bbf177ac1c811ffa4769bc479853157e0d0a1b90af10",
+      "salt_sha256": "6ba95a19fab843d026f4cda10830c92405f7b567bc38fbc4482d380d6a26e8dc",
+      "instrument_author": "A/HLDT-1 (grok-4.7)",
+      "sealed_at": "2026-11-06",
+      "runs": [
+        {
+          "run": 1,
+          "main": "036788036da3ea293ab83218ceb636620dfc3a36",
+          "verdict": "FAILED",
+          "run_sha256": "4726cfcf9c757155a5a036d5b6283db820f403388edb2dc219324f8af49bcbcd"
+        },
+        {
+          "run": 2,
+          "main": "db02b6a92d8a251b2079533b9f08ddf8e540c0ee",
+          "verdict": "FAILED",
+          "run_sha256": "ab508bd4533e9346bbcbc14ff7b2a72c783751e72a201e9306e214961e46ef36"
+        },
+        {
+          "run": 3,
+          "main": "18aa4195de0c94b0c751c7bb1fe5843c012f0214",
+          "verdict": "ACCEPTED",
+          "run_sha256": "bedad538419de573538a8c0f236ccd31fc918759c4a2c7f4e370c61188c47e2f"
+        }
+      ]
+    }
+  ]
+}

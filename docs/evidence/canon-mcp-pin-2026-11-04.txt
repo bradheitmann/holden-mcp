@@ -1,0 +1,9 @@
+# Verbatim response of S-CANON-MCP check_canon_lock (no argument), retrieved 2026-11-04.
+canon_source: holden
+canon_version: skill-v2.3.0 adapter-v0.2.0
+hashes:
+  - 844c4e146f1c24dde20fed84e922221a3ddcbac4a626fe01cd487513cf77fa26  holdout_adapter_protocol_v0_2_0.md
+  - bf85f31c08b0c8a98521f026640c50a92aa631719a45242ae191688aa3ee1f7b  holdout_skill_metaprompt_v2_1_1.md
+  - 9169b1a6ab6321f2ab970336e188b9f22d9c82d6ae7c3bb1d6569626c4b0e561  holdout_skill_schema_registry_v2_3_0.yaml
+  - f15a87ad7b468565889a72d34723dd4a37914cc97c75791c19ee072f0497d9f2  holdout_skill_spec_v2_3_0.md
+validator_hash: ad3ebe58f9c05e876ae04664cdd8916e67ef3cfe22b844e9cc4e640208040151

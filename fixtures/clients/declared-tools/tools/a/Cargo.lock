@@ -1,0 +1,5 @@
+version = 4
+
+[[package]]
+name = "declared-tool-a"
+version = "0.1.0"

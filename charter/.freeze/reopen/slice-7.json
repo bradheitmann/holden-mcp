@@ -1,0 +1,39 @@
+{
+  "done_sha256": "6fc7a2c5b198c4ab9ef13343385c938ea51d79f703e119094a36dd24cece20df",
+  "entries": [
+    {
+      "evidence_sha256": "abc115af1ff331f551b0d7c0394dc0ac47490d5149dd37142e50f14b690a3ea9",
+      "proof": "1",
+      "recorded_utc": "2026-11-11T01:26:08Z",
+      "run_id": "codex-r2-20261111T002216Z+20261111T005052Z"
+    },
+    {
+      "evidence_sha256": "abc115af1ff331f551b0d7c0394dc0ac47490d5149dd37142e50f14b690a3ea9",
+      "proof": "2",
+      "recorded_utc": "2026-11-11T01:26:08Z",
+      "run_id": "codex-r2-20261111T002216Z+20261111T005052Z"
+    },
+    {
+      "evidence_sha256": "abc115af1ff331f551b0d7c0394dc0ac47490d5149dd37142e50f14b690a3ea9",
+      "proof": "3",
+      "recorded_utc": "2026-11-11T01:26:08Z",
+      "run_id": "codex-r2-20261111T002216Z+20261111T005052Z"
+    },
+    {
+      "evidence_sha256": "abc115af1ff331f551b0d7c0394dc0ac47490d5149dd37142e50f14b690a3ea9",
+      "proof": "4",
+      "recorded_utc": "2026-11-11T01:26:08Z",
+      "run_id": "codex-r2-20261111T002216Z+20261111T005052Z"
+    },
+    {
+      "evidence_sha256": "abc115af1ff331f551b0d7c0394dc0ac47490d5149dd37142e50f14b690a3ea9",
+      "proof": "5",
+      "recorded_utc": "2026-11-11T01:26:08Z",
+      "run_id": "codex-r2-20261111T002216Z+20261111T005052Z"
+    }
+  ],
+  "head": "376599def3b19f4ac7d24e13f56fc3eb6e98ff0c",
+  "manifest_sha256": "452528ae352cf14b415c3c4bd3b0b609151bf009949a1db91a508e78fb61f03d",
+  "schema_version": "charter.reopen/1",
+  "slice": "slice-7"
+}

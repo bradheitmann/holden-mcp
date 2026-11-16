@@ -1,0 +1,1 @@
+SYNTHETIC: a non-registry file. The import must never read or run it.

@@ -1,0 +1,37 @@
+[package]
+name = "holden-seal"
+description = "L2 plan sealing, commitments, key stores and moment-of-test parameter draws"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license = "PolyForm-Noncommercial-1.0.0"
+publish.workspace = true
+
+[features]
+default = []
+# Keep Security.framework out of holden-eval's confined launcher. Only the
+# owner-approval composition enables this OS key-store backend.
+keychain = ["dep:security-framework"]
+
+[dependencies]
+chacha20poly1305.workspace = true
+ed25519-dalek.workspace = true
+hex.workspace = true
+hmac.workspace = true
+merlin.workspace = true
+rustix.workspace = true
+schnorrkel.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+zeroize.workspace = true
+
+[target.'cfg(target_os = "linux")'.dependencies]
+argon2.workspace = true
+rpassword.workspace = true
+
+[target.'cfg(target_os = "macos")'.dependencies]
+security-framework = { workspace = true, optional = true }
+
+[lints]
+workspace = true

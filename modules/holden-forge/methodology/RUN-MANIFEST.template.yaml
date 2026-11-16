@@ -1,0 +1,48 @@
+# RUN-MANIFEST — one file = one synthdoc pipeline run (copy, fill, commit alongside outputs)
+# The ORCHESTRATOR owns this file. Preflight reads it; every handoff cites its run_id.
+
+run_id: "SYNTHDOC-RUN-YYYYMMDD-NN"
+purpose: "why this run exists, one line"
+owner_gate: none | demo | of_record        # of_record => QA+HOLDOUT+APPROVER roles REQUIRED
+
+sources:                                    # one entry per document; preflight shas each
+  - path: "relative/or/absolute/path"
+    slug: "kebab-slug"
+    expected_lines: 0                       # preflight warns on drift > 10%
+
+module:
+  root: "synthdoc"                          # the self-contained primitive directory
+  schema_pack: "schema"                     # swappable domain pack (77-cat CCII default)
+  instruction_set: "LW-SYNTHESIS-PRIME.md"
+
+topology:
+  mode: subagent | visible | hybrid         # TEAM-TOPOLOGY §2 decision
+  mode_reason: "one line — why this mode"
+  synthesizers:
+    count: 3
+    harness: claude-code-subagent           # or per-seat list for visible mode
+    model: claude-opus-4-8                  # operator default: strongest available for content
+                                            # work; a smaller model ONLY if judged equal on this
+                                            # task class (record the judgment here)
+  qa:
+    enabled: true
+    harness: ""
+    model: strongest-available-high-reasoning  # LOAD-BEARING runs (anything feeding KG/DB):
+                                            # QA runs the strongest high-reasoning model
+                                            # available AND MUST differ in family from
+                                            # synthesizers.model
+  escalation_ladder: "content-model first -> retry higher effort (xhigh) -> after 2 failures, top-tier fallback"
+  holdout:
+    enabled: false
+    sample_pct: 10
+  approver: "human-owner"                   # who signs apo_clearance (of_record runs)
+
+outputs:
+  dir: "local/synthdoc-demo/outputs"        # synthdocs land here
+  records_dir: "local/synthdoc-demo/extraction"
+  demo_db: "local/synthdoc-demo/extraction/demo-graph.db"
+
+gates:
+  verifier_fail_closed: true                # always true; listed so its absence is loud
+  stub_ratio_bounce_pct: 40                 # extractor stub%>this => back to synthesis
+  of_record_load: false                     # true ONLY with receipted clearance chain

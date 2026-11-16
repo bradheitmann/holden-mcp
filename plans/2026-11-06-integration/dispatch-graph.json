@@ -1,0 +1,1080 @@
+{
+  "schema": "holden-mcp.integration-dispatch/1",
+  "format_note": "Planning overlay in the plangraph dispatch-graph shape (JSON is valid YAML 1.2). Every DEV node carries the PlanGraph v5 authoring-form fields (objective, resource_scope, acceptance_criterion, budget, target_selector). Not a claim of canonical PlanGraph validation; the v5 schema pin is open obligation O-STD-6.",
+  "epic": "E-HOLDEN-INTEGRATION",
+  "revision": 29,
+  "authority": "Owner instruction 2026-11-06: plan all remaining work as plangraph-shaped DEV/QA contracts; DEV/QA executed by A/DROID-MISSION-1 as one mission; sealed graph-shaped holdouts at checkpoints run by A/HLDT-1; holden must work inside other projects through MCP, as part of the client repo's own planning process, or via a single / command, with tools self-composing into standard workflows from the MCP server instructions alone.",
+  "predecessor_plan": "plans/2026-11-03-foundation/dispatch-graph.json (slices 0, 1, 1b, 1c, 2, 3, 4, 5, 6 accepted; slice 7 built)",
+  "stories": 6,
+  "dev_qa_pairs": 22,
+  "nodes": [
+    {
+      "id": "SLICE-07-DEV",
+      "type": "DEV",
+      "title": "Embed, just-in-time run, owner approval, read confinement (already built; repair c5f1903)",
+      "depends_on": [],
+      "qa_contract_authored_before_implementation": true,
+      "status": "DEV_COMPLETE_QA_PENDING",
+      "contract": {
+        "objective": "Close slice-7 exactly as pinned in charter/DONE/slice-7.md (5 proofs).",
+        "resource_scope": "branch slice-7 at c5f1903 or a later repair commit; no new scope",
+        "acceptance_criterion": "charter/DONE/slice-7.md P1-P5 reopened on macOS and the Tart Linux VM; host and VM gates green with identical test names",
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1,
+          "repair_cycles_used": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-7"
+        },
+        "done_list": "charter/DONE/slice-7.md"
+      }
+    },
+    {
+      "id": "OWNER-APPROVE-DEMO",
+      "type": "OWNER",
+      "title": "Owner signs the demo host's promises and cognitions with the owner key",
+      "depends_on": [
+        "SLICE-07-DEV"
+      ],
+      "contract": {
+        "objective": "The owner runs the single holden approve command for the demo host; agents never sign as the owner.",
+        "acceptance_criterion": "approval signatures verify against the owner's published public key"
+      }
+    },
+    {
+      "id": "SLICE-07-QA",
+      "type": "QA",
+      "verifies": "SLICE-07-DEV",
+      "depends_on": [
+        "SLICE-07-DEV",
+        "OWNER-APPROVE-DEMO"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-08-DEV",
+      "type": "DEV",
+      "title": "Self-composing MCP workflow layer: server instructions, workflow tools and prompts",
+      "depends_on": [
+        "SLICE-07-DEV"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "An agent that has never seen holden completes the four standard workflows using only what the MCP server publishes at initialize (instructions, tool descriptions, prompts). W1 ONBOARD: discover the repo's promises and propose cognitions for owner approval. W2 CHECK: run a just-in-time sealed holdout on the current commit and return the fixed diagnostic. W3 EXPLAIN: turn a failed verdict into what to fix, without leaking the how. W4 STATUS: telemetry, authority and pending owner actions.",
+        "resource_scope": "crates/holden-mcp (instructions text, workflow tools, MCP prompts), crates/holden-cli only where a workflow needs a command, tests",
+        "acceptance_criterion": [
+          "P1 initialize returns non-empty server instructions that name W1-W4, their tool order and when to stop and ask the owner; a test asserts each workflow's tools exist with schemas.",
+          "P2 one workflow tool per workflow (holden_onboard, holden_check, holden_explain, holden_status) composes the lower-level tools server-side, so the client needs one call per workflow; the low-level tools remain for audit.",
+          "P3 MCP prompts list W1-W4 as invocable prompts with arguments.",
+          "P4 owner-only steps (approval, bars) are never executable by the implementer role: the workflow returns OWNER_ACTION_REQUIRED with the exact owner command; a test proves the implementer role cannot approve.",
+          "P5 a real rmcp client test drives W1->W2->W3->W4 end to end against the fixture host, over a socket and over stdio, on macOS and Linux.",
+          "Each proof names a fail-without mutant (e.g. drop W2 from the instructions -> instructions test fails)."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "slice-7 tip (rebased onto main once SLICE-07-QA lands)",
+          "branch": "slice-8"
+        },
+        "done_list": "charter/DONE/slice-8.md (written by the mission orchestrator from this contract before dispatch; frozen at charter gate --dispatch)"
+      }
+    },
+    {
+      "id": "SLICE-08-QA",
+      "type": "QA",
+      "verifies": "SLICE-08-DEV",
+      "depends_on": [
+        "SLICE-08-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "HOLDOUT-HC1",
+      "type": "HOLDOUT",
+      "title": "Checkpoint 1: a fresh agent self-composes W1-W4 from server instructions alone",
+      "depends_on": [
+        "SLICE-07-QA",
+        "SLICE-08-QA"
+      ],
+      "contract": {
+        "objective": "Sealed holdout authored and run by A/HLDT-1 using holden's own method (owner-words promise, situated cognition, sealed plan, moment-of-test randomness). Public card and sha256 only are committed in plans/2026-11-06-integration/holdout-hashes.json.",
+        "acceptance_criterion": "HOLDOUT_ACCEPTED verdict from A/HLDT-1 (a different seat from the slice QA lane); a FAIL blocks every later DEV node."
+      }
+    },
+    {
+      "id": "SLICE-09-DEV",
+      "type": "DEV",
+      "title": "Client planning-process adapters: read promises from, and write holdout checkpoints into, the client repo's own plans",
+      "depends_on": [
+        "HOLDOUT-HC1"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "holden reads a client repo's planning process and feeds it: promises come from the planning artifacts the repo already uses, and holdout checkpoints are written back into that process in its own format.",
+        "resource_scope": "crates/holden-cognition (planning adapters), new crate holden-plan-adapters if cleaner, fixtures/clients/* (synthetic client repos), tests",
+        "acceptance_criterion": [
+          "P1 adapter detection: charter/ (INTENT + DONE lists), a plangraph dispatch-graph.json, and plain markdown planning (README/PRD/docs); detection is deterministic, and an unknown process falls back to markdown with a typed limitation.",
+          "P2 promise extraction from each process keeps the byte-offset verbatim rule (no paraphrase).",
+          "P3 write-back: for a dispatch-graph client, emit HOLDOUT-* nodes (type HOLDOUT, depends_on the client's QA nodes) that still pass the client's validate-graph check; for a charter client, emit a holdout proof line into the next DONE list template; never edit an already-pinned DONE list.",
+          "P4 write-back is proposal-only by default (a patch file), and applied only by an explicit flag; tests prove pinned files are untouched.",
+          "Each proof names a fail-without mutant."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-9"
+        },
+        "done_list": "charter/DONE/slice-9.md"
+      }
+    },
+    {
+      "id": "SLICE-09-QA",
+      "type": "QA",
+      "verifies": "SLICE-09-DEV",
+      "depends_on": [
+        "SLICE-09-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-10-DEV",
+      "type": "DEV",
+      "title": "Distribution and connection: holden init, stdio relay, harness configs, / command",
+      "depends_on": [
+        "HOLDOUT-HC1"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "One-time machine setup plus per-repo connection so any MCP client (Claude Code, Codex, Droid) can use holden, and so a user can drive everything through a single / command.",
+        "resource_scope": "crates/holden-cli (init, mcp relay), crates/holden-embed (harness config writers, command and skill files), packaging/ (no launchd or systemd loading), tests",
+        "acceptance_criterion": [
+          "P1 holden init creates the sealed server config and keys in the private root and key store, idempotently; it refuses world-readable paths; no secret is ever printed.",
+          "P2 holden mcp is a stdio MCP server process for clients to spawn. It relays to the sealed socket server, starting it on demand as a child process (never launchctl or systemd load), and carries the implementer role. A real rmcp stdio test passes on both OSes.",
+          "P3 holden embed writes connection config for Claude Code (.mcp.json plus a /holden command or skill), Codex (mcp_servers entry) and Droid (mcp config plus a custom command); each file validates against its harness's format, and re-embedding is idempotent.",
+          "P4 /holden with a sub-argument onboard, check, explain or status maps 1:1 to W1-W4 and only calls MCP workflow tools; owner steps print the owner command instead of acting.",
+          "Each proof names a fail-without mutant."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-10"
+        },
+        "done_list": "charter/DONE/slice-10.md"
+      }
+    },
+    {
+      "id": "SLICE-10-QA",
+      "type": "QA",
+      "verifies": "SLICE-10-DEV",
+      "depends_on": [
+        "SLICE-10-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "HOLDOUT-HC2",
+      "type": "HOLDOUT",
+      "title": "Checkpoint 2: holden used inside an unseen client repo through its own planning process and through /holden",
+      "depends_on": [
+        "SLICE-09-QA",
+        "SLICE-10-QA"
+      ],
+      "contract": {
+        "objective": "Sealed holdout by A/HLDT-1: a client repo the build pod never saw, connected through holden embed, with holdout checkpoints landing in that repo's own plan format.",
+        "acceptance_criterion": "HOLDOUT_ACCEPTED from A/HLDT-1; a FAIL blocks SLICE-11."
+      },
+      "status": "FAILED_RUN_1_REPAIR_SLICE_13"
+    },
+    {
+      "id": "SLICE-11-DEV",
+      "type": "DEV",
+      "title": "Real-repo end to end, agent-driven",
+      "depends_on": [
+        "HOLDOUT-HC2"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "A copy of a real owner repository (made under the private root; the original is never modified) is embedded, and an agent driven only by the MCP instructions and /holden runs W1-W4 across at least two real commits, on macOS and Linux.",
+        "resource_scope": "crates/holden-embed/** (src and tests), crates/holden-eval/** (product binding), crates/holden-cognition/** (adapter integration only), xtask e2e target; no change to any other repository. Extended 2026-11-06 by A/EXEC-PM (rev 3) after slice-11 surfaced defects B1 (embed and agent serve bypass the slice-9 planning adapters) and B2 (the evaluator is hard-wired to the notes fixture). The DONE list is unchanged. Rev 4: plus crates/holden-mcp/src/workflow*.rs and the config-assembly code in crates/holden-embed/src/embed.rs, for B3 and B4 (server-side W2/W4 composition from the sealed server config; the caller stays implementer).",
+        "acceptance_criterion": [
+          "P1 W1 on the real repo copy yields promises quoted verbatim from its real planning artifacts.",
+          "P2 two commits produce different moment-of-test parameters, and audit_reveal verifies both.",
+          "P3 a planted regression in the copy fails W2, and W3 names the consequence without the step, value or threshold.",
+          "P4 telemetry after the runs reports catch rates with sample sizes.",
+          "Each proof names a fail-without mutant."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-11"
+        },
+        "done_list": "charter/DONE/slice-11.md"
+      }
+    },
+    {
+      "id": "SLICE-11-QA",
+      "type": "QA",
+      "verifies": "SLICE-11-DEV",
+      "depends_on": [
+        "SLICE-11-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-12-DEV",
+      "type": "DEV",
+      "title": "Convergence: obligations, docs quickstart, release candidate",
+      "depends_on": [
+        "SLICE-11-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "Close the recorded obligations (slice-4 D2 cert-variable leak watch via a sentinel value; xtask --linux-vm forwards AGENT_PRIVATE_ROOT; VM guard tools installed or formally waived), write the README quickstart (install, init, embed, /holden), and mark every guarantee proven in GUARANTEES.yaml and STATE.md.",
+        "resource_scope": "crates/holden-eval tests, xtask, README.md, docs/, charter/GUARANTEES.yaml, charter/STATE.md, crates/holden-seal/** (OS key-store backend) and crates/holden-embed/src/approve.rs (P4 owner-key custody), granted rev 4",
+        "acceptance_criterion": [
+          "P1 each named obligation is closed by a test with a fail-without mutant.",
+          "P2 a fresh clone follows the README quickstart to a green /holden check on the fixture host, on both OSes.",
+          "P3 charter check --strict and the guard pass; GUARANTEES.yaml marks G-UNPREDICTABLE, G-SITUATED, G-MEASURED and G-PORTABLE proven, each citing accepted receipts.",
+          "P4 owner key custody: the owner signing key moves out of a plain file in the private root into the OS key store (macOS Keychain; Linux Secret Service or a passphrase-sealed file), so an agent running as the same user cannot sign without the owner present. Existing approvals still verify against the published owner.pub. Fail-without mutant: read the key from the old file path, and the custody test fails."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-12"
+        },
+        "done_list": "charter/DONE/slice-12.md"
+      }
+    },
+    {
+      "id": "SLICE-12-QA",
+      "type": "QA",
+      "verifies": "SLICE-12-DEV",
+      "depends_on": [
+        "SLICE-12-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "HOLDOUT-HC3",
+      "type": "HOLDOUT",
+      "title": "Checkpoint 3 (final): the owner's mandate, end to end",
+      "depends_on": [
+        "SLICE-12-QA"
+      ],
+      "contract": {
+        "objective": "Sealed final holdout by A/HLDT-1 against the owner's mandate in charter/INTENT.md: unpredictability, situatedness, measurement, portability and drop-in use in another project.",
+        "acceptance_criterion": "HOLDOUT_ACCEPTED from A/HLDT-1. Release tag v0.2.0 only after this node."
+      },
+      "status": "FAILED_RUN_1_REPAIR_SLICE_13"
+    },
+    {
+      "id": "SLICE-13-DEV",
+      "type": "DEV",
+      "title": "Promise discovery from prose: propose verbatim promises from a client repo own words for owner approval",
+      "depends_on": [
+        "HOLDOUT-HC2",
+        "HOLDOUT-HC3"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "holden embeds into a project whose plans state promises in prose (charter INTENT paragraphs, README, PRD, docs) without promise markers. It proposes candidate promises quoted verbatim (byte offsets) for owner approval, instead of refusing. Embed then completes: the detection report names the planning process found, the harness connection and /holden are written, and checks run once the owner approves.",
+        "resource_scope": "crates/holden-cognition/** (planning adapters), crates/holden-embed/** (embed flow), crates/holden-mcp/src/workflow*.rs (W1 onboard proposal), tests, fixtures/clients/**",
+        "acceptance_criterion": [
+          "P1 a charter client with only prose INTENT paragraphs gets verbatim candidate promises proposed (byte offsets), with no refusal; mutant: the marker-only extraction makes the test red.",
+          "P2 a plain-markdown client with prose README/docs gets the same; the detection report names markdown; mutant red.",
+          "P3 embed completes in AWAITING_OWNER_APPROVAL: the harness connection, /holden and the proposal file are written, and no check runs before approval; mutant: running a check on unapproved candidates goes red.",
+          "P4 after holden approve (owner, real PTY in tests), W2 runs a JIT check whose plan traces to an approved verbatim promise; real-repo regression 4/4 still green.",
+          "P5 never paraphrase: every proposed promise is a byte-exact substring of the source file; mutant (trimmed or normalized text) red."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-13"
+        },
+        "done_list": "charter/DONE/slice-13.md"
+      }
+    },
+    {
+      "id": "SLICE-13-QA",
+      "type": "QA",
+      "verifies": "SLICE-13-DEV",
+      "depends_on": [
+        "SLICE-13-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-14-DEV",
+      "type": "DEV",
+      "title": "Server-side checks are first-class runs: bound to the commit under test, traceable, replayable and counted",
+      "depends_on": [
+        "SLICE-13-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "Every just-in-time check that the server composes for an implementer (W2, /holden check) is a first-class holden run. It evaluates exactly the commit under test (the client HEAD at request time, or a commit the caller names), never a commit holden itself created. It is recorded in the signed ledger where holden trace, holden replay and audit_reveal find it, and it is counted by telemetry (W4 catch rates and sample sizes) and by the feedback loop.",
+        "resource_scope": "crates/holden-mcp/src/workflow*.rs, crates/holden-embed/** (agent, jit, embed), crates/holden-ledger/**, crates/holden-cli/src/** (trace/replay lookup only), tests",
+        "acceptance_criterion": [
+          "P1 a W2 check through /holden on a client evaluates the client HEAD commit; if embed or approve wrote files, they are never committed by holden and never become the evaluated commit; mutant: evaluating a holden-made commit goes red.",
+          "P2 holden trace <run> and holden replay <run> succeed for a W2 run created through the MCP server, and audit_reveal verifies its parameters; mutant: skipping the ledger append goes red.",
+          "P3 after N W2 runs, W4 status reports those N runs in the catch-rate sample sizes and the feedback weights change; mutant: telemetry ignoring server-side runs goes red.",
+          "P4 P1-P3 hold on macOS and Linux with identical test names."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-14"
+        },
+        "done_list": "charter/DONE/slice-14.md"
+      }
+    },
+    {
+      "id": "SLICE-14-QA",
+      "type": "QA",
+      "verifies": "SLICE-14-DEV",
+      "depends_on": [
+        "SLICE-14-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-15-DEV",
+      "type": "DEV",
+      "title": "Dependency advisory RUSTSEC-2026-0462: rmcp 3.8.0 to >=3.9.0",
+      "depends_on": [
+        "SLICE-14-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "Clear RUSTSEC-2026-0462 (rmcp < 3.9.0, medium 6.5) so cargo deny, cargo audit and the guard pass on main, with no behaviour change.",
+        "resource_scope": "Cargo.toml / crate Cargo.toml rmcp pins, Cargo.lock, any rmcp 3.9 API adaptations in crates/holden-mcp, crates/holden-embed and crates/holden-cli, plus tests",
+        "acceptance_criterion": [
+          "P1 cargo xtask guard verdict Pass on the candidate (cargo_deny and cargo_audit clean); reopen: run the guard; mutant: re-pin =3.8.0 and the guard refuses RUSTSEC-2026-0462.",
+          "P2 the full host gate and the Linux VM gate are green with the same test names as main before the bump (no test removed).",
+          "P3 the real-repo e2e (4/4) and the workflows tests still pass."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-15"
+        },
+        "done_list": "charter/DONE/slice-15.md"
+      }
+    },
+    {
+      "id": "SLICE-15-QA",
+      "type": "QA",
+      "verifies": "SLICE-15-DEV",
+      "depends_on": [
+        "SLICE-15-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-17-DEV",
+      "type": "DEV",
+      "title": "Host files carry no machine path",
+      "depends_on": [
+        "SLICE-16-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "Nothing holden embed or holden approve writes into a host repository contains an absolute path, a home path, a user name or any other machine-specific value. In particular .mcp.json no longer carries --socket <absolute path> and .holden/config.json no longer records the implementer socket path. The relay resolves the socket at run time from the user state directory.",
+        "resource_scope": "crates/holden-embed/** (host, embed, distribution, state), crates/holden-cli/src/** (mcp, connect, embed commands), tests",
+        "acceptance_criterion": [
+          "P1 after holden embed on a fixture host, no file written into the host tree contains an absolute path, a home path or the user name, on macOS and on Linux; mutant: restore the --socket <absolute> argument and the test goes red.",
+          "P2 the written .mcp.json is byte-identical on two machines and two users: no machine values; mutant: embed a path and the cross-root comparison goes red.",
+          "P3 the harness entry still connects: a real rmcp stdio client spawned from the written .mcp.json completes W1 through W4 against the fixture host, on macOS and Linux.",
+          "P4 re-embed over an old-style .mcp.json migrates it to the path-free form idempotently, and existing approvals stay valid."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-17"
+        },
+        "done_list": "charter/DONE/slice-17.md"
+      }
+    },
+    {
+      "id": "SLICE-17-QA",
+      "type": "QA",
+      "verifies": "SLICE-17-DEV",
+      "depends_on": [
+        "SLICE-17-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-18-DEV",
+      "type": "DEV",
+      "title": "Declared crate paths: bind Cargo crates that are not at the repository root",
+      "depends_on": [
+        "SLICE-18A-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "A host whose root has no Cargo.toml can declare one or more Cargo manifests below the root (for example app/Cargo.toml, tools/<name>/Cargo.toml, crates/odin-say/Cargo.toml). holden binds each one with its own build and binary entry points. A host with neither a root nor a declared manifest is still refused, with a word-for-word refusal naming the fix.",
+        "resource_scope": "crates/holden-eval/src/product.rs and binding.rs, crates/holden-embed/** (embed options and host config), crates/holden-cli/src/** (embed flags), fixtures/clients/**, tests",
+        "acceptance_criterion": [
+          "P1 a fixture host with no root Cargo.toml and a crate under app/ binds when declared (--manifest app/Cargo.toml) and W2 completes on it; mutant: ignore the declaration and the test goes red with UnsupportedStack.",
+          "P2 two declared crates (tools/a, tools/b) in one host bind separately, each with its own entry points and verdicts.",
+          "P3 an undeclared non-root host is refused with an exact, documented refusal text that names --manifest; a test pins the text.",
+          "P4 declared paths are relative and validated: no absolute path, no escape outside the host, no crate that cargo metadata reports outside the declared manifest. A workspace nested elsewhere (like a separate wasm workspace) is left alone.",
+          "P5 macOS and Linux gates are green with identical test names.",
+          "P6 `holden --help`, `holden help` and `holden <command> --help` print the usage to stdout and exit 0; a real usage error still exits 2; a test pins both exit codes.",
+          "P7 the --lens default does not depend on the current directory: the default lens ships inside the install, and the documented embed command works from any host directory; mutant: restore the cwd-relative default and the test goes red with entity not found.",
+          "P8 a refused embed leaves no host state behind; a test runs refuse, fix, re-run and gets the same host state as a clean first run (no half-made lens directory, no orphan keys).",
+          "P10 the embed usage and the README state: the post-commit hook is shared by every worktree of the host; how planning is detected when the host has charter/ but no PLANNING.md; whether embed or the post-commit jit runs cargo build or test in the host; the --state default."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-18"
+        },
+        "done_list": "charter/DONE/slice-18.md"
+      }
+    },
+    {
+      "id": "SLICE-18-QA",
+      "type": "QA",
+      "verifies": "SLICE-18-DEV",
+      "depends_on": [
+        "SLICE-18-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-19-DEV",
+      "type": "DEV",
+      "title": "Planted-fault controls in a client's own code: catch rate per fault kind with n",
+      "depends_on": [
+        "SLICE-20-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "A client repository declares planted faults for its own checks: a patch or a fixture input per fault kind, tied to an approved promise. holden runs each one sealed through the real evaluator, alongside known-good variants, and reports caught, missed and n per fault kind. Authority stays computed from the pessimistic bound. Nothing is counted without a run.",
+        "resource_scope": "crates/holden-ledger/** (controls, feedback), crates/holden-eval/** (control execution against a client binding), crates/holden-embed/** and crates/holden-mcp/src/workflow*.rs (W4 reporting), fixtures/clients/**, tests",
+        "acceptance_criterion": [
+          "P1 a fixture client declares three fault kinds for one checker (for example: accepts a malformed row; misses an edited entry; accepts a second round); W4 reports caught, missed and n per kind from real runs; mutant: count a control without running it and the test goes red.",
+          "P2 a planted fault the client check misses is reported as missed (not dropped), and the check's authority stays advise until its pessimistic bound clears the owner's bar.",
+          "P3 known-good variants run beside the faults; a known-good failure is reported as a false fail and triggers re-plan.",
+          "P4 planted-fault material never enters the host's tracked tree and is never shown to the build seats: sealed in holden state.",
+          "P5 macOS and Linux gates are green with identical test names."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-19"
+        },
+        "done_list": "charter/DONE/slice-19.md"
+      }
+    },
+    {
+      "id": "SLICE-19-QA",
+      "type": "QA",
+      "verifies": "SLICE-19-DEV",
+      "depends_on": [
+        "SLICE-19-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-16-DEV",
+      "type": "DEV",
+      "title": "Public read-only docs worker",
+      "depends_on": [
+        "SLICE-15-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "status": "ACCEPTED (merge 1a6ea25; Codex gpt-6-luna receipt qa/slice-16/receipt-codex-gpt-6-luna-r2.json)",
+      "contract": {
+        "objective": "Publish holden-mcp documentation as a public, read-only Cloudflare Worker linked to the canon server (owner order of 2026-11-11).",
+        "resource_scope": "deploy/docs-worker/**",
+        "acceptance_criterion": "charter/DONE/slice-16.md P1-P4",
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-16"
+        },
+        "done_list": "charter/DONE/slice-16.md"
+      }
+    },
+    {
+      "id": "SLICE-16-QA",
+      "type": "QA",
+      "verifies": "SLICE-16-DEV",
+      "depends_on": [
+        "SLICE-16-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-20-DEV",
+      "type": "DEV",
+      "title": "Owner presence by hardware key: approvals are OpenSSH signatures by the owner's touch-required key",
+      "depends_on": [
+        "SLICE-18C-QA",
+        "SLICE-18E-QA",
+        "SLICE-18F-QA",
+        "SLICE-18G-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "An owner approval needs the owner's body, not a terminal. Today holden approve passes when standard input is a terminal and signs with a login-Keychain item that has no access control, so any agent in a terminal pane can approve. After this slice an approval is an OpenSSH signature in its own namespace (holden-approve) over the canonical approval payload, made by a hardware-held key that requires a touch, and verified against an allowed-signers file pinned in the private state. No software-held owner key can approve, and the terminal test is no longer the protection.",
+        "resource_scope": "crates/holden-embed/src/approve.rs, crates/holden-cognition/** (approval verification), crates/holden-cli/src/** (approve and owner-key commands, usage text), README, tests",
+        "acceptance_criterion": [
+          "P1 in a disposable test install with throwaway keys only, an agent process running as the owner with a pseudo-terminal on standard input tries to approve and is refused; the test pins the exit code and the refusal text, and the refusal names the protection (no signature by the pinned touch-required key).",
+          "P2 verification accepts only sk-type keys (sk-ssh-ed25519@openssh.com, sk-ecdsa-sha2-nistp256@openssh.com) and checks the user-presence flag in the signature; mutants: drop the namespace check, accept a signature without the presence flag, accept a key that is not in the pinned allowed-signers file; each goes red.",
+          "P3 holden approve and owner-key setup never read or create a Keychain signing item; the stdin-terminal test is removed as a protection; earlier approvals stay verifiable and are reported as terminal-tested, not presence-proven.",
+          "P4 the approve usage and README name the protection and how to pin the owner's published signing key; a key type that cannot prove presence (for example a plain ecdsa key held by an agent app) is refused with a text that says why.",
+          "P5 tests never touch the owner's real Keychain, SSH agent, keys or private state; throwaway keys live in a temporary directory removed by a Drop guard.",
+          "P6 macOS and Linux gates are green with identical test names.",
+          "P7 no test in the workspace creates, changes or removes anything under the real private root: the gate snapshots the real root (names, types, link targets) before and after the suite and fails on any difference; mutant: a test that embeds without AGENT_PRIVATE_ROOT and the gate goes red. (Seen 2026-11-15: a dangling hosts/host symlink to a removed hm14-cli test temp dir, dated 2026-11-14 and probably made before the slice-17 server-run isolation fix (8c5568b), was found in the real root and quarantined.)",
+          "P8 one holden approve run needs exactly one signature, hence one key touch, however many cognitions it approves: the signed payload is the canonical manifest of every cognition id and promise digest in the run, and each cognition approval verifies by membership in a signed manifest; a test approves 50 cognitions with a throwaway sk key and counts one signing call; mutant: sign per cognition and the count test goes red."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-20"
+        },
+        "done_list": "charter/DONE/slice-20.md"
+      }
+    },
+    {
+      "id": "SLICE-20-QA",
+      "type": "QA",
+      "verifies": "SLICE-20-DEV",
+      "depends_on": [
+        "SLICE-20-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-18A-DEV",
+      "type": "DEV",
+      "title": "A refused embed still prints the detection report",
+      "depends_on": [
+        "SLICE-17-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "Planning detection already runs before the binding check in holden embed. When a later step refuses (unsupported stack, lens, forge), the caller still gets the detection report: the planning process found, its source documents, and the count and text of candidate promises. It comes before the refusal line, in the same shape as the report on success. Client wave gates read it.",
+        "resource_scope": "crates/holden-embed/src/embed.rs (report assembly and the refusal path), crates/holden-cli/src/embed_cmd.rs (printing), tests",
+        "acceptance_criterion": [
+          "P1 a fixture host with planning promises and no root Cargo.toml is refused with unsupported_stack, and its output carries the detection report (planning process, source documents, candidate promise count and texts) before the refusal line; the exit code stays 1; mutant: drop the report on the refusal path and the test goes red.",
+          "P2 the report on a refusal has the same fields, in the same order, as the report on success; a test compares the two shapes.",
+          "P3 a host with no planning promises is refused as before, with no report, and its refusal text is unchanged.",
+          "P4 the report carries no machine path and no sealed value.",
+          "P5 macOS and Linux gates are green with identical test names."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-18a"
+        },
+        "done_list": "charter/DONE/slice-18a.md"
+      }
+    },
+    {
+      "id": "SLICE-18A-QA",
+      "type": "QA",
+      "verifies": "SLICE-18A-DEV",
+      "depends_on": [
+        "SLICE-18A-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-21-DEV",
+      "type": "DEV",
+      "title": "Bind a pnpm/TypeScript package at the host root",
+      "depends_on": [
+        "SLICE-19-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "A host whose root is a pnpm/TypeScript package (package.json, pnpm-lock.yaml, tsconfig, vitest), with Rust only in declared tools/ crates, binds to holden. The package builds offline and locked from the local pnpm store, inside holden's sandbox with no network, and its CLI is the observed boundary. A host that is neither Cargo nor pnpm is still refused, word for word.",
+        "resource_scope": "crates/holden-eval/src/product.rs and binding.rs, crates/holden-embed/** (stack detection and host config), crates/holden-cli/src/** (embed flags), fixtures/clients/** (a pnpm fixture), tests",
+        "acceptance_criterion": [
+          "P1 a pnpm/TypeScript fixture host binds, and W2 observes its CLI: a validate-style command that must refuse an input that does not prove its claim is caught; mutant: make the fixture accept that input and the holdout goes red.",
+          "P2 the build runs as `pnpm install --offline --frozen-lockfile` then the declared build, with no network in the sandbox; a test with the store emptied is refused with a word-for-word text naming the offline store.",
+          "P3 a host with both a root package and declared Cargo crates under tools/ binds each, with its own entry points and verdicts.",
+          "P4 the binding writes no machine path into host files and runs no host-wide install outside the sandbox.",
+          "P5 macOS and Linux gates are green with identical test names."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-21"
+        },
+        "done_list": "charter/DONE/slice-21.md"
+      }
+    },
+    {
+      "id": "SLICE-21-QA",
+      "type": "QA",
+      "verifies": "SLICE-21-DEV",
+      "depends_on": [
+        "SLICE-21-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "HOLDOUT-HC4",
+      "type": "HOLDOUT",
+      "title": "Checkpoint 4: drop-in use in a real client, and owner presence",
+      "depends_on": [
+        "SLICE-20-QA"
+      ],
+      "contract": {
+        "objective": "Sealed holdout by A/HLDT-1 over slices 17, 18a, 18 and 20: holden embedded in a client repo that is not shaped like holden (machine-path-free host files, a refused embed that reports what it found and leaves no state, a non-root manifest), and approvals that only a present owner can make (a signature by the owner hardware key with user presence; an agent pane with stdin on a terminal is refused).",
+        "acceptance_criterion": "HOLDOUT_ACCEPTED from A/HLDT-1. The pod continues with SLICE-19-DEV while this runs; a HOLDOUT_REJECTED opens a repair slice before SLICE-21-DEV."
+      }
+    },
+    {
+      "id": "HOLDOUT-HC5",
+      "type": "HOLDOUT",
+      "title": "Checkpoint 5 (final for this plan): client planning faults and a TypeScript host",
+      "depends_on": [
+        "SLICE-21-QA"
+      ],
+      "contract": {
+        "objective": "Sealed holdout by A/HLDT-1 over slices 19 and 21: holden catches the client planning faults seeded for slice 19 without false findings on a known-good control, and binds at the root of a pnpm/TypeScript host offline.",
+        "acceptance_criterion": "HOLDOUT_ACCEPTED from A/HLDT-1. The next release tag only after this node."
+      }
+    },
+    {
+      "id": "SLICE-18B-DEV",
+      "type": "DEV",
+      "title": "A charter host yields promises an owner can read and approve",
+      "depends_on": [
+        "SLICE-18-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "On a charter host (charter/INTENT.md plus charter/DONE/*.md, no PLANNING.md), wave 0 found 9,869 candidate promises in 291 documents, mostly paragraph fragments and headings (median 134 characters, 812 of 40 characters or less), and printed all of them to stderr (2.2 MB). The owner approves promises one by one, so this list cannot be approved. After this slice a charter host yields as candidates the numbered proofs of each DONE list and the guarantees of INTENT/GUARANTEES, each with its source file and line, and the report prints the count, the count per source and the first 20; the full list goes to a file in the agent state.",
+        "resource_scope": "crates/holden-cognition/src/promise.rs, crates/holden-cognition/src/adapters.rs (charter planning adapter), crates/holden-embed/src/embed.rs (report), crates/holden-cli/src/embed_cmd.rs (printing), README, tests",
+        "acceptance_criterion": [
+          "P1 a fixture charter host (INTENT, GUARANTEES, three DONE lists with numbered proofs, headings and prose) yields exactly its numbered proofs and guarantees as candidates, each with source path and line; headings, prose paragraphs and lines of 40 characters or less are not candidates; mutant: restore paragraph extraction and the test goes red on the count. Template files (charter/DONE/_template.md and any DONE file whose name starts with _) are not sources; a test pins it.",
+          "P2 the report prints the total, the count per source document and the first 20 candidates, then the path of the full list inside the agent state (relative to the private root, no machine path); the stderr stays under 64 KB on a host with 10,000 candidates; mutant: print every candidate and the size test goes red.",
+          "P3 hosts with PLANNING.md and the existing planning fixtures yield the same candidates as before; a test pins them.",
+          "P4 on a refused embed (slice 18a path) the same shortened report is printed before the refusal line.",
+          "P5 macOS and Linux gates are green with identical test names."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-18b"
+        },
+        "done_list": "charter/DONE/slice-18b.md"
+      }
+    },
+    {
+      "id": "SLICE-18B-QA",
+      "type": "QA",
+      "verifies": "SLICE-18B-DEV",
+      "depends_on": [
+        "SLICE-18B-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-18C-DEV",
+      "type": "DEV",
+      "title": "One agent state belongs to one host, and a skipped holdout is never silent",
+      "depends_on": [
+        "SLICE-18D-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "The default agent state is keyed by the host folder name only, so two different repositories cloned under the same folder name share one state: its keys, its lens and later its approvals (wave 1: plangraph and odin both used hosts/holden-wave1-clone-20261115). After this slice a state records the host it belongs to (the canonical host path and the host repository root commit), a state is used only by that host, and every refusal text a host sees names paths relative to the host or to the private root, never an absolute home path. Also, a commit whose holdout did not run (holden not found by the hook, or the agent not serving) is recorded as not run, and the record is reported. And the number of cognitions an embed proposes is bounded: wave 0 on a large client proposed 9,869 cognitions (47 MB) for the owner to approve, more than anyone can read. The host files name the state by an opaque id, never by the host folder name, which can be a private or lane-specific name and would be committed with the host files.",
+        "resource_scope": "crates/holden-embed/src/** (state identity, refusal texts), crates/holden-cli/src/** (printing), README, tests, crates/holden-embed/src/host.rs (post-commit shim)",
+        "acceptance_criterion": [
+          "P1 two fixture repositories with different root commits, cloned under the same folder name in two parent directories: the second embed is refused with a text that names the conflicting state as hosts/<name> and says how to proceed (a different folder name, or --state); the first host state is unchanged byte for byte; mutant: drop the identity check and the test goes red when the second embed succeeds.",
+          "P2 the same repository moved to a new path (same root commit) is refused with a text that says the state belongs to the old location, until the owner-documented re-home step is run; the step is in the README and tested.",
+          "P3 a state made before this slice (no identity recorded) is adopted by the first embed that uses it and recorded from then on; a test pins it.",
+          "P4 no refusal or report text from embed, jit, trace or agent serve contains the user home directory or an absolute path outside the host; a test runs each refusal with a sentinel home and scans the output.",
+          "P5 the post-commit shim finds holden on PATH, else at the install location recorded relative to the user home (never an absolute path in the host); when neither exists it prints one line naming the missed holdout and exits 0 without blocking the commit; a test runs it with an empty PATH.",
+          "P6 a jit that does not run a holdout (agent not serving, holden missing, no approved cognition) writes a not-run entry (commit, reason, time) to the agent state; W4 and holden trace list not-run commits beside the runs; mutant: drop the entry and the W4 count test goes red.",
+          "P7 the README states the minimum setup for one real holdout run on a host: embed, one owner approval, holden agent serve --host <host> in a visible pane (never a launchd job), then a commit.",
+          "P8 an embed proposes at most 50 cognitions by default, chosen deterministically and spread across the source documents (round robin by source, in file order); --max-cognitions <n> changes the bound; the report states how many candidates were not proposed and why; a host with 10,000 candidates writes at most 50 cognition files; mutant: drop the bound and the count test goes red.",
+          "P9 .holden/config.json and every other host file name the agent state as hosts/<id>, where <id> is derived from the host repository identity and a random value kept in the state; the host folder name appears in no host file; an existing hosts/<folder name> state is adopted and renamed on the next embed; a test embeds a host whose folder name is a sentinel string and scans every host file for it.",
+          "P10 macOS and Linux gates are green with identical test names."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-18c"
+        },
+        "done_list": "charter/DONE/slice-18c.md"
+      }
+    },
+    {
+      "id": "SLICE-18C-QA",
+      "type": "QA",
+      "verifies": "SLICE-18C-DEV",
+      "depends_on": [
+        "SLICE-18C-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-18D-DEV",
+      "type": "DEV",
+      "title": "Host sockets fit the platform limit",
+      "depends_on": [
+        "SLICE-18B-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "A host agent state puts its sockets at <state>/si and <state>/se. Under a real private root those paths are 112 to 117 bytes for the wave hosts, over the macOS sun_path limit of 104, so holden mcp exits with InvalidInput and /holden onboard cannot start on any wave host. The machine-level server already uses a short per-root directory under /tmp (distribution::socket_dir). After this slice every host socket lives in a short private directory derived from the state, and a path that would still be too long is refused with a text that says so. Tests also leave their temporary roots behind: one afternoon of real_repo runs left 66 GiB in the temporary directory, and 170 empty or dead holden-501-* socket directories had accumulated. And one real_repo run on the Mac started 56 cargo builds and 223 rustc processes at once (load 414, 36 GB swap on a shared machine).",
+        "resource_scope": "crates/holden-embed/src/state.rs (socket paths), crates/holden-embed/src/distribution.rs (shared short-dir helper), crates/holden-mcp/src/** (bind and connect), README, tests, crates/*/tests/** (temporary roots), xtask/src/** (gate check)",
+        "acceptance_criterion": [
+          "P1 a host whose state directory path is 200 bytes long serves both roles: holden mcp initializes and /holden onboard reaches holden_onboard; mutant: restore <state>/si and the test goes red with the platform error. The same holds for the user-scope holden MCP server registered once per user and started with the host as its working directory: a test starts it from a host with a 200-byte state path and completes initialize.",
+          "P2 the short socket directory is created 0700, owned by the user, refused if it exists with another owner or wider mode, and is unique per state and role (two states never share a socket); tests pin each refusal.",
+          "P3 a socket path over the platform limit is refused before bind with a text naming the limit and the length, never the bare InvalidInput; a test pins the text.",
+          "P4 existing hosts keep working after upgrade without re-embedding; a test upgrades a slice-18 state.",
+          "P5 every test that creates a temporary root or a socket directory removes it when it passes and when it fails (a Drop guard, never a glob); the gate lists the temporary directory entries before and after the suite and fails if any new holden or hm entry remains; mutant: drop the guard in real_repo and the gate goes red.",
+          "P6 the real_repo test and the gate bound their own parallelism: at most one fixture cargo build at a time, each with at most CARGO_BUILD_JOBS (default 4) jobs, whatever --test-threads is; a test counts the concurrent child cargo processes and fails above one.",
+          "P7 macOS and Linux gates are green with identical test names."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-18d"
+        },
+        "done_list": "charter/DONE/slice-18d.md"
+      }
+    },
+    {
+      "id": "SLICE-18D-QA",
+      "type": "QA",
+      "verifies": "SLICE-18D-DEV",
+      "depends_on": [
+        "SLICE-18D-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-18E-DEV",
+      "type": "DEV",
+      "title": "Command output a seat can act on",
+      "depends_on": [
+        "SLICE-18B-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "Wave 1 examiners found: a successful embed prints no next step, although the exact owner command (holden approve --host .) is written into .holden/promise-proposals.json; holden <command> --help prints the whole 76-line usage; bare holden says unknown command; holden ledger verify prints the ledger as an absolute path. After this slice each command says what to do next and prints no machine path. Client checks of slice 18b also found: an embed deletes stale cognition files from the host tree and prints nothing for them (1,184 files on one host), and a source document with no candidates (charter/INTENT.md, by design: it states goals, not numbered proofs) looks the same as a parse failure. A third client found numbered lines outside the proof list taken as promises: one DONE file lists its seven gate steps as a numbered list under Steps: before its Proofs: list.",
+        "resource_scope": "crates/holden-cli/src/** (usage, help and output), crates/holden-embed/src/embed.rs (the embed report only), crates/holden-cognition/src/adapters.rs (the charter planning adapter only), README, tests",
+        "acceptance_criterion": [
+          "P1 a successful embed ends its stdout with the next steps: the exact owner command from promise-proposals.json, marked as the owner only, and the holden agent serve --host command; a test pins both lines and that they equal the file.",
+          "P2 holden <command> --help prints only that command usage and exits 0, for every command; bare holden prints the global usage and exits 2 with no unknown command line; tests pin each.",
+          "P3 holden ledger verify and holden ledger telemetry print the ledger as a path relative to the private root; a test with a sentinel home scans their output.",
+          "P4 every file an embed removes from the host tree prints one removed: <host-relative path> line, and the report ends with the count of files written, unchanged and removed; a test with a stale cognition pins the line and the count, and that nothing is removed without its line.",
+          "P5 a source document that yields no candidates is named in the report with the reason (for charter/INTENT.md: the intent card states goals, not numbered proofs; candidates come from DONE proofs and GUARANTEES); a test pins the line for a charter host.",
+          "P6 in a charter DONE list only the numbered lines of its proof list (the block that follows a line starting Proofs) are candidates; numbered lines under any other label or heading (Steps:, Gates, Out of scope) are not; a fixture DONE file with a numbered Steps: list before its Proofs: list pins it, and the slice-18b P1 fixture yields the same candidates as before.",
+          "P7 macOS and Linux gates are green with identical test names."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-18e"
+        },
+        "done_list": "charter/DONE/slice-18e.md"
+      }
+    },
+    {
+      "id": "SLICE-18E-QA",
+      "type": "QA",
+      "verifies": "SLICE-18E-DEV",
+      "depends_on": [
+        "SLICE-18E-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-18F-DEV",
+      "type": "DEV",
+      "title": "Proof lists under markdown headings",
+      "depends_on": [
+        "SLICE-18E-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "Slice 18e P6 took candidates only from the block after a line starting with the word Proofs. A client host labels its DONE proof lists with markdown headings instead (## Proofs 78 files, ## Fixed proof groups 77, ## Proofs (REV-4 ...) 14, ## Proof 1 — <title> 6), so its cognitions fell from 1,524 to 235 and 246 of 292 sources reported no candidates. The P6 wording was the plan author's error, not the DEV's. After this slice every common form of proof label is read, and gate steps are still excluded.",
+        "resource_scope": "crates/holden-cognition/src/adapters.rs (the charter planning adapter only), fixtures/clients/**, tests",
+        "acceptance_criterion": [
+          "P1 a proof block starts at a line starting Proofs (as now) or at a markdown heading whose text contains the word proof or proofs, case-insensitive (## Proofs, ## Proofs (REV-4 ...), ## Fixed proof groups, ## Proof 1 — <title>); it ends at the next heading without that word or at a top-level non-list line; a fixture DONE file per form pins each, and each yields exactly its numbered proofs.",
+          "P2 inside a proof block, top-level bulleted items (- or *) are candidates as well as numbered ones; indented sub-items (Reopen:, Fail-without mutant:, Test:) are never candidates; a fixture pins both.",
+          "P3 the 18e decoys stay excluded: numbered lists under Steps:, Gates, Out of scope or any heading without the word proof are not candidates; the 18b and 18e fixtures yield the same candidates as before.",
+          "P4 macOS and Linux gates are green with identical test names."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-18f"
+        },
+        "done_list": "charter/DONE/slice-18f.md"
+      }
+    },
+    {
+      "id": "SLICE-18F-QA",
+      "type": "QA",
+      "verifies": "SLICE-18F-DEV",
+      "depends_on": [
+        "SLICE-18F-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-18G-DEV",
+      "type": "DEV",
+      "title": "A proof candidate is the whole item",
+      "depends_on": [
+        "SLICE-18F-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "The charter adapter reads one line at a time, so a numbered proof that wraps onto indented continuation lines becomes a candidate holding only its first line, and the owner would sign a truncated promise. Client DONE files wrap most proofs. After this slice a candidate holds the whole item text, and its source span covers it. A second client numbers follow-up proofs 4b. and 4c.; the adapter accepts only all-digit numbers, so 4b. ends the block and drops 4b, 4c and the proof 5 after them. A re-embed of the first client after 18f still gave 0 candidates for 91 of 290 DONE files. Of these, 42 have a proof label followed by a prose paragraph (Run in app/ ..., Reopen for all: ...), and the prose ends the block before the first item. The other 49 have no proof label at all: their numbered proofs sit directly under the title heading.",
+        "resource_scope": "crates/holden-cognition/src/adapters.rs (the charter planning adapter only), fixtures/clients/**, tests",
+        "acceptance_criterion": [
+          "P1 a numbered or bulleted proof item that continues on indented lines is one candidate whose text is the item through its last continuation line, joined with single spaces, and whose start and end bytes cover that span; it stops before the next item, before an indented sub-item (a line whose text starts with - or * , such as - Reopen: or - Fail-without mutant:), and at a blank line; a fixture with a three-line item pins the text and the span.",
+          "P2 an item whose name is bold (1. **name.** text) keeps its markers as written and is a candidate; a fixture pins it.",
+          "P3 single-line items and the 18b, 18e and 18f fixtures yield the same candidates as before; candidate ids of single-line items do not change.",
+          "P4 an item marker is digits optionally followed by one lower-case letter (4., 4b., 12c.); a lettered item is a candidate and does not end the proof block, so a numbered item after it (5.) is a candidate too; a fixture with 4., 4b., 4c., 5. pins all four.",
+          "P5 a proof block opened by a heading ends only at the next heading of the same or a higher level whose text lacks the word proof; prose, code fences and tables inside it are not candidates and do not end it; a lower-level sub-heading inside it does not end it. A fixture with ## Proofs, an intro paragraph, a ### sub-heading and numbered items pins all items.",
+          "P6 a block opened by a plain label line (Proofs, Proofs:, Proofs (...)) may begin with prose, including a label that wraps onto the next line, before its first item; after its first item a top-level line that is not an item or a continuation ends it, so the 18e Steps: and Gates decoys stay excluded. A fixture pins both.",
+          "P7 a DONE file with no proof label anywhere takes as proofs the top-level numbered items under its title heading, before its first second-level heading; numbered items under any other heading (## Gates, ## Schedule, ## Landing) are not candidates. A fixture pins both.",
+          "P8 the client cross-check names the exact commit of each client clone it counted, and gives three numbers per client: adapter candidates, the independent count, and the cognitions the embed writes, explaining any difference between candidates and cognitions.",
+          "P9 macOS and Linux gates are green with identical test names."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-18g"
+        },
+        "done_list": "charter/DONE/slice-18g.md"
+      }
+    },
+    {
+      "id": "SLICE-18G-QA",
+      "type": "QA",
+      "verifies": "SLICE-18G-DEV",
+      "depends_on": [
+        "SLICE-18G-DEV"
+      ],
+      "fresh_context": true
+    }
+  ],
+  "dependency_frontiers": [
+    [
+      "SLICE-07-DEV"
+    ],
+    [
+      "OWNER-APPROVE-DEMO",
+      "SLICE-08-DEV"
+    ],
+    [
+      "SLICE-07-QA",
+      "SLICE-08-QA"
+    ],
+    [
+      "HOLDOUT-HC1"
+    ],
+    [
+      "SLICE-09-DEV",
+      "SLICE-10-DEV"
+    ],
+    [
+      "SLICE-09-QA",
+      "SLICE-10-QA"
+    ],
+    [
+      "HOLDOUT-HC2"
+    ],
+    [
+      "SLICE-11-DEV"
+    ],
+    [
+      "SLICE-11-QA"
+    ],
+    [
+      "SLICE-12-DEV"
+    ],
+    [
+      "SLICE-12-QA"
+    ],
+    [
+      "HOLDOUT-HC3"
+    ],
+    [
+      "SLICE-13-DEV"
+    ],
+    [
+      "SLICE-13-QA"
+    ],
+    [
+      "SLICE-14-DEV"
+    ],
+    [
+      "SLICE-14-QA"
+    ],
+    [
+      "SLICE-15-DEV"
+    ],
+    [
+      "SLICE-15-QA"
+    ],
+    [
+      "SLICE-16-DEV"
+    ],
+    [
+      "SLICE-16-QA"
+    ],
+    [
+      "SLICE-17-DEV"
+    ],
+    [
+      "SLICE-17-QA"
+    ],
+    [
+      "SLICE-18A-DEV"
+    ],
+    [
+      "SLICE-18A-QA"
+    ],
+    [
+      "SLICE-18-DEV"
+    ],
+    [
+      "SLICE-18-QA"
+    ],
+    [
+      "SLICE-18B-DEV"
+    ],
+    [
+      "SLICE-18B-QA"
+    ],
+    [
+      "SLICE-18D-DEV",
+      "SLICE-18E-DEV"
+    ],
+    [
+      "SLICE-18D-QA",
+      "SLICE-18E-QA"
+    ],
+    [
+      "SLICE-18C-DEV",
+      "SLICE-18F-DEV"
+    ],
+    [
+      "SLICE-18C-QA",
+      "SLICE-18F-QA"
+    ],
+    [
+      "SLICE-18G-DEV"
+    ],
+    [
+      "SLICE-18G-QA"
+    ],
+    [
+      "SLICE-20-DEV"
+    ],
+    [
+      "SLICE-20-QA"
+    ],
+    [
+      "SLICE-19-DEV",
+      "HOLDOUT-HC4"
+    ],
+    [
+      "SLICE-19-QA"
+    ],
+    [
+      "SLICE-21-DEV"
+    ],
+    [
+      "SLICE-21-QA"
+    ],
+    [
+      "HOLDOUT-HC5"
+    ]
+  ],
+  "fast_lane": {
+    "enabled": false,
+    "reason": "Holdout checkpoints gate later frontiers by design."
+  },
+  "scheduling": {
+    "executor": "A/DROID-MISSION-1 (Factory Mission: orchestrator = TEAM PM, worker = DEV WORKER, validator = QA WORKER) runs every DEV and QA node as one mission, frontier by frontier, until HOLDOUT-HC5 or a stop rule fires",
+    "holdout_examiner": "A/HLDT-1 authors and runs HOLDOUT nodes; sealed material never enters the build pod's context",
+    "control_plane": "A/EXEC-PM merges accepted slices, writes qa-pins, pushes main, and answers escalations; owner-only nodes go to the owner",
+    "same_file_parallel_writes": false,
+    "heavy_suite_policy": "one heavy suite at a time per repository; the Tart VM is shared and must be cleaned of scratch after each slice",
+    "owner_gate": "OWNER-APPROVE-DEMO is the only owner node; it blocks SLICE-07-QA (P4) and therefore HOLDOUT-HC1, never SLICE-08-DEV"
+  },
+  "required_conformance": "Before dispatching a DEV node, the mission orchestrator writes charter/DONE/<slice>.md from that node's contract (proofs with reopen steps and fail-without mutants), commits it, and runs charter gate <slice> --dispatch. QA uses charter freeze, an independent validator seat of a model family different from the worker, a charter.receipt/1 receipt and charter gate --accept. Stop rules S1-S7 bind."
+}

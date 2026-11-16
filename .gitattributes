@@ -1,0 +1,3 @@
+# Fixture bytes are hashed; never let git rewrite them.
+crates/holden-canon/fixtures/** -text
+canon/** -text

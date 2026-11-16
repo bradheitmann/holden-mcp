@@ -1,0 +1,22 @@
+[package]
+name = "holden-gen"
+description = "Approved promise x approved cognition x keyed lens draw to a sealed holdout plan"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license = "PolyForm-Noncommercial-1.0.0"
+publish.workspace = true
+
+[dependencies]
+hex.workspace = true
+holden-canon.workspace = true
+holden-cognition.workspace = true
+holden-seal.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+sha2.workspace = true
+
+[lints]
+workspace = true

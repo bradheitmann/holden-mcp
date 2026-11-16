@@ -1,0 +1,10 @@
+{
+  "accepted_unix_s": 1794764441,
+  "accepted_utc": "2026-11-15T17:40:41Z",
+  "base_commit": "25e47a1cd527250ea3cffd9da58476792ff950bc",
+  "brief_sha256": null,
+  "done_sha256": "b62b538417054d4b7181794ff40bc24058fde172b5ccb8257db212f07d18982b",
+  "schema_version": "charter.dispatch/1",
+  "slice": "slice-18",
+  "state": "accepted"
+}

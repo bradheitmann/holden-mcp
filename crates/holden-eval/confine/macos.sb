@@ -1,0 +1,62 @@
+;; holden-eval confinement profile for builds and direct confined runs on
+;; macOS (sandbox-exec, SBPL; slice-4 P4, slice-7 P5).
+;;
+;; The build runs the builder's code (build scripts), so its violations are
+;; observed too: the offending process is killed with SIGKILL, which fails
+;; the build and so the verdict. Violations:
+;; - any network operation;
+;; - any file write outside the world directory (the parameter WORLD, a
+;;   canonical path) and the null devices;
+;; - reading the data or extended attributes of any file outside the world,
+;;   the Rust toolchain (TOOLCHAIN), the active developer directory
+;;   (DEVELOPER), the launcher binary (HELPER) and its directory entry
+;;   (HELPERDIR, which the loader opens) and the system paths a build needs. File metadata (stat, path lookup) stays visible, because the
+;;   toolchain resolves its own paths; no file's contents can be read.
+;;
+;; Two narrow allowances keep the system C toolchain working: `xcrun` reads
+;; and writes its lookup cache `xcrun_db*` in the user's temporary
+;; directory, and CoreFoundation reads the user's `.CFUserTextEncoding` (from
+;; the account's home directory, whatever HOME says; only files of exactly
+;; that name). Neither holds sealed material.
+;;
+;; The launcher's self-checks are plain denials, so the launcher survives
+;; them: creating `.holden-confine-probe-<pid>` next to the world, listing
+;; the world's parent directory (PARENT), and binding 127.0.0.1 port 1.
+;;
+;; Later rules take precedence over earlier ones.
+(version 1)
+(allow default)
+(deny network* (with send-signal SIGKILL))
+(deny network-bind (local ip "localhost:1"))
+(deny file-write* (with send-signal SIGKILL))
+(deny file-write* (regex #"/\.holden-confine-probe-[0-9]+$"))
+(allow file-write* (subpath (param "WORLD")))
+(allow file-write* (regex #"^/private/var/folders/[^/]+/[^/]+/T/xcrun_db(-[A-Za-z0-9]+)?$"))
+(allow file-write-data
+    (literal "/dev/null")
+    (literal "/dev/zero")
+    (literal "/dev/dtracehelper"))
+(deny file-read-data file-read-xattr (with send-signal SIGKILL))
+(allow file-read-data file-read-xattr
+    (subpath (param "WORLD"))
+    (subpath (param "TOOLCHAIN"))
+    (subpath (param "REGISTRY"))
+    (subpath (param "DEVELOPER"))
+    (literal (param "HELPER"))
+    (literal (param "HELPERDIR"))
+    (subpath "/usr")
+    (subpath "/bin")
+    (subpath "/System")
+    (subpath "/Library/Developer")
+    (subpath "/private/etc")
+    (subpath "/private/var/select")
+    (subpath "/private/var/db/dyld")
+    (subpath "/dev")
+    (literal "/Library/Preferences/com.apple.dt.Xcode.plist")
+    (literal "/")
+    (literal "/var")
+    (literal "/etc")
+    (literal "/tmp")
+    (regex #"/\.CFUserTextEncoding$")
+    (regex #"^/private/var/folders/[^/]+/[^/]+/T/xcrun_db(-[A-Za-z0-9]+)?$"))
+(deny file-read-data (literal (param "PARENT")))

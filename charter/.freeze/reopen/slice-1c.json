@@ -1,0 +1,27 @@
+{
+  "done_sha256": "031e010817287c6ecec08fb9e00cf7c1e894b126736fefb91a8fd9e1c01d36d8",
+  "entries": [
+    {
+      "evidence_sha256": "17ece11f14727660a55755eb8381b73b8fe3016314db02fc0578c74de76e2255",
+      "proof": "1",
+      "recorded_utc": "2026-11-05T03:40:47Z",
+      "run_id": "qa-codex-gpt-6-luna-slice-1c-20261104"
+    },
+    {
+      "evidence_sha256": "17ece11f14727660a55755eb8381b73b8fe3016314db02fc0578c74de76e2255",
+      "proof": "2",
+      "recorded_utc": "2026-11-05T03:40:47Z",
+      "run_id": "qa-codex-gpt-6-luna-slice-1c-20261104"
+    },
+    {
+      "evidence_sha256": "17ece11f14727660a55755eb8381b73b8fe3016314db02fc0578c74de76e2255",
+      "proof": "3",
+      "recorded_utc": "2026-11-05T03:40:47Z",
+      "run_id": "qa-codex-gpt-6-luna-slice-1c-20261104"
+    }
+  ],
+  "head": "9668c6897fea2d300b5f8de556f425ef92660395",
+  "manifest_sha256": "53c78aa47e6f63f7be8ee786a347677e82b983a14e42b401e349b2e2d188c31e",
+  "schema_version": "charter.reopen/1",
+  "slice": "slice-1c"
+}

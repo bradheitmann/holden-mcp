@@ -1,0 +1,7 @@
+# Guarantees for the synthetic numbered charter host.
+- id: G-REOPEN
+  statement: "A reviewer can reopen every accepted proof from its recorded source bytes."
+  owner: "fixture owner"
+- id: G-TRACE
+  statement: "Every owner approval traces to the exact guarantee statement that was reviewed."
+  owner: "fixture owner"

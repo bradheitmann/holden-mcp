@@ -1,0 +1,5 @@
+[
+  { "id": "SC-001", "role": "Synthetic Human", "level": "Newcomer", "circumstance": "SYNTHETIC: first contact with an invented product; no prior model" },
+  { "id": "SC-002", "role": "Synthetic Agent", "level": "Cold Start", "circumstance": "SYNTHETIC: starts with an empty context and only the public brief" },
+  { "id": "SC-003", "role": "Synthetic Human", "level": "Interrupted", "circumstance": "SYNTHETIC: handling two simultaneous time-critical tasks; attention fragmented" }
+]

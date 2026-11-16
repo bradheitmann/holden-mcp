@@ -1,0 +1,36 @@
+{
+  "schema_version": "charter.receipt/1",
+  "slice": "slice-1c",
+  "verifies": "slice-1c",
+  "candidate_commit": "9668c6897fea2d300b5f8de556f425ef92660395",
+  "frozen": {
+    "manifest_sha256": "53c78aa47e6f63f7be8ee786a347677e82b983a14e42b401e349b2e2d188c31e",
+    "head": "9668c6897fea2d300b5f8de556f425ef92660395"
+  },
+  "dispatch": {
+    "base_commit": "1cbb67c7e2a47d7a886e2460ad24a95102486eea",
+    "brief_sha256": null
+  },
+  "models": {
+    "author": "anthropic/claude-opus-5.5",
+    "verifier": "openai/gpt-6-luna"
+  },
+  "verdict": "accepted",
+  "checks": [
+    {"id":"C01","description":"Compared all 97 charter.freeze/2 entries against the frozen Git tree: path, type, mode, Git object id and SHA-256 matched; recomputed population SHA-256 53c78aa47e6f63f7be8ee786a347677e82b983a14e42b401e349b2e2d188c31e; HEAD 9668c6897fea2d300b5f8de556f425ef92660395; tree 6b640c5b5e9fdbd1c358ea95c8ce04481a0b424c. The four charter/.freeze records are excluded by charter.freeze/2.","classification":"executed"},
+    {"id":"C02","description":"Required toolchain: export PATH=\"$HOME/.cargo/bin:$PATH\"; cargo --version reported cargo 1.95.0 (f2d3ce0bd 2026-03-21).","classification":"executed"},
+    {"id":"C03","description":"Clean scratch clone host gate: CARGO_TARGET_DIR=/tmp/holden-mcp-qa1c-target-host-xtask HOLDEN_TARGET_BASE=/tmp/holden-mcp-qa1c-target-host-final cargo xtask gate slice-1c --record /tmp/holden-mcp-qa1c-host-run-final.json. macOS/aarch64, frozen commit, clean tree; fmt, Clippy, guard, cargo-deny, cargo-audit and charter safety passed; 38 passed, 0 failed, 0 ignored; result green. Inner gate steps used separate CARGO_TARGET_DIRs under /tmp/holden-mcp-qa1c-target-host-final.","classification":"executed"},
+    {"id":"C04","description":"charter check --strict: charter: ok. It reported existing no-cost-row warnings for accepted slice-0 and slice-1b; no slice-1c failure.","classification":"executed"},
+    {"id":"C05","description":"Linux reopen on a fresh VM clone of the exact frozen commit via the supplied SSH/bundle route: CARGO_TARGET_DIR=/tmp/holden-mcp-qa1c-target-linux-xtask HOLDEN_TARGET_BASE=/tmp/holden-mcp-qa1c-target-linux cargo xtask gate slice-1c --host-covered-tools --record <external-run-record>. Linux/aarch64, 38 passed, 0 failed, 0 ignored; result green_with_declared_limitations because cargo-deny, cargo-audit and charter are absent on the VM. Host covered these checks. Retrieved the Linux run record and compared it with the final host record: all 38 test names and pass/fail/ignored counts match exactly.","classification":"executed"},
+    {"id":"C06","description":"P1 required mutant: added and staged qa/slice-x/notes.md containing ‘This repository is MIT licensed’. cargo xtask guard exited 1 and named qa/slice-x/notes.md:1 in stale_license_mentions. Removed the mutant; subsequent guard passed.","classification":"executed"},
+    {"id":"C07","description":"P1 extra: changed one byte in pinned qa/slice-1b/evidence.md. cargo xtask guard exited 1 and refused that file because its current bytes no longer matched the accepted pin. Restored the exact bytes; the guard again exempted the file by its pin reason and passed.","classification":"executed"},
+    {"id":"C08","description":"P2 required mutant: restored a directory-wide charter/owner-decisions/ exemption in the guard. cargo test --locked -p xtask new_decision_claiming_mit_is_refused failed: the injected new decision returned Pass instead of Refused. Restored guard.rs; the test passed again.","classification":"executed"},
+    {"id":"C09","description":"P2 required probe: added and staged a new charter/owner-decisions/ file stating ‘This repository is MIT licensed’. cargo xtask guard exited 1 and named the probe file at line 1. Removed the probe; subsequent guard passed.","classification":"executed"},
+    {"id":"C10","description":"P3 required mutant: removed charter/DONE/slice-1b.md from the licensor exception record. cargo test --locked -p xtask licensor_exception_lists_every_file failed and named charter/DONE/slice-1b.md as an unlisted carrier. Restored the exact record; the test passed again.","classification":"executed"},
+    {"id":"C11","description":"Verifier mutant: changed slice_accepted so any parseable dispatch record counted as accepted. cargo test --locked -p xtask qa_record_exempt_only_when_pinned failed because the unaccepted slice-b record became exempt. Restored guard.rs; the test passed again.","classification":"executed"},
+    {"id":"C12","description":"After all mutants were reverted, reran P1 qa_record_exempt_only_when_pinned, P2 new_decision_claiming_mit_is_refused, P3 licensor_exception_lists_every_file, cargo xtask guard, and the complete final host gate; all passed. Scratch clone returned clean at the frozen HEAD.","classification":"executed"}
+  ],
+  "defects": [],
+  "new_defects": [],
+  "proofs_reopened": ["1", "2", "3"]
+}

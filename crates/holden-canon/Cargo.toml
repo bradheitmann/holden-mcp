@@ -1,0 +1,17 @@
+[package]
+name = "holden-canon"
+description = "Typed canon pin verification and the lens corpus model for holden-mcp"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license = "PolyForm-Noncommercial-1.0.0"
+publish.workspace = true
+
+[dependencies]
+hex.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+
+[lints]
+workspace = true

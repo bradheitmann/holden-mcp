@@ -1,0 +1,96 @@
+{
+  "schema_version": "charter.receipt/1",
+  "slice": "slice-0",
+  "verifies": "slice-0",
+  "candidate_commit": "79ebd64b5052af29e85d92906a38063658a654b4",
+  "frozen": {
+    "manifest_sha256": "6a35cfd43527e6368e4beb64bb4ef2ffc745430caa234a027c50f559845fc2c8",
+    "head": "79ebd64b5052af29e85d92906a38063658a654b4"
+  },
+  "dispatch": {
+    "base_commit": "2bf1393bd9e5b8dbc16b696319a95cf62dd82dc5",
+    "brief_sha256": null
+  },
+  "models": {
+    "author": "anthropic/claude-opus-5.5",
+    "verifier": "openai/gpt-6-luna"
+  },
+  "verdict": "accepted",
+  "checks": [
+    {
+      "id": "C00",
+      "description": "Attempt 2. Read the attempt-1 receipt and report from private agent-state; attempt 1 rejected only because Linux reopen and live canon MCP call were unavailable. Those two reopenings were completed in this attempt.",
+      "classification": "inspected"
+    },
+    {
+      "id": "C01",
+      "description": "Verified frozen HEAD 79ebd64b5052af29e85d92906a38063658a654b4, tree c59ecf9f378742055accb244dd6447ea71e22f26, and all 70 per-file SHA256 entries before execution; all matched.",
+      "classification": "executed"
+    },
+    {
+      "id": "C02",
+      "description": "Fresh clean clone host gate `cargo xtask gate slice-0`; macOS aarch64, pinned source commit, 30/30 tests, fmt, clippy, guard, cargo deny, cargo audit and charter safety passed. Verification targets were under /tmp/holden-mcp-qa-target-attempt2-*.",
+      "classification": "executed"
+    },
+    {
+      "id": "C03",
+      "description": "`cargo xtask gate slice-0 --linux-vm` reopened the frozen commit in Tart Linux aarch64; green_with_declared_limitations, 30/30 tests, same 30 test names and pass count as host. A direct VM gate rerun used CARGO_TARGET_DIR and HOLDEN_TARGET_BASE under /tmp/holden-mcp-qa-target-attempt2-* and also passed. cargo-deny, cargo-audit and charter are absent on VM and declared host-covered limitations.",
+      "classification": "executed"
+    },
+    {
+      "id": "C04",
+      "description": "P1 fail-without mutant committed only in scratch clone at 9817a8d4bb62ed24920a56ae16f28ecd24f7ca38: unconditional std::os::macos import in holden-canon. Linux VM gate went red in Clippy/tests with E0433 cannot find macos in os.",
+      "classification": "executed"
+    },
+    {
+      "id": "C05",
+      "description": "P2 fresh-clone CLI baseline verified 3 synthetic files, digest 981fe61b432a11eb510b406323330bc7b1f0d9218570427b204216f907b8b463. Appending a byte to doctrine.md made CLI exit 1 and name `differs: doctrine.md`. The absent-root typed limitation and full suite tests also passed.",
+      "classification": "executed"
+    },
+    {
+      "id": "C06",
+      "description": "P3 initialized live MCP endpoint and called tools/call check_canon_lock with no arguments. Current four file hashes, version and validator hash matched canon/CANON-PIN.txt and docs/evidence/canon-mcp-pin-2026-11-04.txt exactly. pin_matches_recorded_hosted_pin passed; one-hex-digit validator hash mutant failed with validator_hash differs.",
+      "classification": "executed"
+    },
+    {
+      "id": "C07",
+      "description": "P4 lens_ids_are_content_hashes and lens fixture tests passed. Private lens corpus was present and `holden canon verify` verified 4 files, digest 3613ee8a88cb6131aaf094806e48e1a7ad2b5801c7c20f39808386e34a0514af. Timestamp-derived id mutant failed the content-hash assertion.",
+      "classification": "executed"
+    },
+    {
+      "id": "C08",
+      "description": "P5 required seal tests passed on host and VM. fixed_vector on both platforms asserted identical expected public key, VRF output 2a32d485332709a85a6b21ba8b983687ba5f63ecbd0c91aefb76a949f46a4a41, parameter bytes 3a3a66837b79673ec8edcf4195eaa888cba35bcdb609ca584274ac5eb90f0bef and scalar fields. Dropping evaluated_commit from the transcript made params_depend_on_evaluated_commit fail.",
+      "classification": "executed"
+    },
+    {
+      "id": "C09",
+      "description": "P6 cargo xtask gate guard and charter safety passed on host. Literal tools/x.py mutant was not created because the standing owner hook forbids any .py file and the prompt forbids it. Substitute mutant removed py from the extension matcher; languages_refuses_python_and_js_and_dockerfiles failed at the expected finding count. Inspected check_languages and its tracked-file enumeration; judged this substitute sufficient to demonstrate the Python-extension guard regression without creating a forbidden file. No Dockerfile was created.",
+      "classification": "executed"
+    },
+    {
+      "id": "C10",
+      "description": "Independent mutant removed extra-file refusal from holden-canon::verify; verify_refuses_extra_file failed because verify returned Ok.",
+      "classification": "executed"
+    },
+    {
+      "id": "C11",
+      "description": "`charter check --strict` returned `charter: ok`.",
+      "classification": "executed"
+    },
+    {
+      "id": "C12",
+      "description": "Inspected the pre-existing charter safety allowance for AGENTS.md: the COMMON-STANDARD public URL includes the owner public account handle and the allowance says an orchestrator decision is pending. It is disclosed and not a private source name or home path; no P6 defect found, but the recorded owner decision remains open.",
+      "classification": "inspected"
+    }
+  ],
+  "defects": [],
+  "new_defects": [],
+  "proofs_reopened": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+  ]
+}

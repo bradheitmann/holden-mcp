@@ -1,0 +1,11 @@
+{
+  // Public, read-only documentation for holden-mcp (charter slice-16).
+  // No bindings: no KV, D1, R2, Durable Objects or secrets. The only var is the
+  // build commit, set at deploy time with --var HOLDEN_COMMIT:<sha>.
+  "name": "holden-mcp-docs",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  "rules": [{ "type": "Text", "globs": ["**/*.md"], "fallthrough": true }],
+  "vars": { "HOLDEN_COMMIT": "unset" }
+}

@@ -1,0 +1,35 @@
+# A self-contained Cargo workspace: this module builds and tests on its own,
+# with no dependency outside this directory and no third-party crate.
+[workspace]
+
+[package]
+name = "holden-forge"
+description = "Domain-pack validation, agent-constitution derivation and standalone export"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+license = "PolyForm-Noncommercial-1.0.0"
+publish = false
+
+[lib]
+name = "holden_forge"
+path = "src/lib.rs"
+
+[[bin]]
+name = "forge"
+path = "src/main.rs"
+
+[dependencies]
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_debug_implementations = "warn"
+unused_must_use = "deny"
+
+[lints.clippy]
+all = { level = "deny", priority = -1 }
+unwrap_used = "deny"
+expect_used = "warn"
+panic = "warn"
+dbg_macro = "deny"
+todo = "deny"

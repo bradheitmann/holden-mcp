@@ -1,0 +1,14 @@
+# Slice 1b QA evidence
+
+- Frozen authority: HEAD `4f0675583ae2346c47fc51440f94ce19abee17bc`; tree `2070a6df9cfecd7d5f0b097a060e3a769c223c91`; 84 file entries; manifest SHA256 `17a57b268a1e477621c82a63809480dc39ba8b9c5f56e400df5c1669ec43fc92`. Every entry matched. Scratch clone was detached at the frozen HEAD and clean for both gates.
+- Toolchain: after `export PATH="$HOME/.cargo/bin:$PATH"`, `cargo --version` was `cargo 1.95.0 (f2d3ce0bd 2026-03-21)`.
+- Host: `cargo xtask gate slice-1b` with `HOLDEN_TARGET_BASE=/tmp/holden-mcp-qa1b-target-host-reopen` and `CARGO_TARGET_DIR=/tmp/holden-mcp-qa1b-target-host-xtask` returned `green`; 34 passed, 0 failed. `cargo fmt --check`, workspace Clippy, guard, cargo-deny, cargo-audit, and charter safety passed. Separate strict charter check returned `charter: ok` with a slice-0 cost warning.
+- Linux: frozen `--linux-vm` entrypoint refused at `tart ip` because no address was returned. Exact commit was sent by Git bundle over SSH to `admin@192.168.64.10`, cloned into a unique VM path, and gated with separate `/tmp/holden-mcp-qa1b-target-*` directories. Linux/aarch64 returned `green_with_declared_limitations`; 34 passed, 0 failed. VM lacks cargo-deny, cargo-audit, and charter; host covered those checks. Retrieved run record commit matches frozen HEAD. Test names and pass counts exactly match host.
+- P1: changing the first LICENSE byte produced `license_text REFUSED` and exit 1. Restored bytes; guard Pass.
+- P2: setting holden-cli license to MIT produced `crate_licenses REFUSED`, naming `holden-cli`, exit 1. Restored manifest; guard Pass.
+- P3: changing the first byte in `holdout_skill_spec_v2_3_0.md` produced exit 1 and named `differs: holdout_skill_spec_v2_3_0.md`. Restored bytes; canon verify reported four files and digest `c50c0170b89590e007c4fff12281faab63a552cdc66a00e488998da3c4ab9cb6`.
+- P4: adding `MIT. See LICENSE` to README made `stale_license_mentions` refuse `README.md:32`, exit 1. Restored README; guard Pass.
+- Independent mutant: changing the first digit of `LICENSE_SHA256` made `tests::license_text_hash_is_pinned` fail at its pinned-hash assertion (exit 101). Restored guard; targeted test passed.
+- P4 exemption probe: adding `This repository is MIT-licensed.` to an owner-decision file made `cargo xtask guard` return Pass, including `stale_license_mentions`. Reverted the file. This establishes D1.
+- Upstream license: requested pinned `gh api` fetch; upstream and checkout LICENSE both SHA256 `c0ea4a896d2c8c394b29f9427589996db826cd501c512279ff0ed3ef48fabbe5`; `cmp` identical.
+- Target-directory note: an initial exploratory host gate used the xtask defaults `/tmp/holden-mcp-target-*`, outside the required prefix. A second compliant host gate passed using `HOLDEN_TARGET_BASE` and `CARGO_TARGET_DIR` under `/tmp/holden-mcp-qa1b-target-*`. All later Cargo invocations also used distinct target directories with that prefix.

@@ -1,0 +1,43 @@
+{
+  "schema_version": "charter.receipt/1",
+  "slice": "slice-5",
+  "verifies": "slice-5",
+  "candidate_commit": "11f046b88e1e993d21feda43c7a3baf7aaada55c",
+  "frozen": {
+    "manifest_sha256": "b8e74f006795a36b26d4195d447943530179b6509c827412a6b05b5bd9920bb3",
+    "head": "11f046b88e1e993d21feda43c7a3baf7aaada55c"
+  },
+  "dispatch": {
+    "base_commit": "51a695f9ae106e1e5f6401489111f542674c6a14",
+    "brief_sha256": null
+  },
+  "models": {
+    "author": "anthropic/claude-opus-5.5",
+    "verifier": "openai/gpt-6-luna"
+  },
+  "verdict": "accepted",
+  "checks": [
+    {"id":"C01","description":"Frozen bytes: 252/252 per-file hashes and Git blob identities matched the freeze manifest at 11f046b88e1e993d21feda43c7a3baf7aaada55c; manifest SHA-256 b8e74f006795a36b26d4195d447943530179b6509c827412a6b05b5bd9920bb3; binary patch from dispatch base SHA-256 7d3fd3b5532e5f7bfa74ca087f68ab6287c1c701956065380e404a78ccc93eb5. Attempt 1 evidence, clean frozen clone identity, and final charter tree verification.","classification":"executed"},
+    {"id":"C02","description":"PATH included Cargo bin; cargo --version reported 1.95.0 (f2d3ce0bd 2026-03-21).","classification":"executed"},
+    {"id":"C03","description":"Prerequisite slice-1 receipt verified against a clean clone at cc677f6f4febc4ffaffc378aac2aea51a796be89; charter reported tree matches the recorded freeze.","classification":"executed"},
+    {"id":"C04","description":"Prerequisite slice-2 receipt verified against a clean clone at c4d998e5ab8315c5aec5a3ec82bd71d9d9454796; charter reported tree matches the recorded freeze.","classification":"executed"},
+    {"id":"C05","description":"Prerequisite slice-3 receipt verified against a clean clone at 99a5bbfe14c935f470acec8bd6adac78f058bc20; charter reported tree matches the recorded freeze.","classification":"executed"},
+    {"id":"C06","description":"Prerequisite slice-4 receipt verified against its exact frozen commit 047a0000153b857a38d6e589051501c810b1a641; charter reported tree matches. Main checkout was read-only but lacked this commit object, so the clean scratch clone was made from this checkout.","classification":"executed"},
+    {"id":"C07","description":"Host: cargo xtask gate slice-5 on a clean frozen clone, isolated AGENT_PRIVATE_ROOT=/tmp/holden-mcp-qa5b-root, CARGO_TARGET_DIR and HOLDEN_TARGET_BASE under /tmp. Green; 126 passed, 0 failed, 0 ignored; self-test green with all five catches at 1/1; 36 slice-4 replays and 11 ledger verifications passed; guard green.","classification":"executed"},
+    {"id":"C08","description":"Real-root db metadata: sorted file paths, mtimes, and sizes before and after the host and VM runs were identical. Ledger contents were not opened. Attempt-1 archive reports that its self-test appended five verification records to the real ledger; informational process-history note only, not a slice defect.","classification":"executed"},
+    {"id":"C09","description":"Required wrapper: HOLDEN_VM_ADDR=192.168.64.10 cargo xtask gate slice-5 --linux-vm. Green with declared guest guard limitations covered by host guard; 126 passed, 0 failed, 0 ignored; wrapper comparison reported ordered test names identical and pass counts identical (126/126). Wrapper did not forward AGENT_PRIVATE_ROOT; see isolated rerun below.","classification":"executed"},
+    {"id":"C10","description":"Isolated Linux rerun on the clean frozen VM clone with AGENT_PRIVATE_ROOT=/tmp/holden-mcp-qa5b-root and CARGO_TARGET_DIR/HOLDEN_TARGET_BASE under /tmp. Gate green_with_declared_limitations; 126 passed, self-test green with all five catches 1/1, 36 replays, 11 ledger verifications; guest guard limitations cargo_deny_absent, cargo_audit_absent, charter_absent are covered by host guard.","classification":"executed"},
+    {"id":"C11","description":"Attempt 1 executed (archived): M1 dropped previous-hash link; tampered_history_is_detected red then green after revert.","classification":"executed"},
+    {"id":"C12","description":"Attempt 1 executed (archived): M2 assumed catch outcomes; catch_rate_from_real_runs red then green after revert.","classification":"executed"},
+    {"id":"C13","description":"Attempt 1 executed (archived): M3 used point estimate; authority_uses_pessimistic_bound red then green after revert.","classification":"executed"},
+    {"id":"C14","description":"Attempt 1 executed (archived): M4 ignored ledger weights; draw_uses_ledger_weights red then green after revert.","classification":"executed"},
+    {"id":"C15","description":"Attempt 1 executed (archived): M5 disabled a never-again test; its catch count fell to 0 and gate failed; restored self-test green with 5/5 catches.","classification":"executed"},
+    {"id":"C16","description":"Attempt 1 executed (archived): M6 left decision unchanged on confinement violation; confinement_violation_fails_verdict red then green after revert.","classification":"executed"},
+    {"id":"C17","description":"Attempt 1 executed (archived): independent G-MEASURED mutant M7 omitted CONTROL entries during measurement reconstruction; per_lens_and_cognition_rates red then green after revert.","classification":"executed"},
+    {"id":"C18","description":"Attempt 1 executed: control rates derive from real fixture evaluator runs; Wilson lower/upper bounds gate authority; unmeasured or undersampled checks are advisory only. Two feedback rounds changed keyed draws from ledger-derived weights; no weight reached zero. Evidence details are in the archived attempt-1 record.","classification":"executed"},
+    {"id":"C19","description":"Attempt 2 final receipt validation: charter receipt qa/slice-5/receipt.json --verify-tree .","classification":"executed"}
+  ],
+  "defects": [],
+  "new_defects": [],
+  "proofs_reopened": ["1", "2", "3", "4", "5", "6"]
+}

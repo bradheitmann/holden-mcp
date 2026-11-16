@@ -1,0 +1,64 @@
+{
+  "schema_version": "charter.receipt/1",
+  "slice": "slice-16",
+  "verifies": "Independent adversarial verification of frozen slice-16 Worker docs site",
+  "candidate_commit": "42abe0727f5dca26eed83eb37d67134e3faf19be",
+  "frozen": {
+    "manifest_sha256": "e7f5016f5e0276b58d707fe2ec7f86fac8700806451339e0e74d7e5659d90dee",
+    "head": "42abe0727f5dca26eed83eb37d67134e3faf19be"
+  },
+  "dispatch": {
+    "base_commit": "feb0ecdd69f5065a550eecc18588ddc0c5ae30c7",
+    "brief_sha256": null
+  },
+  "models": {
+    "author": "anthropic/claude-opus-5.5",
+    "verifier": "openai/gpt-6-luna"
+  },
+  "verdict": "accepted",
+  "checks": [
+    {
+      "id": "C01",
+      "description": "Frozen identity reopened: HEAD 42abe0727f5dca26eed83eb37d67134e3faf19be equals freeze head; tree e08f7e6fac9c6387eb26d1a229c1fd69dc312eab; manifest e7f5016f5e0276b58d707fe2ec7f86fac8700806451339e0e74d7e5659d90dee; 383 entries. Dispatch base feb0ecdd69f5065a550eecc18588ddc0c5ae30c7 and DONE hash 2707df4baf57d47430c15e967777bf69ca15600008e952a4b89b06856577edfc.",
+      "classification": "executed"
+    },
+    {
+      "id": "C02",
+      "description": "Local package install: bun install --frozen-lockfile in deploy/docs-worker succeeded. bun test ran 3 tests, 3 passed, 0 failed. Initial bunx tsc --noEmit resolved global TypeScript 5.9.3 and printed help (exit 1); bunx --no-install tsc --noEmit and node_modules/.bin/tsc --noEmit both passed using the locked local TypeScript.",
+      "classification": "executed"
+    },
+    {
+      "id": "C03",
+      "description": "P1 mutant reopened in disposable scratch copy: allowing POST through made rejects non-read methods fail (expected 405, received 200); restoring the guard made the named test pass. Live POST, PUT and DELETE each returned 405 with Allow: GET, HEAD; unknown path returned 404.",
+      "classification": "executed"
+    },
+    {
+      "id": "C04",
+      "description": "P2 mutant reopened in disposable scratch copy: altering README response made serves committed docs byte for byte fail; restoration passed. Live /readme SHA-256 ceb7c3ad55c019e8c693fe07d672c5102cc637ea7874671188ca30447e9b8581 equals README.md; /architecture SHA-256 2b14bacc610b34d1ed1f40f365bbb87a0e9a5d592a4ee2ddfae2317286818549 equals docs/ARCHITECTURE.md. Both live x-holden-commit headers equal frozen HEAD.",
+      "classification": "executed"
+    },
+    {
+      "id": "C05",
+      "description": "P3 mutant reopened in disposable scratch copy: injecting one private denylist term into scratch README made bundle carries no private identifiers fail with one hit; term was never printed. Restored bundle test passed. cargo xtask guard with PATH including Cargo bin returned verdict Pass; rerun with isolated CARGO_TARGET_DIR also returned verdict Pass. wrangler.jsonc declares only vars.HOLDEN_COMMIT and no binding keys.",
+      "classification": "executed"
+    },
+    {
+      "id": "C06",
+      "description": "P4 strictness mutant reopened in disposable scratch copy: strict:false accepted implicit-any mutant; restoring strict:true produced TS7006 for its parameter; clean scratch compile passed. Live / and /llms.txt returned 200, /canon returned 302 to the canon server; all carried frozen x-holden-commit. Live verification used GET/HEAD only besides the required P1 method checks.",
+      "classification": "executed"
+    },
+    {
+      "id": "C07",
+      "description": "Raw command output and reopen evidence are recorded at /tmp/holden-mcp-codex16-evidence.txt. No Worker deploy or mutation was performed.",
+      "classification": "executed"
+    }
+  ],
+  "defects": [],
+  "new_defects": [],
+  "proofs_reopened": [
+    "P1: named method test mutant RED and restored GREEN; live disallowed methods and unknown path returned specified statuses/headers.",
+    "P2: named byte-exact test mutant RED and restored GREEN; both live documents hash-identical to frozen repository files and carry frozen commit header.",
+    "P3: named bundle privacy test mutant RED and restored GREEN; cargo xtask guard Pass; Worker config has no bindings beyond build commit var.",
+    "P4: implicit-any mutant accepted with strict disabled and refused with strict restored; clean typecheck passed; required live routes responded as specified."
+  ]
+}

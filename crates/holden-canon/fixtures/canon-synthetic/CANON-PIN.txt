@@ -1,0 +1,7 @@
+# SYNTHETIC canon fixture pin (holden.pin/1). Invented files; for tests only.
+format: holden.pin/1
+canon_version: synthetic-fixture-1
+validator_hash: 2b72a7a8016d4abd6ba3ceb2417c8fcf661d82e9bdb1d111bc226a13297683b2
+fac7d6aadd6e8291d4dd8bef8538200fd93e220313f8b8d9bd45e05f00dd03df  doctrine.md
+50b57ab934bd59d125d414074721d779471efca1b4d0bc39913d3f9beb968a0d  schema.yaml
+c57608c16e0eb473935481e6c903a20f9c885cbfdb88ce3ea6fda92878773c12  taxonomy/codes.md

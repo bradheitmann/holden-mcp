@@ -1,0 +1,5 @@
+# Exact-path exemptions from the guard's `stale_license_mentions` check (read by `cargo xtask guard`).
+# One `<exact file path> — <reason>` per line; no globs, no directories. Every allowance states why.
+# Any file not listed here (including any new owner-decision record) is checked.
+charter/owner-decisions/2026-11-04-license-polyform-noncommercial.md — quotes the owner's verbatim refusal of the former license and records the change to PolyForm Noncommercial
+charter/owner-decisions/2026-11-04-owner-approval-and-defaults.md — records the earlier D-07 default that the 2026-11-04 license decision replaced

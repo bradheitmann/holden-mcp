@@ -1,0 +1,89 @@
+{
+  "schema_version": "charter.receipt/1",
+  "slice": "slice-2",
+  "verifies": "slice-2",
+  "candidate_commit": "c4d998e5ab8315c5aec5a3ec82bd71d9d9454796",
+  "frozen": {
+    "manifest_sha256": "e237747a2136b9cf4a7298b53e5ddb2bcabe0b5acd47c0e51a45d0bc9d2bd91b",
+    "head": "c4d998e5ab8315c5aec5a3ec82bd71d9d9454796"
+  },
+  "dispatch": {
+    "base_commit": "3092acf188e8f4ffcf1598ee79251727f036f4f2",
+    "brief_sha256": null
+  },
+  "models": {
+    "author": "anthropic/claude-opus-5.5",
+    "verifier": "openai/gpt-6-luna"
+  },
+  "verdict": "accepted",
+  "checks": [
+    {
+      "id": "C01",
+      "description": "Recomputed charter.freeze/2 in a clean scratch clone at c4d998e5ab8315c5aec5a3ec82bd71d9d9454796: 155 entries, tree 3dc3dff4e7121568d7f682d7958e9f7bb02fac74, manifest SHA-256 e237747a2136b9cf4a7298b53e5ddb2bcabe0b5acd47c0e51a45d0bc9d2bd91b; all matched the supplied frozen record.",
+      "classification": "executed"
+    },
+    {
+      "id": "C02",
+      "description": "PATH included the Cargo bin directory; cargo --version reported 1.95.0 (f2d3ce0bd 2026-03-21).",
+      "classification": "executed"
+    },
+    {
+      "id": "C03",
+      "description": "Fresh clean clone host gate: cargo xtask gate slice-2; macOS/aarch64, frozen commit, tree clean true, rustc 1.95.0; fmt, Clippy, all tests, and all host guard checks passed. 71 passed, 0 failed, 0 ignored. Cargo targets were under /tmp/holden-mcp-qa2b-target-*.",
+      "classification": "executed"
+    },
+    {
+      "id": "C04",
+      "description": "Linux VM gate: HOLDEN_VM_ADDR=192.168.64.10 cargo xtask gate slice-2 --linux-vm; Linux/aarch64, frozen commit, tree clean true; 71 passed, 0 failed, 0 ignored. Test names and counts matched the host, including implementer_refused_reveal_params, evaluator_allowed_reveal_params, and unmapped_uid_brief_only. VM guard declared cargo-deny, cargo-audit, and charter absent; the full host guard passed. VM gate exit 0; target directories were under /tmp/holden-mcp-qa2b-target-linux-*.",
+      "classification": "executed"
+    },
+    {
+      "id": "C05",
+      "description": "charter check --strict passed in the clean frozen clone. It emitted existing missing cost-row warnings for accepted slices 0, 1b, 1c, and 6.",
+      "classification": "executed"
+    },
+    {
+      "id": "C06",
+      "description": "P1 through P6 fail-without mutants and the attempt-1 verifier P2 and P5 mutants: executed (attempt 1), as recorded in attempt 1 receipt checks C08-C15. The archived attempt-1 report SHA-256 is a47dcf3438ad654a4a1e8a72a484f0d4baee45b6da2321d4237273eef8fcc5c6; evidence SHA-256 is 603dac8d9687cb47dc7c76ae99580227d374e243822aec7855f0658c087cd10c. Attempt-1 receipt has no corresponding report/evidence hash fields, so these archive files cannot be authenticated against hashes in that receipt.",
+      "classification": "executed"
+    },
+    {
+      "id": "C07",
+      "description": "Attempt-2 role-enforcement mutant: removed the evaluator check from reveal_params in a scratch clone; implementer_refused_reveal_params failed because the implementer was allowed to reveal. Restored the check; the targeted test passed and git diff was empty. The mutant failure diagnostic included the test response, so no response content is retained in this receipt or report.",
+      "classification": "executed"
+    },
+    {
+      "id": "C08",
+      "description": "Inspected crates/holden-mcp/tests/mcp.rs and reopened the integration tests in both gates: the tests use an rmcp client over a real Unix socket and launch the server as a child over real stdio; no mock replaces the MCP server, transport, or peer credentials. ManualClock controls only the run expiry window.",
+      "classification": "inspected"
+    },
+    {
+      "id": "C09",
+      "description": "Slice-1 prerequisite: main commit 0023b366e35c89c943a21c0a226371cd5f2d6df4 records charter/.dispatch/slice-1.json state accepted, the owner S5 decision approves the final QA attempt, and qa/slice-1/receipt.json verdict is accepted. The requested receipt validation on a scratch checkout at 0023b36 refused because that descendant tree changes Cargo.lock outside the receipt candidate freeze. Revalidated the receipt successfully against its original candidate cc677f6 after copying the freeze, reopen attestation, and QA pin records from 0023b36 into that scratch checkout.",
+      "classification": "executed"
+    },
+    {
+      "id": "C10",
+      "description": "Computed attempt-1 receipt SHA-256 9d3564ffb573478c54a0b6f61966e4cc765ffe6ea42c4fe58feae308e961da4a. The receipt records no hash for its archived report.md or evidence.md, so the requested archive-to-receipt hash comparison is unavailable; attempt-1 records are identified as executed (attempt 1), with this integrity limitation disclosed.",
+      "classification": "executed"
+    }
+  ],
+  "defects": [],
+  "new_defects": [
+    {
+      "id": "D1",
+      "severity": "info",
+      "title": "Attempt-1 receipt does not bind its archived report and evidence hashes",
+      "status": "obligation",
+      "evidence": "Attempt-1 receipt has no report/evidence hash fields; computed archive hashes are recorded in C06 and C10."
+    }
+  ],
+  "proofs_reopened": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+  ]
+}

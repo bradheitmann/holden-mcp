@@ -1,0 +1,45 @@
+{
+  "format": "holden.lens-draw/1",
+  "entries": [
+    {
+      "concept": "0cc4161dd51d505292753c2e72e2a7b7373cb6f6b0f8f067bf09d2da456da41a",
+      "weight": 1,
+      "implies": {
+        "property": "SYNTHETIC LENS PROPERTY: the product works fully without a network connection",
+        "terms": ["offline"]
+      }
+    },
+    {
+      "concept": "8ec29dabdebec91f42aed8675a312df6478e475a5887a02df65b16f7cbb3522e",
+      "weight": 2,
+      "implies": {
+        "property": "SYNTHETIC LENS PROPERTY: every change can be taken back within ten seconds",
+        "terms": ["undone"]
+      }
+    },
+    {
+      "concept": "c305f743b4361b05f3fbb84b0a4500d2fba9b77ddabd6abeaea074da6a171f3a",
+      "weight": 3,
+      "implies": {
+        "property": "SYNTHETIC LENS PROPERTY: a failure states its reason and a way to try again",
+        "terms": ["why", "retry"]
+      }
+    },
+    {
+      "concept": "dd9719b8d7d0f9cc6d45679040bfa81048ace45606f827164138683c9f861719",
+      "weight": 2,
+      "implies": {
+        "property": "SYNTHETIC LENS PROPERTY: the shape of every API response is discoverable",
+        "terms": ["public api"]
+      }
+    },
+    {
+      "concept": "fcd905569c3d502e1433880bf1dad40f8d6fe6ae81107501ae46b0e1a72eefa1",
+      "weight": 3,
+      "implies": {
+        "property": "SYNTHETIC LENS PROPERTY: a save stopped part-way completes or is recoverable",
+        "terms": ["halfway"]
+      }
+    }
+  ]
+}

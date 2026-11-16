@@ -1,0 +1,51 @@
+[
+  {
+    "id": "3b0a7b950043a2e28ca35ce0fb8f4476364d0b1a0d9469e99495a41e9aa01244",
+    "name": "Synthetic Counted Pause",
+    "category": "synthesized",
+    "question": "SYNTHETIC: a paused flow must show how many steps remain",
+    "kind": {
+      "meta": {
+        "generation": 1,
+        "constituents": [
+          {
+            "concept": "f558f7ae2041da9c8ea0190921fb5f01dd55ecf028f97dfddff53c8c91b0cf5d",
+            "contribution": "SYNTHETIC: the stopping point is the test surface."
+          },
+          {
+            "concept": "9a88a5f05ba8b89fb3caab2a401c055ee42a58b9d4e360a94e5b5e8972bd0d37",
+            "contribution": "SYNTHETIC: remaining steps are counted, not implied."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "9a88a5f05ba8b89fb3caab2a401c055ee42a58b9d4e360a94e5b5e8972bd0d37",
+    "name": "Synthetic Count",
+    "category": "systems",
+    "question": "SYNTHETIC: is every invented quantity counted rather than implied",
+    "kind": "original"
+  },
+  {
+    "id": "db398a6ab3da644c959e3f63b296c2c20590bf93a55682aeef334e1b98885645",
+    "name": "Synthetic Edge",
+    "category": "visual",
+    "question": "SYNTHETIC: where does one invented region stop and the next begin",
+    "kind": "original"
+  },
+  {
+    "id": "f4b8437726d1e61189ca95d47d6194ed77781322b7a90f71cc9a5781c3fa1da1",
+    "name": "Synthetic Echo",
+    "category": "error",
+    "question": "SYNTHETIC: does a failure repeat itself where the participant can see it",
+    "kind": "original"
+  },
+  {
+    "id": "f558f7ae2041da9c8ea0190921fb5f01dd55ecf028f97dfddff53c8c91b0cf5d",
+    "name": "Synthetic Pause",
+    "category": "interaction",
+    "question": "SYNTHETIC: what happens when the participant stops halfway",
+    "kind": "original"
+  }
+]

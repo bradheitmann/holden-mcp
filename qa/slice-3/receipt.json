@@ -1,0 +1,45 @@
+{
+  "schema_version": "charter.receipt/1",
+  "slice": "slice-3",
+  "verifies": "slice-3",
+  "candidate_commit": "99a5bbfe14c935f470acec8bd6adac78f058bc20",
+  "frozen": {
+    "manifest_sha256": "842b97327d8a7222332f46ff7943c50efdbfe29af224e96f1af3343572a43601",
+    "head": "99a5bbfe14c935f470acec8bd6adac78f058bc20"
+  },
+  "dispatch": {
+    "base_commit": "21a1c94801fa4e8f92d6211e50ccfc25caa1ef49",
+    "brief_sha256": null
+  },
+  "models": {
+    "author": "anthropic/claude-opus-5.5",
+    "verifier": "openai/gpt-6-luna"
+  },
+  "verdict": "accepted",
+  "checks": [
+    {"id":"C01","description":"Frozen bytes: HEAD 99a5bbfe14c935f470acec8bd6adac78f058bc20 matches charter/.freeze/slice-3.json; manifest 842b97327d8a7222332f46ff7943c50efdbfe29af224e96f1af3343572a43601, tree 92ff8b8c99732d5d62e47d4a7cddbe7c42282a1d, 176 entries. cargo 1.95.0 (f2d3ce0bd 2026-03-21).","classification":"executed"},
+    {"id":"C02","description":"From main checkout, ~/open_protocols/charter/target/release/charter receipt qa/slice-1/receipt.json --verify-tree /tmp/holden-mcp-qa3-prereq-s1/repo; output: tree matches recorded freeze for slice-1 (cc677f6f4febc4ffaffc378aac2aea51a796be89), exit 0. Same command for slice-2 scratch repo; output: tree matches recorded freeze (c4d998e5ab8315c5aec5a3ec82bd71d9d9454796), exit 0. Main dispatch records are accepted. Scratch clones were created under /tmp.","classification":"executed"},
+    {"id":"C03","description":"Host gate, executed (attempt 1): cargo xtask gate slice-3; green, 94 tests, fmt/clippy/forge-export/pack-loader/guard passed. Archived receipt and evidence checked.","classification":"executed"},
+    {"id":"C04","description":"Linux VM gate, executed (attempt 1): HOLDEN_VM_ADDR=192.168.64.10 cargo xtask gate slice-3 --linux-vm; 94 passed, 0 failed, same names/counts as host. Prior slice accepted records declare cargo-deny, cargo-audit, charter absent on VM; host guard covered these. Informational limitation.","classification":"executed"},
+    {"id":"C05","description":"Proof 1 / M1, separate scratch clone: cargo test --locked -p holden-canon every_root_citation_resolves. Changed NAME citation hash 26793... to 06793...; red: test FAILED, HashDiffers recorded vs actual. Reverted doctrine.rs; same command green: 1 passed.","classification":"executed"},
+    {"id":"C06","description":"Proof 2 / M2, separate scratch clone: cargo test --locked -p holden-cognition promise_quote_must_match_source_bytes. Mutated quote_matches to accept all bytes; red: test FAILED on trailing-space variant. Reverted promise.rs; same command green: 1 passed.","classification":"executed"},
+    {"id":"C07","description":"Proof 3 / M3, separate scratch clone: cargo test --locked -p holden-cognition unapproved_cognition_cannot_host_test. Replaced Ed25519 verify helper with Ok(()); red exit 101, test FAILED. Reverted approval.rs; same command green: 1 passed.","classification":"executed"},
+    {"id":"C08","description":"Proof 4 / M4, separate scratch clone: cargo test --locked -p holden-gen every_plan_traces_promise_cognition_root. Replaced provenance roots with Vec::new(); red exit 101, test FAILED. Reverted plan.rs; same command green: 1 passed.","classification":"executed"},
+    {"id":"C09","description":"Proof 5 / M5, separate scratch clone: cargo test --locked -p holden-gen lens_implied_promise_goes_to_needs_owner_words. Cleared NeedsOwnerWords before return; red exit 101, test FAILED. Reverted plan.rs; same command green: 1 passed.","classification":"executed"},
+    {"id":"C10","description":"Proof 6 / M6, separate scratch clone: cargo test --locked -p holden-gen lens_draw_requires_key. Replaced HMAC output with SHA-256(message); red exit 101, test FAILED. Reverted draw.rs; same command green: 1 passed.","classification":"executed"},
+    {"id":"C11","description":"Proof 7 / M7, separate scratch clone: cargo test --locked -p holden-cognition pack_overlay_changes_candidates. Shadowed overlay with None; red: test FAILED because pack overlay did not shape candidates. Reverted cognition.rs; same command green: 1 passed.","classification":"executed"},
+    {"id":"C12","description":"Own G-SITUATED mutant, executed (attempt 1): changed lens coverage predicate to always true; cargo test --locked -p holden-gen lens_implied_promise_goes_to_needs_owner_words failed with 'an uncovered property needs owner words'; source restored. Archived evidence checked.","classification":"executed"},
+    {"id":"C13","description":"P1, inspected (attempt 1): canon doctrine and source text reviewed for hospitality/the Other, situated cognition, measured reliability, regenerative loop, and structural independence. Details in evidence.md.","classification":"inspected"},
+    {"id":"C14","description":"P2/P3/P5, inspected (attempt 1): exact source byte slicing and quote validation; Ed25519 approval admission bound to trusted owner key; lens implication without approved promise yields NeedsOwnerWords and no implied-property check. Archived evidence checked.","classification":"inspected"},
+    {"id":"C15","description":"Forge pack reopen, executed (attempt 1): committed holdout-engineering pack exported and loaded; overlay tests passed in host and Linux gates. Archived evidence checked.","classification":"executed"},
+    {"id":"C16","description":"Attempt 1 D1 and D2 resolved: all named mutants M1-M7 were independently run red then green in attempt 2; prerequisite receipts were validated with the main-checkout charter tool against /tmp scratch trees and both tree-match results returned exit 0.","classification":"executed"}
+  ],
+  "defects": [
+    {"id":"D3","severity":"info","title":"Linux VM guard lacks cargo-deny, cargo-audit, and charter; host guard covers these tools.","status":"obligation","evidence":"C04; limitation declared in attempt 1 and accepted prior-slice records"}
+  ],
+  "new_defects": [],
+  "proofs_reopened": [
+    "1", "2", "3", "4", "5", "6", "7"
+  ],
+  "previous_attempt": "$AGENT_PRIVATE_ROOT/holden-mcp/evidence/qa/slice-3-attempt1/"
+}

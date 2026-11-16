@@ -1,0 +1,33 @@
+{
+  "done_sha256": "86620b478f4f0e62964a65466ca53e79df0164e9d6f198c78d9aac8ac57d9a8a",
+  "entries": [
+    {
+      "evidence_sha256": "f64b9b2b733510d9aaa32b8d709dae337c875cc69f7198f5ccd461f65964f67a",
+      "proof": "1",
+      "recorded_utc": "2026-11-05T03:54:38Z",
+      "run_id": "qa-codex-gpt-6-luna-slice-6-20261105"
+    },
+    {
+      "evidence_sha256": "f64b9b2b733510d9aaa32b8d709dae337c875cc69f7198f5ccd461f65964f67a",
+      "proof": "2",
+      "recorded_utc": "2026-11-05T03:54:38Z",
+      "run_id": "qa-codex-gpt-6-luna-slice-6-20261105"
+    },
+    {
+      "evidence_sha256": "f64b9b2b733510d9aaa32b8d709dae337c875cc69f7198f5ccd461f65964f67a",
+      "proof": "3",
+      "recorded_utc": "2026-11-05T03:54:38Z",
+      "run_id": "qa-codex-gpt-6-luna-slice-6-20261105"
+    },
+    {
+      "evidence_sha256": "f64b9b2b733510d9aaa32b8d709dae337c875cc69f7198f5ccd461f65964f67a",
+      "proof": "4",
+      "recorded_utc": "2026-11-05T03:54:38Z",
+      "run_id": "qa-codex-gpt-6-luna-slice-6-20261105"
+    }
+  ],
+  "head": "761be1b1849799f54a818b748408473d8057ee6e",
+  "manifest_sha256": "bfc39c79a59621ac53933c34ebf87e4ccd5307c9c992956b78eeec4f7bd4c90b",
+  "schema_version": "charter.reopen/1",
+  "slice": "slice-6"
+}

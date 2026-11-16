@@ -1,0 +1,56 @@
+[
+  {
+    "seq": 1,
+    "gid": "O-000000000001",
+    "type": "original",
+    "name": "Synthetic Edge",
+    "cat": "visual",
+    "q": "SYNTHETIC: where does one invented region stop and the next begin",
+    "provenance": { "source": "synthetic-fixture", "created": "2000-01-01", "harness": "synthetic-1" }
+  },
+  {
+    "seq": 2,
+    "gid": "O-000000000002",
+    "type": "original",
+    "name": "Synthetic Pause",
+    "cat": "interaction",
+    "q": "SYNTHETIC: what happens when the participant stops halfway",
+    "provenance": { "source": "synthetic-fixture", "created": "2000-01-01", "harness": "synthetic-1" }
+  },
+  {
+    "seq": 3,
+    "gid": "O-000000000003",
+    "type": "original",
+    "name": "Synthetic Count",
+    "cat": "systems",
+    "q": "SYNTHETIC: is every invented quantity counted rather than implied",
+    "provenance": { "source": "synthetic-fixture", "created": "2000-01-01", "harness": "synthetic-1" }
+  },
+  {
+    "seq": 4,
+    "gid": "O-000000000004",
+    "type": "original",
+    "name": "Synthetic Echo",
+    "cat": "error",
+    "q": "SYNTHETIC: does a failure repeat itself where the participant can see it",
+    "provenance": { "source": "synthetic-fixture", "created": "2000-01-01", "harness": "synthetic-1" }
+  },
+  {
+    "seq": 5,
+    "gid": "M-000000000005",
+    "type": "meta",
+    "name": "Synthetic Counted Pause",
+    "cat": "synthesized",
+    "q": "SYNTHETIC: a paused flow must show how many steps remain",
+    "generation": 1,
+    "provenance": {
+      "source": "synthetic-fixture",
+      "created": "2000-01-01T00:00:00Z",
+      "harness": "synthetic-1",
+      "repo": "synthetic",
+      "commit": "0000000",
+      "constituents": ["O-000000000002", "O-000000000003"],
+      "north_star_check": "PASS"
+    }
+  }
+]

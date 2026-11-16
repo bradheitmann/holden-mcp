@@ -1,0 +1,34 @@
+[package]
+name = "holden-eval"
+description = "Runs a sealed plan against a real product at its boundary, confined without Docker, and records a signed, replayable verdict"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license = "PolyForm-Noncommercial-1.0.0"
+publish.workspace = true
+
+[[bin]]
+name = "holden-confine"
+path = "src/bin/holden-confine.rs"
+
+[dependencies]
+hex.workspace = true
+holden-gen.workspace = true
+holden-seal.workspace = true
+rmcp = { workspace = true, features = ["client"] }
+rustix.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+tokio.workspace = true
+
+[target.'cfg(target_os = "linux")'.dependencies]
+landlock.workspace = true
+
+[dev-dependencies]
+holden-canon.workspace = true
+holden-cognition.workspace = true
+holden-mcp.workspace = true
+
+[lints]
+workspace = true

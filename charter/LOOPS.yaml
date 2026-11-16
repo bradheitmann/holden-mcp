@@ -1,0 +1,36 @@
+# Every retry / re-verify / until-accepted / for-each / on-failure loop in the design. Source: docs/ARCHITECTURE.md.
+- id: L-QA
+  where: "Slice acceptance"
+  trigger: "Paired QA returns FAIL on a slice candidate"
+  bound: "3 QA attempts per slice (charter.toml verification_budget)"
+  cost_per_trip: "One independent-family QA review of the frozen bytes"
+  stop_condition: "QA PASS with every proof reopened, or the bound is reached (then S5: to the owner)"
+  who_decides_extension: owner
+- id: L-REPAIR
+  where: "Slice acceptance"
+  trigger: "A defect found inside the slice's landing surface"
+  bound: "1 repair cycle per slice"
+  cost_per_trip: "One worker repair pass plus a gate re-run"
+  stop_condition: "Gate green, or a new finding becomes an obligation on the next slice (S1)"
+  who_decides_extension: owner
+- id: L-COGNITION-REVIEW
+  where: "holden-cognition: candidate cognitions per promise"
+  trigger: "The owner rejects or edits a candidate cognition"
+  bound: "2 regeneration rounds per promise per planning revision"
+  cost_per_trip: "One generation pass and one owner review"
+  stop_condition: "The owner approves, or the promise is marked needs-owner-words"
+  who_decides_extension: owner
+- id: L-REPLAN
+  where: "holden-gen: re-planning a holdout"
+  trigger: "Canary leak, vacuity (passes on a do-nothing product), or a proven false pass or false fail"
+  bound: "1 automatic re-plan per holdout version; more need the owner"
+  cost_per_trip: "One new sealed plan version plus its control runs"
+  stop_condition: "The new version passes its control runs, or the holdout is retired"
+  who_decides_extension: owner
+- id: L-REVEAL-RETRY
+  where: "holden-mcp: client to server reveal_params"
+  trigger: "Transient socket or transport failure"
+  bound: "3 attempts with backoff per run"
+  cost_per_trip: "One MCP round trip"
+  stop_condition: "Parameters received and proof verified, or the run is recorded as could_not_run (never a pass)"
+  who_decides_extension: owner

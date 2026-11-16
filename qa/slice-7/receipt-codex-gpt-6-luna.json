@@ -1,0 +1,134 @@
+{
+  "schema_version": "charter.receipt/1",
+  "slice": "slice-7",
+  "verifies": "slice-7",
+  "candidate_commit": "43abdb954153c8bfbeabb7fc3ab2eb8988a13beb",
+  "frozen": {
+    "manifest_sha256": "03d77f3d8a85ed1b7de7649032c11b36298ad5359649ea67a2c4bed9d5867beb",
+    "head": "43abdb954153c8bfbeabb7fc3ab2eb8988a13beb"
+  },
+  "dispatch": {
+    "base_commit": "b875d96c0d2d1e3615cc313b13f593697b5280ff",
+    "brief_sha256": null
+  },
+  "models": {
+    "author": "anthropic/claude-opus-5.5",
+    "verifier": "openai/gpt-6-luna"
+  },
+  "verdict": "rejected",
+  "checks": [
+    {
+      "id": "C01",
+      "description": "The supplied ../slice-7.json was charter.dispatch/1, not a freeze manifest, and charter/.freeze/slice-7.json was absent. Reconstructed a charter.freeze/2 manifest from the clean HEAD 43abdb954153c8bfbeabb7fc3ab2eb8988a13beb: 277 entries, manifest SHA-256 03d77f3d8a85ed1b7de7649032c11b36298ad5359649ea67a2c4bed9d5867beb. This establishes the current HEAD tree but does not independently compare against the missing supplied freeze record.",
+      "classification": "executed"
+    },
+    {
+      "id": "C02",
+      "description": "Exported PATH=$HOME/.cargo/bin:$PATH; cargo --version reported 1.95.0 (f2d3ce0bd 2026-03-21).",
+      "classification": "executed"
+    },
+    {
+      "id": "C03",
+      "description": "Host gate cargo xtask gate slice-7 ran at frozen HEAD with AGENT_PRIVATE_ROOT=/tmp/holden-mcp-codex7-private and distinct CARGO_TARGET_DIR/HOLDEN_TARGET_BASE under /tmp. Formatting and clippy passed; 135 passed, 0 failed, 0 ignored; selftest passed 5/5 and replay/ledger reopen steps passed. Gate result red because cargo-deny and cargo-audit refused RUSTSEC-2026-0462 (unbounded response body buffering in Streamable HTTP clients).",
+      "classification": "executed"
+    },
+    {
+      "id": "C04",
+      "description": "Required Linux wrapper command ran under perl alarm 2700 with HOLDEN_VM_ADDR=192.168.64.10, user admin, on the exact frozen commit. Linux/aarch64 gate completed green_with_declared_limitations: 135 passed, 0 failed, 0 ignored; formatting, clippy, selftest, replay, ledger verification and guest guard passed. Guest limitations were cargo_deny_absent, cargo_audit_absent and charter_absent; host covered those guard tools. The wrapper compared identical test names and pass counts (135/135). No timeout occurred, including in host_implementer_cannot_reveal.",
+      "classification": "executed"
+    },
+    {
+      "id": "C05",
+      "description": "P1 tests installs_expected_files, no_sealed_bytes_in_host and embed_is_idempotent passed in both complete gates. In a scratch copy, the sealed-plan-copy mutant made no_sealed_bytes_in_host RED with 'sealed plan hex found in the host'; after restoring the scratch source it was GREEN (1 passed).",
+      "classification": "executed"
+    },
+    {
+      "id": "C06",
+      "description": "P2 test host_implementer_cannot_reveal passed in both complete gates. In a scratch copy, changing the installed host role to evaluator made the named test RED at the role assertion; after restoring the scratch source it was GREEN (1 passed).",
+      "classification": "executed"
+    },
+    {
+      "id": "C07",
+      "description": "P3 tests post_commit_runs_jit_holdout and consecutive_commits_get_different_params passed in both complete gates; the integration test creates two real commits and reopens trace/replay. In a scratch copy, reusing the prior trace parameters for the same plan made consecutive_commits_get_different_params RED with identical ParamsWire values; after restoring the scratch source it was GREEN (1 passed).",
+      "classification": "executed"
+    },
+    {
+      "id": "C08",
+      "description": "P4 agent_signed_approval_is_refused passed in both complete gates. In a scratch copy, bypassing signer and signature checks made the named test RED ('an agent-signed approval was admitted'); after restoring the scratch source it was GREEN (1 passed).",
+      "classification": "executed"
+    },
+    {
+      "id": "C09",
+      "description": "P5 sealed_read_is_denied and block_reachable_when_bounds_met passed in both complete gates. In a scratch copy, removing the macOS product read denials made sealed_read_is_denied RED after the planted sealed file was read and block_reachable_when_bounds_met RED because reads_not_confined appeared; after restoring the profile both tests were GREEN (1 passed each).",
+      "classification": "executed"
+    },
+    {
+      "id": "C10",
+      "description": "P4 reopen: a Rust verifier checked the four existing host-demo approval signatures against the published owner.pub and each approval's signed cognition/promise IDs. All 4/4 verified. It read only owner.pub and public approval JSON files; no private key was read or used.",
+      "classification": "executed"
+    },
+    {
+      "id": "C11",
+      "description": "Linux private-root isolation limitation: xtask's frozen --linux-vm wrapper does not forward AGENT_PRIVATE_ROOT to the guest. Despite the isolated local root, its output shows guest run records and selftest ledger writes under the guest's default private root. The guest wrapper copied only the denylist from the isolated local root. This is reported as observed; no guest files were inspected or cleaned.",
+      "classification": "executed"
+    },
+    {
+      "id": "C12",
+      "description": "Final required validation command: ~/open_protocols/charter/target/release/charter receipt qa/slice-7/receipt-codex-gpt-6-luna.json --verify-tree . --root .",
+      "classification": "executed"
+    }
+  ],
+  "defects": [
+    {
+      "id": "D1",
+      "severity": "medium",
+      "title": "Host dependency audit rejects RUSTSEC-2026-0462",
+      "status": "finding",
+      "evidence": "The host guard's cargo-deny and cargo-audit steps both refused the frozen dependency graph for RUSTSEC-2026-0462; the full test suite still passed 135/135."
+    },
+    {
+      "id": "D2",
+      "severity": "medium",
+      "title": "The dispatched freeze record is missing",
+      "status": "finding",
+      "evidence": "../slice-7.json is charter.dispatch/1 and charter/.freeze/slice-7.json was absent. The manifest in this receipt was reconstructed from HEAD, so comparison to the intended supplied freeze record remains unavailable."
+    },
+    {
+      "id": "D3",
+      "severity": "high",
+      "title": "Linux wrapper does not isolate guest private-root writes",
+      "status": "finding",
+      "evidence": "xtask/src/vm.rs forwards HOLDEN_TARGET_BASE but not AGENT_PRIVATE_ROOT. The required wrapper's observed guest output records selftest ledger writes and run records below the guest's default private root, contrary to the isolated-root requirement."
+    }
+  ],
+  "new_defects": [
+    {
+      "id": "D1",
+      "severity": "medium",
+      "title": "Host dependency audit rejects RUSTSEC-2026-0462",
+      "status": "finding",
+      "evidence": "The host guard's cargo-deny and cargo-audit steps both refused the frozen dependency graph for RUSTSEC-2026-0462; the full test suite still passed 135/135."
+    },
+    {
+      "id": "D2",
+      "severity": "medium",
+      "title": "The dispatched freeze record is missing",
+      "status": "finding",
+      "evidence": "../slice-7.json is charter.dispatch/1 and charter/.freeze/slice-7.json was absent. The manifest in this receipt was reconstructed from HEAD, so comparison to the intended supplied freeze record remains unavailable."
+    },
+    {
+      "id": "D3",
+      "severity": "high",
+      "title": "Linux wrapper does not isolate guest private-root writes",
+      "status": "finding",
+      "evidence": "xtask/src/vm.rs forwards HOLDEN_TARGET_BASE but not AGENT_PRIVATE_ROOT. The required wrapper's observed guest output records selftest ledger writes and run records below the guest's default private root, contrary to the isolated-root requirement."
+    }
+  ],
+  "proofs_reopened": [
+    "P1: installs_expected_files, no_sealed_bytes_in_host and embed_is_idempotent passed; sealed-plan-copy mutant failed no_sealed_bytes_in_host and restored test passed.",
+    "P2: host_implementer_cannot_reveal passed; evaluator-role mutant failed and restored test passed.",
+    "P3: post_commit_runs_jit_holdout and consecutive_commits_get_different_params passed; prior-parameter mutant failed consecutive_commits_get_different_params and restored test passed.",
+    "P4: agent_signed_approval_is_refused passed; approval-check bypass mutant failed and restored test passed. Existing host-demo signatures verified 4/4 against owner.pub.",
+    "P5: sealed_read_is_denied and block_reachable_when_bounds_met passed; unrestricted-read mutant failed both and restored tests passed."
+  ]
+}

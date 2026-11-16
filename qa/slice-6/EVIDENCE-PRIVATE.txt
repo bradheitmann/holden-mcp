@@ -1,0 +1,1 @@
+qa/slice-6/evidence.md moved to the private evidence root (it quotes home-path scan patterns literally; COMMON-STANDARD section 1). sha256 f64b9b2b733510d9aaa32b8d709dae337c875cc69f7198f5ccd461f65964f67a, pinned in charter/qa-pins/slice-6.sha256 and charter/.freeze/reopen/slice-6.json.

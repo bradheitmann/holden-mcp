@@ -1,0 +1,73 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/holden-canon",
+    "crates/holden-seal",
+    "crates/holden-cli",
+    "crates/holden-mcp",
+    "crates/holden-cognition",
+    "crates/holden-gen",
+    "crates/holden-eval",
+    "crates/holden-ledger",
+    "crates/holden-embed",
+    "xtask",
+]
+# The forge module is its own Cargo workspace and must stay independent of
+# this one in both directions (slice-6 P1, `xtask::tests::forge_is_isolated`).
+# The notes fixture product (slice-4) is its own dependency-free workspace,
+# built only from scratch worktrees of a fixture repository.
+exclude = ["modules/holden-forge", "fixtures/products/notes"]
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+rust-version = "1.95"
+license = "PolyForm-Noncommercial-1.0.0"
+publish = false
+
+[workspace.dependencies]
+holden-canon = { path = "crates/holden-canon" }
+holden-seal = { path = "crates/holden-seal" }
+holden-cognition = { path = "crates/holden-cognition" }
+holden-gen = { path = "crates/holden-gen" }
+holden-eval = { path = "crates/holden-eval" }
+holden-ledger = { path = "crates/holden-ledger" }
+holden-mcp = { path = "crates/holden-mcp" }
+holden-embed = { path = "crates/holden-embed" }
+argon2 = "=0.5.3"
+# XChaCha20Poly1305 is available in 0.10.1 without an extra feature.
+chacha20poly1305 = "=0.10.1"
+ed25519-dalek = "=2.2.0"
+hex = "=0.4.3"
+hmac = "=0.12.1"
+landlock = "=0.4.7"
+merlin = "=3.0.0"
+rpassword = "=7.4.0"
+rmcp = { version = "=3.9.0", default-features = false, features = [
+    "macros",
+    "server",
+    "transport-io",
+    "transport-async-rw",
+] }
+rusqlite = { version = "=0.41.1", default-features = false, features = ["bundled"] }
+rustix = { version = "=1.1.6", features = ["process"] }
+schnorrkel = "=0.11.5"
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = "=1.0.154"
+security-framework = { version = "=3.7.0", default-features = false }
+sha2 = "=0.10.9"
+tokio = { version = "=1.54.1", features = ["fs", "io-util", "macros", "net", "rt-multi-thread", "sync", "time"] }
+zeroize = "=1.9.1"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_debug_implementations = "warn"
+unused_must_use = "deny"
+
+[workspace.lints.clippy]
+all = { level = "deny", priority = -1 }
+unwrap_used = "deny"
+expect_used = "warn"
+panic = "warn"
+dbg_macro = "deny"
+todo = "deny"

@@ -1,0 +1,47 @@
+# cargo-deny policy for holden-mcp (run by `cargo xtask guard`).
+
+[graph]
+all-features = false
+
+[advisories]
+version = 2
+yanked = "deny"
+ignore = []
+
+[licenses]
+version = 2
+confidence-threshold = 0.93
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "Unicode-3.0",
+]
+# The workspace's own crates are PolyForm-Noncommercial-1.0.0 (owner decision
+# D-07, 2026-11-04). That license is allowed for these crates only; it is not
+# on the third-party allow list above.
+exceptions = [
+    { crate = "holden-canon", allow = ["PolyForm-Noncommercial-1.0.0"] },
+    { crate = "holden-cli", allow = ["PolyForm-Noncommercial-1.0.0"] },
+    { crate = "holden-cognition", allow = ["PolyForm-Noncommercial-1.0.0"] },
+    { crate = "holden-embed", allow = ["PolyForm-Noncommercial-1.0.0"] },
+    { crate = "holden-eval", allow = ["PolyForm-Noncommercial-1.0.0"] },
+    { crate = "holden-gen", allow = ["PolyForm-Noncommercial-1.0.0"] },
+    { crate = "holden-ledger", allow = ["PolyForm-Noncommercial-1.0.0"] },
+    { crate = "holden-mcp", allow = ["PolyForm-Noncommercial-1.0.0"] },
+    { crate = "holden-seal", allow = ["PolyForm-Noncommercial-1.0.0"] },
+    { crate = "xtask", allow = ["PolyForm-Noncommercial-1.0.0"] },
+]
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+allow-wildcard-paths = true
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []

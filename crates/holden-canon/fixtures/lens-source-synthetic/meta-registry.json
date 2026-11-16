@@ -1,0 +1,21 @@
+[
+  {
+    "gid": "M-000000000005",
+    "name": "Synthetic Counted Pause",
+    "type": "meta",
+    "generation": 1,
+    "q": "SYNTHETIC: a paused flow must show how many steps remain",
+    "cat": "synthesized",
+    "constituents": [
+      { "gid": "O-000000000002", "name": "Synthetic Pause", "contribution": "SYNTHETIC: the stopping point is the test surface." },
+      { "gid": "O-000000000003", "name": "Synthetic Count", "contribution": "SYNTHETIC: remaining steps are counted, not implied." }
+    ],
+    "model": "synthetic",
+    "harness": "synthetic-1",
+    "repo": "synthetic",
+    "commit": "0000000",
+    "created": "2000-01-01T00:00:00Z",
+    "north_star_check": "PASS",
+    "cycle": 1
+  }
+]

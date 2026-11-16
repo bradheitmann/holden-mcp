@@ -1,0 +1,33 @@
+[package]
+name = "holden-embed"
+description = "Installs a separate holden agent into a host project and runs its just-in-time sealed holdouts on every commit"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license = "PolyForm-Noncommercial-1.0.0"
+publish.workspace = true
+
+[[test]]
+name = "embed"
+path = "tests/embed.rs"
+
+[dependencies]
+hex.workspace = true
+holden-canon.workspace = true
+holden-cognition.workspace = true
+holden-eval.workspace = true
+holden-gen.workspace = true
+holden-ledger.workspace = true
+holden-mcp.workspace = true
+holden-seal = { workspace = true, features = ["keychain"] }
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+tokio.workspace = true
+
+[dev-dependencies]
+rmcp = { workspace = true, features = ["client", "transport-child-process"] }
+tokio = { workspace = true, features = ["process"] }
+
+[lints]
+workspace = true

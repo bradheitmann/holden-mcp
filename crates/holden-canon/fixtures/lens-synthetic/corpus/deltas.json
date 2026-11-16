@@ -1,0 +1,25 @@
+[
+  {
+    "delta": "drop_positional_ids",
+    "concepts": 5,
+    "cognitions": 3
+  },
+  {
+    "delta": "drop_timestamped_provenance",
+    "records": 6
+  },
+  {
+    "delta": "rewrite_stereotyped_cognition",
+    "old_text_sha256": "0c1c9e705edd6cc4d16017e00d823cde5d83ee1ec9ab4d9deb5630c3ecfb6063",
+    "new_text_sha256": "5c7d2ac302fc3da10a4e43a2273a80173383fce4f4b820a120a05002b8312929",
+    "new_cognition_id": null
+  },
+  {
+    "delta": "no_executable_script",
+    "entries_not_read": 1
+  },
+  {
+    "delta": "drop_unseeded_draw_state",
+    "entries": 1
+  }
+]

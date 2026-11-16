@@ -1,0 +1,5 @@
+# Public configuration of the notes fixture product. holden-eval diffs this
+# file (with the other public config paths) between the baseline commit and
+# the evaluated commit and reports any change in the verdict.
+store_format = "one-file-per-note"
+max_note_bytes = 64

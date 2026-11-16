@@ -1,0 +1,54 @@
+;; holden-eval confinement profile for product runs on macOS (sandbox-exec,
+;; SBPL; slice-5 P6(a), slice-7 P5).
+;;
+;; A violation is OBSERVED, not only denied: the offending process is killed
+;; with SIGKILL. holden never sends SIGKILL to a product run except through
+;; its own limits, which it records as `killed`, so a product run ended by
+;; SIGKILL is a confinement violation. Violations:
+;; - any network operation;
+;; - any file write outside the world directory (the parameter WORLD, a
+;;   canonical path) or the null devices;
+;; - any file read (file-read*: data, metadata and extended attributes)
+;;   outside the world, the launcher binary (HELPER), the launcher's
+;;   directory entry itself (HELPERDIR, which the loader opens; not the files
+;;   in it) and the system paths a process needs to start (slice-7 P5): the
+;;   private root, key stores and the sealed side cannot be read. The one
+;;   benign exception is CoreFoundation's account-level `.CFUserTextEncoding`
+;;   file, also allowed to builds: macOS may read it during executable startup
+;;   when the product environment intentionally omits `__CF_USER_TEXT_ENCODING`;
+;; - starting another process (process-fork), so no child the evaluator
+;;   cannot see can act for the product.
+;;
+;; The launcher's three self-checks are plain denials, so the launcher
+;; survives them: creating `.holden-confine-probe-<pid>` next to the world,
+;; listing the world's parent directory (the parameter PARENT), and binding
+;; 127.0.0.1 port 1.
+;;
+;; Later rules take precedence over earlier ones.
+(version 1)
+(allow default)
+(deny network* (with send-signal SIGKILL))
+(deny network-bind (local ip "localhost:1"))
+(deny file-write* (with send-signal SIGKILL))
+(deny file-write* (regex #"/\.holden-confine-probe-[0-9]+$"))
+(allow file-write* (subpath (param "WORLD")))
+(allow file-write-data
+    (literal "/dev/null")
+    (literal "/dev/zero")
+    (literal "/dev/dtracehelper"))
+(deny file-read* (with send-signal SIGKILL))
+(allow file-read*
+    (subpath (param "WORLD"))
+    (literal (param "HELPER"))
+    (subpath "/usr/lib")
+    (subpath "/System")
+    (subpath "/dev")
+    (subpath "/private/var/db/dyld")
+    (literal "/")
+    (literal "/var")
+    (literal "/etc")
+    (literal "/tmp")
+    (regex #"/\.CFUserTextEncoding$"))
+(allow file-read-metadata file-read-data (literal (param "HELPERDIR")))
+(deny file-read* (literal (param "PARENT")))
+(deny process-fork (with send-signal SIGKILL))

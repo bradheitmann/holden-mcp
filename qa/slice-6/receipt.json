@@ -1,0 +1,41 @@
+{
+  "schema_version": "charter.receipt/1",
+  "slice": "slice-6",
+  "verifies": "slice-6",
+  "candidate_commit": "761be1b1849799f54a818b748408473d8057ee6e",
+  "frozen": {
+    "manifest_sha256": "bfc39c79a59621ac53933c34ebf87e4ccd5307c9c992956b78eeec4f7bd4c90b",
+    "head": "761be1b1849799f54a818b748408473d8057ee6e"
+  },
+  "dispatch": {
+    "base_commit": "2d1cd53e6f4074fbfa5511ba18144c00e6078da3",
+    "brief_sha256": null
+  },
+  "models": {
+    "author": "anthropic/claude-opus-5.5",
+    "verifier": "openai/gpt-6-luna"
+  },
+  "verdict": "accepted",
+  "checks": [
+    {"id":"C01","description":"Regenerated charter.freeze/2 from clean scratch clone at frozen HEAD: 135 entries and manifest SHA-256 bfc39c79a59621ac53933c34ebf87e4ccd5307c9c992956b78eeec4f7bd4c90b matched the supplied freeze record.","classification":"executed"},
+    {"id":"C02","description":"Required toolchain: exported PATH=$HOME/.cargo/bin:$PATH; cargo --version reported 1.95.0 (f2d3ce0bd 2026-03-21).","classification":"executed"},
+    {"id":"C03","description":"Clean scratch clone host gate, rerun with CARGO_TARGET_DIR=/tmp/holden-mcp-qa6-target-host-xtask and HOLDEN_TARGET_BASE=/tmp/holden-mcp-qa6-target-host-steps: cargo xtask gate slice-6. macOS/aarch64, frozen HEAD, clean tree; all steps and host guard passed, 65 passed, 0 failed, 0 ignored; result green. Each inner cargo invocation had its own target directory below the qa6 target prefix.","classification":"executed"},
+    {"id":"C04","description":"Linux/aarch64 gate on the VM using the frozen commit shipped as a Git bundle over SSH, with CARGO_TARGET_DIR=/tmp/holden-mcp-qa6-target-linux-xtask and HOLDEN_TARGET_BASE=/tmp/holden-mcp-qa6-target-linux-steps. 65 passed, 0 failed, 0 ignored. Compared final host and Linux run records: the complete test arrays (names and statuses) are identical. Gate result red solely because cargo-deny, cargo-audit, and charter are unavailable on the VM; host covered all three successfully.","classification":"executed"},
+    {"id":"C05","description":"P1 positive and mutants: xtask::tests::forge_is_isolated passed. Added a path dependency from holden-canon (no holden-cognition crate exists at these frozen bytes) to holden-forge; the test failed naming both package and path dependency. Then added the reverse forge-to-holden-canon path dependency; the same test failed naming the outside path. Restored both manifests and lockfile; the test passed again.","classification":"executed"},
+    {"id":"C06","description":"P2 export reopen on macOS: exported 32 files to a fresh empty /tmp directory with the private denylist; cargo test --offline passed 13/13; forge verify passed; shasum -a 256 -c SHA256SUMS passed every file. P2 absolute-home-path mutant refused and named methodology/BOOT-CONTRACT.md. P2 private identifier mutant refused and named methodology/BOOT-CONTRACT.md, reporting only denylist entry 6.","classification":"executed"},
+    {"id":"C07","description":"P2 export reopen on Linux/aarch64: fresh export from the Linux gate; cargo test --offline passed 13/13; forge verify passed; sha256sum -c SHA256SUMS passed every file.","classification":"executed"},
+    {"id":"C08","description":"P3 pack_validates, constitution_sections_trace_to_pack, deterministic_output, and roundtrip_lossless passed. Dropped the /pack_name derivation entry; constitution_sections_trace_to_pack failed with the missing pack pointer. Restored it; all 13 forge tests passed again.","classification":"executed"},
+    {"id":"C09","description":"P4 sums verification: changed methodology/BOOT-CONTRACT.md without updating SHA256SUMS; forge verify refused and named that file. Restored the exact file; forge verify passed. Verifier's own mutant: changed NOTICE; forge verify refused the unpinned NOTICE text and checksum. Restored it; verification passed.","classification":"executed"},
+    {"id":"C10","description":"Inspected host and Linux exports for parent repository name, user-home paths, temporary checkout paths, and machine address patterns; no matches. Final clean scratch host gate passed after all mutants were reverted.","classification":"executed"}
+  ],
+  "defects": [],
+  "new_defects": [
+    {"id":"D1","severity":"medium","title":"Linux gate guard tools are unavailable on the VM","status":"obligation","evidence":"Linux run 20261105T035130Z-linux: cargo-deny, cargo-audit, and charter report LIMITATION; the gate result is red although all 65 test names/statuses match the green host run. Host gate at 20261105T034916Z-macos passes these checks."}
+  ],
+  "proofs_reopened": [
+    "1: two-way metadata isolation test; both dependency-direction mutants rejected",
+    "2: fresh offline export and checksum verification on macOS and Linux; absolute path and denylist mutants rejected",
+    "3: forge pack/constitution tests and round-trip; dropped derivation pointer mutant rejected",
+    "4: module/export SHA256SUMS verification; changed methodology mutant rejected"
+  ]
+}

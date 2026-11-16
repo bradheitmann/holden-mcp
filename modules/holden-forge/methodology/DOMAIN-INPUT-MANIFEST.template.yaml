@@ -1,0 +1,36 @@
+# DOMAIN-INPUT-MANIFEST — one file = one LW-DOMAIN-FORGE run (copy, fill, sha-pin at intake)
+# Declares the input MIX the forge consumes to produce a CCII-format schema pack for a new domain.
+
+forge_run_id: "FORGE-<domain>-YYYYMMDD-NN"
+domain_name: ""                       # e.g. "commercial-real-estate-law"
+target_pack_dir: "synthdoc/schema-<domain>"   # where the forged pack installs on RATIFY
+
+worldviews:                           # practitioner perspectives the spine MUST span (I5)
+  - ""                                # e.g. transactional / litigation / regulatory / judicial
+owner_intent: |
+  # 3+ sentences: what this pack is FOR, where the domain is going (dream-catcher mandate),
+  # known exclusions. Owner-authored or owner-approved.
+
+inputs:
+  samples:                            # I1 — REQUIRED (>=1). Representative corpus docs.
+    - { path: "", sha256: "", note: "" }
+  briefs:                             # I2 — optional. Exec-level domain descriptions.
+    - { path: "", sha256: "", note: "" }
+  category_lists:                     # I3 — optional, strongest accelerator. DD master lists,
+    - { path: "", sha256: "", format: "dd-master-list | toc | taxonomy | rac-domain-list | other" }
+  exemplar_packs:                     # I4 — the depth-shape bar. Default: the agentic pack.
+    - { path: "synthdoc/schema", gold_item: "ccii_cat_55 item 5501" }
+
+staffing:                             # per TEAM-TOPOLOGY modes
+  mode: subagent | visible | hybrid
+  cartographer_bands: 0               # parallel authors (never serial single-seat)
+  cartographer_model: ""
+  worth_judge_model: ""               # MUST differ in family from cartographer_model
+  census_miners: 4                    # one per leg; blind to each other
+
+gates:
+  catch_all_max_pct: 15               # S1 clamp
+  classification_confidence_min: 0.5  # every sample must classify at this floor
+  planted_falsifiers: true            # thinned + locator-echo items MUST be rejected (S4)
+  deleted_category_falsifier: true    # blind rediscovery MUST succeed (S5 leg 4)
+  owner_ratification: required        # forge never self-ratifies (S6)

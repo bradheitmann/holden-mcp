@@ -1,0 +1,5 @@
+# SYNTHETIC canon fixture — schema (invented, not a real schema)
+synthetic: true
+records:
+  - name: synthetic_record
+    fields: [id, note]

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "0ca79bc517db5c1f65c3312daae873668c34fe5ae58339387ee5cca8a68a141b",
+    "role": "Synthetic Human",
+    "level": "Interrupted",
+    "circumstance": "SYNTHETIC: handling two simultaneous time-critical tasks; attention fragmented"
+  },
+  {
+    "id": "857da54da91066acc48d95c93c0de9cac5ce621b2bb9641378416940fbaca2d2",
+    "role": "Synthetic Human",
+    "level": "Newcomer",
+    "circumstance": "SYNTHETIC: first contact with an invented product; no prior model"
+  },
+  {
+    "id": "91e1de8c626356cca3404ac1cc8529634946304ce3df8eba8afc31031a3bc3f0",
+    "role": "Synthetic Agent",
+    "level": "Cold Start",
+    "circumstance": "SYNTHETIC: starts with an empty context and only the public brief"
+  }
+]

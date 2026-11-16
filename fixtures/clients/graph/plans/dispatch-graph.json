@@ -1,0 +1,37 @@
+{
+  "schema": "synthetic.dispatch/1",
+  "dev_qa_pairs": 1,
+  "nodes": [
+    {
+      "id": "FEATURE-DEV",
+      "type": "DEV",
+      "depends_on": [],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "Preserve  double spacing in the owner's objective.",
+        "resource_scope": "src and tests",
+        "acceptance_criterion": "Reopen the proof without paraphrasing the owner's words.",
+        "budget": {
+          "qa_attempts": 3
+        },
+        "target_selector": {
+          "branch": "feature"
+        }
+      }
+    },
+    {
+      "id": "FEATURE-QA",
+      "type": "QA",
+      "verifies": "FEATURE-DEV",
+      "depends_on": ["FEATURE-DEV"],
+      "fresh_context": true
+    }
+  ],
+  "dependency_frontiers": [
+    ["FEATURE-DEV"],
+    ["FEATURE-QA"]
+  ],
+  "fast_lane": {
+    "enabled": false
+  }
+}

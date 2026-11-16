@@ -1,0 +1,7 @@
+# Public-safety allow-list (read by `charter safety` and `cargo xtask guard`).
+# One `<path glob> — <reason>` per line. Every allowance states why.
+AGENTS.md — the binding COMMON-STANDARD pin is a public repository URL that carries the owner's public account handle (orchestrator decision pending)
+NOTICE — licensor-name exception to standard §1: the license's Required Notice must name the licensor (charter/owner-decisions/2026-11-04-license-polyform-noncommercial.md)
+charter/owner-decisions/2026-11-04-license-polyform-noncommercial.md — licensor-name exception to standard §1: records the owner's verbatim instruction naming the licensor
+modules/holden-forge/NOTICE — licensor-name exception to standard §1: the forge module carries the same Required Notice as NOTICE (byte-identical, pinned by sha256 in the forge), as slice-6 P4 requires for the module and every export
+charter/DONE/slice-1b.md — licensor-name exception to standard §1: the pinned done list states the Required Notice lines verbatim

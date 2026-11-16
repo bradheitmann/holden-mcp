@@ -1,0 +1,29 @@
+# Guarantees for holden-mcp. Source: charter/INTENT.md (confirmed 2026-11-04) and docs/ARCHITECTURE.md §3.
+- id: G-UNPREDICTABLE
+  statement: "Before a test runs, a builder cannot learn its moment-of-test parameters, even with read access to the sealed plan. After the verdict, anyone holding the epoch public key can verify that the parameters are the unique VRF output for (plan_commit, evaluated_commit, server_nonce, builder_nonce)."
+  owner: "owner; the seal crate maintainer answers day to day"
+  proof: "holden-seal tests: params_depend_on_evaluated_commit, params_unrecoverable_from_sealed_plan_without_server_key, reveal_proof_verifies, tampered_proof_is_refused, server_nonce_committed_before_builder_commit; holden-mcp tests: implementer_role_refused_reveal_params (macOS and Linux); in a second project (slice-7), holden-embed tests: host_implementer_cannot_reveal, consecutive_commits_get_different_params, post_commit_runs_jit_holdout; ACCEPTED evidence: slices 1, 2, 7, 8, 12, 12b and 14 receipts under qa/ (canonical charter receipt with verify-tree), holdouts HC-1 run 2 and HC-3 run 3 ACCEPTED (qa/holdouts/)"
+  cost_per_run: "One VRF evaluation and one proof verification per holdout run (sub-millisecond), plus one MCP round trip to reveal parameters"
+  if_dropped: "Builders can precompute or memorize the randomized part of a test and train to it. That is exactly the reward hacking holdouts exist to prevent."
+  status: proven
+- id: G-SITUATED
+  statement: "Every generated holdout traces, with content-hash provenance, to an owner-approved promise quoted verbatim from a planning source and to an owner-approved situated cognition derived from planning evidence and a canon root. No lens or generator output that implies a new promise reaches a check."
+  owner: "owner (approves promises and cognitions)"
+  proof: "holden-gen tests: every_plan_traces_promise_cognition_root, lens_implied_promise_goes_to_needs_owner_words; holden-cognition tests: unapproved_cognition_cannot_host_test, promise_quote_must_match_source_bytes, agent_signed_approval_is_refused (slice-7); in a second project, holden-embed post_commit_runs_jit_holdout (holden trace re-verifies the chain); ACCEPTED evidence: slices 3, 7, 9, 11 and 13 receipts under qa/, holdouts HC-2 run 2 and HC-3 run 3 ACCEPTED"
+  cost_per_run: "Owner approval once per cognition and promise (amortized). One provenance hash check per generated plan."
+  if_dropped: "Tests drift from what the product is for. Agents invent or widen promises, and holdouts become arbitrary hurdles instead of evidence of service."
+  status: proven
+- id: G-MEASURED
+  statement: "Every check, lens and cognition carries a measured catch rate and false-pass rate on sealed known-broken and known-good controls. Its authority (advise / recommend / block) is computed from the pessimistic Wilson bound, never assumed."
+  owner: "owner (sets the policy bars once)"
+  proof: "holden-ledger tests: authority_uses_pessimistic_bound, unmeasured_check_is_advisory_only, catch_rate_from_real_runs, limitation_caps_authority, block_reachable_when_bounds_met (slice-7); cargo xtask selftest (the 2026-11-03 review's never-again defects re-introduced as mutants of holden's own code, catch counts in the ledger). Names corrected in slice-5 to the tests that exist.; ACCEPTED evidence: slices 5 and 14 receipts under qa/ (server-side runs counted with sample sizes), holdout HC-3 run 3 ACCEPTED (catch and false-fail reported with n)"
+  cost_per_run: "Control runs per holdout version (one known-broken and one known-good build per check), plus ledger writes"
+  if_dropped: "An unreliable evaluator gets merge-blocking power. False passes look like quality and erode trust in every verdict."
+  status: proven
+- id: G-PORTABLE
+  statement: "The workspace builds and its proofs pass on macOS (aarch64) and Linux (x86_64 or aarch64) with no Docker and no Python, and the forge exports to a standalone directory with zero references to this repository."
+  owner: "owner"
+  proof: "Local gate on macOS plus the Linux VM gate (no containers); xtask test forge_export_is_standalone; lang-guard scan showing no .py or plain .js files; ACCEPTED evidence: every slice 0-14 accepted with host and Linux VM gates (identical test names, declared host-only limitations listed in receipts), slice-6 forge export, holdout HC-3 run 3 ACCEPTED (second project on macOS and Linux, no Python or Docker)"
+  cost_per_run: "One Linux VM gate run per slice acceptance (minutes)"
+  if_dropped: "The system cannot be embedded in the owner's Mac-based projects, or it silently grows a Docker or Python dependency that violates the mandate."
+  status: proven

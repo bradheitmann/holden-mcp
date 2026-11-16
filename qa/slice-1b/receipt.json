@@ -1,0 +1,39 @@
+{
+  "schema_version": "charter.receipt/1",
+  "slice": "slice-1b",
+  "verifies": "slice-1b",
+  "candidate_commit": "4f0675583ae2346c47fc51440f94ce19abee17bc",
+  "frozen": {
+    "manifest_sha256": "17a57b268a1e477621c82a63809480dc39ba8b9c5f56e400df5c1669ec43fc92",
+    "head": "4f0675583ae2346c47fc51440f94ce19abee17bc"
+  },
+  "dispatch": {
+    "base_commit": "e19211f449fdbab15da1ebc33ae01e80c94f2455",
+    "brief_sha256": null
+  },
+  "models": {
+    "author": "anthropic/claude-opus-5.5",
+    "verifier": "openai/gpt-6-luna"
+  },
+  "verdict": "accepted",
+  "checks": [
+    {"id":"C01","description":"Verified all 84 frozen per-file SHA256 entries against charter/.freeze/slice-1b.json; all matched. Manifest SHA256 17a57b268a1e477621c82a63809480dc39ba8b9c5f56e400df5c1669ec43fc92; HEAD 4f0675583ae2346c47fc51440f94ce19abee17bc; tree 2070a6df9cfecd7d5f0b097a060e3a769c223c91.","classification":"executed"},
+    {"id":"C02","description":"Required toolchain: export PATH=\"$HOME/.cargo/bin:$PATH\"; cargo --version reported cargo 1.95.0 (f2d3ce0bd 2026-03-21).","classification":"executed"},
+    {"id":"C03","description":"Clean scratch clone host gate `cargo xtask gate slice-1b`, rerun with HOLDEN_TARGET_BASE=/tmp/holden-mcp-qa1b-target-host-reopen and CARGO_TARGET_DIR=/tmp/holden-mcp-qa1b-target-host-xtask: green on macOS/aarch64, 34/34 tests, fmt, Clippy, all guard checks including cargo-deny/audit, charter safety. An earlier exploratory host run used the gate's default /tmp/holden-mcp-target-* subdirectories; it was repeated with the required /tmp/holden-mcp-qa1b-target-* base and all subsequent gates used distinct targets.","classification":"executed"},
+    {"id":"C04","description":"`charter check --strict`: charter: ok; emitted existing warning that accepted slice-0 has no cost rows in charter/COST.jsonl.","classification":"executed"},
+    {"id":"C05","description":"Frozen Linux driver invocation refused because `tart ip holden-mcp-linux` returned no address (the supplied HOLDEN_VM_ADDR is ignored by this frozen driver). Shipped exact frozen commit by git bundle over SSH to 192.168.64.10 and ran the gate directly on Linux/aarch64: green_with_declared_limitations, 34/34 tests. VM lacks cargo-deny, cargo-audit and charter; these were host-covered. Retrieved VM run record and compared all test names and pass counts with host: identical, 34 passed / 0 failed.","classification":"executed"},
+    {"id":"C06","description":"P1: changed first LICENSE byte; `cargo xtask guard` exited 1 and reported `license_text` refusal with mismatched SHA256. Restored LICENSE; guard passed all checks.","classification":"executed"},
+    {"id":"C07","description":"P2: changed crates/holden-cli/Cargo.toml license to MIT; `cargo xtask guard` exited 1, naming holden-cli in crate_licenses (also stale_license_mentions). Restored manifest; guard passed.","classification":"executed"},
+    {"id":"C08","description":"P3: flipped first byte of canon/holden/holdout_skill_spec_v2_3_0.md; `holden canon verify` exited 1 and named the file with expected and found digests. Restored file; verify passed four committed files with digest c50c0170b89590e007c4fff12281faab63a552cdc66a00e488998da3c4ab9cb6, matching canon/CANON-PIN.txt.","classification":"executed"},
+    {"id":"C09","description":"P4 required mutant: restored `MIT. See LICENSE` in README; stale_license_mentions refused README.md:32 and guard exited 1. Restored README; guard passed.","classification":"executed"},
+    {"id":"C10","description":"Independent license mutant: changed the pinned LICENSE_SHA256 constant's first hex digit; `cargo test --locked -p xtask license_text_hash_is_pinned` failed at the pinned-hash assertion. Restored guard.rs; targeted test passed.","classification":"executed"},
+    {"id":"C11","description":"P4 scope probe: appended a current false claim (`This repository is MIT-licensed.`) to charter/owner-decisions/2026-11-04-license-polyform-noncommercial.md. `cargo xtask guard` exited 0 and stale_license_mentions passed because the whole directory is exempt. Reverted the mutation. Recorded as medium defect D1.","classification":"executed"},
+    {"id":"C12","description":"Fetched official upstream PolyForm file with the specified `gh api` request at pinned commit. Upstream and LICENSE both hashed to c0ea4a896d2c8c394b29f9427589996db826cd501c512279ff0ed3ef48fabbe5; cmp was identical.","classification":"executed"},
+    {"id":"C13","description":"P4 wording judgment: literal `git grep -n -i 'MIT'` is substring matching and produces false positives such as commit/limit; it cannot literally show only third-party license contexts. Whole-word filtering plus historical decision/DONE and third-party allow-list contexts describes the intended review. The current frozen content makes no current repository-is-MIT claim, but the guard's blanket record exemption fails the scope probe in C11.","classification":"inspected"}
+  ],
+  "defects": [],
+  "new_defects": [
+    {"id":"D1","severity":"medium","title":"stale_license_mentions exempts entire decision-record directories, allowing a current contradictory repository-license claim","status":"obligation","evidence":"xtask/src/guard.rs:473-485 exempts charter/owner-decisions/; injected current claim in charter/owner-decisions/2026-11-04-license-polyform-noncommercial.md passed cargo xtask guard"}
+  ],
+  "proofs_reopened": ["1","2","3","4"]
+}

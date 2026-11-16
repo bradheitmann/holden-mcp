@@ -1,0 +1,31 @@
+[package]
+name = "holden-ledger"
+description = "Append-only signed ledger of holden runs and controls, with measured catch and false-fail rates, authority from pessimistic bounds, and feedback"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license = "PolyForm-Noncommercial-1.0.0"
+publish.workspace = true
+
+[[test]]
+name = "ledger"
+path = "tests/ledger.rs"
+
+[dependencies]
+hex.workspace = true
+holden-canon.workspace = true
+holden-eval.workspace = true
+holden-gen.workspace = true
+holden-seal.workspace = true
+rusqlite.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+
+[dev-dependencies]
+holden-cognition.workspace = true
+holden-mcp.workspace = true
+tokio.workspace = true
+
+[lints]
+workspace = true

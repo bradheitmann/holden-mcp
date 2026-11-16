@@ -1,0 +1,33 @@
+{
+  "done_sha256": "98c46ce77e00a096a812e5918dd251e8f1254209b1ad5d8e39d6bc74c7172aba",
+  "entries": [
+    {
+      "evidence_sha256": "19c8489b53b4d8ff396accfda1102738e034d4bbd8259f3c28a80243520e78ac",
+      "proof": "1",
+      "recorded_utc": "2026-11-08T03:17:43Z",
+      "run_id": "20261108T025950Z-linux-vm"
+    },
+    {
+      "evidence_sha256": "19c8489b53b4d8ff396accfda1102738e034d4bbd8259f3c28a80243520e78ac",
+      "proof": "2",
+      "recorded_utc": "2026-11-08T03:17:43Z",
+      "run_id": "20261108T025950Z-linux-vm"
+    },
+    {
+      "evidence_sha256": "19c8489b53b4d8ff396accfda1102738e034d4bbd8259f3c28a80243520e78ac",
+      "proof": "3",
+      "recorded_utc": "2026-11-08T03:17:43Z",
+      "run_id": "20261108T025950Z-linux-vm"
+    },
+    {
+      "evidence_sha256": "19c8489b53b4d8ff396accfda1102738e034d4bbd8259f3c28a80243520e78ac",
+      "proof": "4",
+      "recorded_utc": "2026-11-08T03:17:43Z",
+      "run_id": "20261108T025950Z-linux-vm"
+    }
+  ],
+  "head": "983c2e58bb21decf0ee3ece6588d5fdb27fe05f8",
+  "manifest_sha256": "6238ba412b9d3bb830d62dcac32b977cf54585069bfb11de4d1c1c3a7c2bb638",
+  "schema_version": "charter.reopen/1",
+  "slice": "slice-10"
+}

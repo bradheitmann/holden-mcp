@@ -1,0 +1,3 @@
+setup:
+  project: holden-mcp
+  config: dev

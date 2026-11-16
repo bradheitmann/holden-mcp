@@ -1,0 +1,527 @@
+{
+  "schema": "holden-mcp.foundation-dispatch/1",
+  "format_note": "Retrospective reformat of the already-executed slice plans 0-7 (including 1b and 1c) into the plangraph-shaped dispatch graph used by plans/2026-11-06-integration/dispatch-graph.json. Nothing here was planned in this shape ahead of dispatch; the charter DONE lists were. Dependencies come from each DONE list stated prerequisites (slice-2: slice-1 plus main with 1b, 1c, 6; slice-3: slices 2, 1 and the slice-6 forge export; slice-4: 1-3; slice-5: 1-4; slice-7: 1-5; slice-1c: D1 from 1b). Where none were stated the previous slice QA node is used (slice-1 after 0, slice-1b after 1); slice-6 uses SLICE-01B-QA instead, because the previous-slice rule would create a cycle with slice-2. qa_attempts and repair_cycles are caps, with *_used counts from receipts, STATE and commit messages (slice-1c, slice-1b and slice-6 show a single receipt and are recorded as one attempt); redispatches_used counts re-dispatches before QA (slice-2 after the P2 stop, slice-1c). Not a claim of canonical PlanGraph validation.",
+  "epic": "E-HOLDEN-FOUNDATION",
+  "revision": 1,
+  "authority": "charter DONE lists slices 0-7 (reformatted 2026-11-06; DONE lists remain the normative source)",
+  "predecessor_plan": null,
+  "stories": 10,
+  "dev_qa_pairs": 10,
+  "dependency_frontiers": [
+    [
+      "SLICE-00-DEV"
+    ],
+    [
+      "SLICE-00-QA"
+    ],
+    [
+      "SLICE-01-DEV"
+    ],
+    [
+      "SLICE-01-QA"
+    ],
+    [
+      "SLICE-01B-DEV"
+    ],
+    [
+      "SLICE-01B-QA"
+    ],
+    [
+      "SLICE-01C-DEV",
+      "SLICE-06-DEV"
+    ],
+    [
+      "SLICE-01C-QA",
+      "SLICE-06-QA"
+    ],
+    [
+      "SLICE-02-DEV"
+    ],
+    [
+      "SLICE-02-QA"
+    ],
+    [
+      "SLICE-03-DEV"
+    ],
+    [
+      "SLICE-03-QA"
+    ],
+    [
+      "SLICE-04-DEV"
+    ],
+    [
+      "SLICE-04-QA"
+    ],
+    [
+      "SLICE-05-DEV"
+    ],
+    [
+      "SLICE-05-QA"
+    ],
+    [
+      "SLICE-07-DEV"
+    ],
+    [
+      "SLICE-07-QA"
+    ]
+  ],
+  "fast_lane": {
+    "enabled": false,
+    "reason": "Retrospective record; every slice was executed in order of acceptance and no further dispatch is planned from this file."
+  },
+  "scheduling": {
+    "executor": "historical: slices 0-6 were dispatched by the orchestrator and verified by independent QA seats; slice-7 is built and awaiting QA",
+    "same_file_parallel_writes": false,
+    "heavy_suite_policy": "one heavy suite at a time per repository; the Tart VM is shared",
+    "owner_gate": "slice-7 P4 needs one owner action (holden approve); modelled as OWNER-APPROVE-DEMO in plans/2026-11-06-integration/dispatch-graph.json"
+  },
+  "required_conformance": "Each slice: charter/DONE/<slice>.md written and pinned before dispatch (charter gate --dispatch); QA uses charter freeze, an independent verifier seat of a different model family, a charter.receipt/1 receipt, then charter gate --accept.",
+  "nodes": [
+    {
+      "id": "SLICE-00-DEV",
+      "type": "DEV",
+      "title": "Workspace, canon pin verification, lens corpus, VRF draw, guard and gates",
+      "depends_on": [],
+      "qa_contract_authored_before_implementation": true,
+      "status": "ACCEPTED 2026-11-04; accept commit d6724a04; receipt qa/slice-0/receipt.json",
+      "contract": {
+        "objective": "Stand up the Rust workspace with canon pin verification, the synthetic lens corpus, the VRF parameter draw and the guard, building on macOS and Linux with no Docker or Python. Closed exactly as pinned in charter/DONE/slice-0.md (6 proofs).",
+        "resource_scope": "workspace, holden-canon, holden-seal (VRF draw), canon/ pin and lens corpus fixtures, xtask guard and gates",
+        "acceptance_criterion": [
+          "P1 builds-on-both: the workspace builds and its tests pass on macOS aarch64 and in the Tart Linux VM, with no Docker or Python on either path (G-PORTABLE).",
+          "P2 canon-verify: `holden canon verify` recomputes SHA-256 for every pinned file and refuses any differing, missing or extra byte, naming the file; an absent private root returns typed `canon_absent`, never a pass.",
+          "P3 pin-matches-hosted: `canon/CANON-PIN.txt` holds exactly the four hashes and the validator hash served by S-CANON-MCP `check_canon_lock`, as recorded verbatim in the pin evidence file.",
+          "P4 lens-corpus-contract: the synthetic lens corpus validates against the typed model with content-hash ids and no timestamps; the private corpus manifest is committed as hashes only; every declared delta is listed in `canon/LENS-DELTAS.md`.",
+          "P5 vrf-roundtrip: `holden-seal` draws parameters as VRF_sk(plan_commit || evaluated_commit || server_nonce || builder_nonce); a changed evaluated commit changes them; the proof verifies under the epoch public key; a tampered proof is refused; fixed vectors are byte-identical on macOS and Linux.",
+          "P6 guard: no .py/.js/.mjs/.cjs, Dockerfile, absolute home path or private source name in tracked files; every crate declares the then-current license and LICENSE exists; cargo deny, cargo audit and the charter safety scan pass."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "qa_attempts_used": 2,
+          "repair_cycles": 1,
+          "repair_cycles_used": 0
+        },
+        "target_selector": {
+          "base": "2bf1393b",
+          "branch": "slice-0"
+        },
+        "done_list": "charter/DONE/slice-0.md"
+      }
+    },
+    {
+      "id": "SLICE-00-QA",
+      "type": "QA",
+      "verifies": "SLICE-00-DEV",
+      "depends_on": [
+        "SLICE-00-DEV"
+      ],
+      "fresh_context": true,
+      "status": "ACCEPTED 2026-11-04; accept commit d6724a04; receipt qa/slice-0/receipt.json",
+      "qa_receipt": "qa/slice-0/receipt.json"
+    },
+    {
+      "id": "SLICE-01-DEV",
+      "type": "DEV",
+      "title": "L2 sealing, commitment primitives, file key store and VM gate obligations",
+      "depends_on": [
+        "SLICE-00-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "status": "ACCEPTED 2026-11-05; accept commit 0023b366; receipt qa/slice-1/receipt.json",
+      "contract": {
+        "objective": "Add L2 sealing and the commitment primitives behind G-UNPREDICTABLE, a file key store, and the two xtask obligations carried from slice-0. Closed exactly as pinned in charter/DONE/slice-1.md (6 proofs).",
+        "resource_scope": "holden-seal (AEAD sealing, commitments, nonce commitment, file KeyStore), xtask VM gate (HOLDEN_VM_ADDR, target base)",
+        "acceptance_criterion": [
+          "P1 seal-roundtrip: `holden-seal` seals a typed plan with XChaCha20-Poly1305, aad binds plan id and format version, plan_commit = SHA-256(ciphertext || nonce || aad) from sealed bytes only, and unsealing with the right key returns the identical plan.",
+          "P2 tamper-refused: any change to ciphertext, nonce or aad, or a wrong key, is refused with a typed error naming the failed check; unseal never returns partial plaintext.",
+          "P3 l2-alone-yields-no-params: moment-of-test parameters cannot be computed from L2 (sealed plan plus plan_commit) without the server VRF secret key; two server keys give different parameters and only the matching public key verifies each.",
+          "P4 nonce-commitment: NonceCommitment = SHA-256(domain || server_nonce) is published before the builder commit exists; `open` accepts only the committed nonce; a draw with an unopened nonce is refused before any parameters are produced.",
+          "P5 file-key-store: the file KeyStore backend creates keys 0600 in a 0700 directory, refuses to load group/world-accessible or foreign-owned keys naming path and mode, behaves the same on macOS and Linux, and redacts keys in Debug and Display.",
+          "P6 vm-gate-addr-and-target: `cargo xtask gate <slice> --linux-vm` honours HOLDEN_VM_ADDR without calling `tart` and forwards the per-run target-directory base, so a sandboxed verifier can run the Linux gate."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "qa_attempts_used": 3,
+          "repair_cycles": 1,
+          "repair_cycles_used": 0
+        },
+        "target_selector": {
+          "base": "2d727990",
+          "branch": "slice-1"
+        },
+        "done_list": "charter/DONE/slice-1.md"
+      }
+    },
+    {
+      "id": "SLICE-01-QA",
+      "type": "QA",
+      "verifies": "SLICE-01-DEV",
+      "depends_on": [
+        "SLICE-01-DEV"
+      ],
+      "fresh_context": true,
+      "status": "ACCEPTED 2026-11-05; accept commit 0023b366; receipt qa/slice-1/receipt.json",
+      "qa_receipt": "qa/slice-1/receipt.json"
+    },
+    {
+      "id": "SLICE-01B-DEV",
+      "type": "DEV",
+      "title": "PolyForm Noncommercial relicense and committed S-DOCTRINE canon",
+      "depends_on": [
+        "SLICE-01-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "status": "ACCEPTED 2026-11-04; accept commit d0490130; receipt qa/slice-1b/receipt.json",
+      "contract": {
+        "objective": "Relicense the repository from the former license to PolyForm Noncommercial 1.0.0 (owner decision D-07) and commit the S-DOCTRINE canon files (D-08); no feature work. Closed exactly as pinned in charter/DONE/slice-1b.md (4 proofs).",
+        "resource_scope": "LICENSE, NOTICE, crate license fields, cargo-deny config, canon/holden/ files, docs license mentions, charter/owner-decisions records, xtask guard checks",
+        "acceptance_criterion": [
+          "P1 license-text-is-official: `LICENSE` is byte-identical to PolyForm-Noncommercial-1.0.0.md at the pinned upstream commit, and the Required Notice lines live in `NOTICE`.",
+          "P2 every-crate-polyform: every workspace crate (including the forge workspace when it exists) declares license PolyForm-Noncommercial-1.0.0; the guard refuses and names any other; cargo deny allows it for workspace crates only.",
+          "P3 canon-committed-and-verified: the four S-DOCTRINE canon files are committed under `canon/holden/`, byte-identical to the hosted pin; `holden canon verify` defaults to the committed root and passes; no private names, paths or secrets are present.",
+          "P4 docs-consistent: no tracked file still states the repository carries the former license; owner decisions D-06, D-07 and D-08 and the licensor-name exception are recorded in `charter/owner-decisions/`."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "qa_attempts_used": 1,
+          "repair_cycles": 1,
+          "repair_cycles_used": 0
+        },
+        "target_selector": {
+          "base": "e19211f4",
+          "branch": "slice-1b"
+        },
+        "done_list": "charter/DONE/slice-1b.md"
+      }
+    },
+    {
+      "id": "SLICE-01B-QA",
+      "type": "QA",
+      "verifies": "SLICE-01B-DEV",
+      "depends_on": [
+        "SLICE-01B-DEV"
+      ],
+      "fresh_context": true,
+      "status": "ACCEPTED 2026-11-04; accept commit d0490130; receipt qa/slice-1b/receipt.json",
+      "qa_receipt": "qa/slice-1b/receipt.json"
+    },
+    {
+      "id": "SLICE-01C-DEV",
+      "type": "DEV",
+      "title": "Guard history exemptions via QA pins; close obligation D1",
+      "depends_on": [
+        "SLICE-01B-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "status": "ACCEPTED 2026-11-04; accept commit 1fa50cf2; receipt qa/slice-1c/receipt.json",
+      "contract": {
+        "objective": "Make main pass its own guard again by exempting immutable hash-pinned verification history, and close obligation D1 from slice-1b; no feature work. Closed exactly as pinned in charter/DONE/slice-1c.md (3 proofs).",
+        "resource_scope": "xtask guard (stale_license_mentions), charter/qa-pins/, charter/license-mention-allow.txt, licensor-exception decision record",
+        "acceptance_criterion": [
+          "P1 qa-records-exempt-by-pin: files under `qa/<slice>/` are exempt from `stale_license_mentions` only when the slice is accepted and the file SHA-256 is listed in `charter/qa-pins/<slice>.sha256`; any other file, or a pinned file whose bytes changed, is still checked.",
+          "P2 owner-decisions-narrowed (closes D1): `charter/owner-decisions/` is no longer exempt as a directory; only files listed in `charter/license-mention-allow.txt` are exempt, and a new decision claiming the former license is refused.",
+          "P3 licensor-exception-complete: the licensor-name exception record lists every tracked file carrying the owner name, and each is in `charter/safety-allow.txt`; a test compares the record with the files matching the name hash."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "qa_attempts_used": 1,
+          "repair_cycles": 1,
+          "repair_cycles_used": 0,
+          "redispatches_used": 1
+        },
+        "target_selector": {
+          "base": "1cbb67c7",
+          "branch": "slice-1c"
+        },
+        "done_list": "charter/DONE/slice-1c.md"
+      }
+    },
+    {
+      "id": "SLICE-01C-QA",
+      "type": "QA",
+      "verifies": "SLICE-01C-DEV",
+      "depends_on": [
+        "SLICE-01C-DEV"
+      ],
+      "fresh_context": true,
+      "status": "ACCEPTED 2026-11-04; accept commit 1fa50cf2; receipt qa/slice-1c/receipt.json",
+      "qa_receipt": "qa/slice-1c/receipt.json"
+    },
+    {
+      "id": "SLICE-02-DEV",
+      "type": "DEV",
+      "title": "MCP server with peer-credential roles, nonce ordering and audit-after-close",
+      "depends_on": [
+        "SLICE-01-QA",
+        "SLICE-01B-QA",
+        "SLICE-01C-QA",
+        "SLICE-06-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "status": "ACCEPTED 2026-11-05; accept commit 86981ec7; receipt qa/slice-2/receipt.json",
+      "contract": {
+        "objective": "Build the holden-mcp crate: an rmcp MCP server over stdio and a Unix socket exposing brief, commit_nonce, begin_run, reveal_params and audit_reveal on holden-seal, with roles from socket peer credentials (G-UNPREDICTABLE at the service boundary). Closed exactly as pinned in charter/DONE/slice-2.md (6 proofs).",
+        "resource_scope": "crates/holden-mcp (server, role map, run records, transports), tests",
+        "acceptance_criterion": [
+          "P1 mcp-surface: a real rmcp client over a Unix socket and over stdio lists exactly the five tools with JSON schemas and completes commit_nonce, begin_run, reveal_params, close, audit_reveal, with parameters verifying under the epoch public key.",
+          "P2 role-by-peer-credentials: the caller uid is read via tokio `peer_cred()` (no unsafe) and mapped to a role by sealed config; implementer gets typed `forbidden_role` from reveal_params with no leak, evaluator succeeds, unmapped uid is refused except for brief, stdio is evaluator-only and explicitly enabled.",
+          "P3 nonce-ordering-and-replay: begin_run is refused unless the server-nonce commitment was recorded first; each server nonce opens at most one run; run records store commitment, both nonces, evaluated commit and step times; reveal for a never-begun run is refused.",
+          "P4 audit-after-close-only: audit_reveal refuses an open run with `run_open`; after close it returns parameters plus VRF proof to any role and they verify; before close only the evaluator can obtain parameters.",
+          "P5 no-secret-egress: no response, error or log line for any role contains the VRF secret key, AEAD key, sealed-plan plaintext or (before close) parameters, shown by driving every tool with every role and scanning all bytes and logs.",
+          "P6 local-bind-only: optional TCP binds only to 127.0.0.1 or ::1 and a non-loopback config is refused at startup with a typed error; the default transport is a 0600 Unix socket in a 0700 directory."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "qa_attempts_used": 2,
+          "repair_cycles": 1,
+          "repair_cycles_used": 0,
+          "redispatches_used": 1
+        },
+        "target_selector": {
+          "base": "3092acf1",
+          "branch": "slice-2"
+        },
+        "done_list": "charter/DONE/slice-2.md"
+      }
+    },
+    {
+      "id": "SLICE-02-QA",
+      "type": "QA",
+      "verifies": "SLICE-02-DEV",
+      "depends_on": [
+        "SLICE-02-DEV"
+      ],
+      "fresh_context": true,
+      "status": "ACCEPTED 2026-11-05; accept commit 86981ec7; receipt qa/slice-2/receipt.json",
+      "qa_receipt": "qa/slice-2/receipt.json"
+    },
+    {
+      "id": "SLICE-03-DEV",
+      "type": "DEV",
+      "title": "Canon doctrine, cognition candidates with owner approval, generator and forge-pack loader",
+      "depends_on": [
+        "SLICE-02-QA",
+        "SLICE-01-QA",
+        "SLICE-06-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "status": "ACCEPTED 2026-11-05; accept commit c803cb2d; receipt qa/slice-3/receipt.json",
+      "contract": {
+        "objective": "Deliver G-SITUATED: the typed canon doctrine, holden-cognition (planning document to verbatim promises to candidate cognitions to owner approvals) and holden-gen (promise x approved cognition x lens draw to sealed plan, with NeedsOwnerWords). Closed exactly as pinned in charter/DONE/slice-3.md (7 proofs).",
+        "resource_scope": "holden-canon (Doctrine), crates/holden-cognition, crates/holden-gen, forge-pack loader in holden-cognition, tests",
+        "acceptance_criterion": [
+          "P1 canon-doctrine: `holden-canon` exposes a typed Doctrine (holdout definition, five Roots cited to canon bytes by file, heading and section SHA-256, Constituency, CircumstanceAxis, generator rules) and every citation resolves to bytes in `canon/holden/`.",
+          "P2 promises-verbatim: a promise is a quoted span with byte offsets and the source SHA-256; a promise whose bytes do not match the source at those offsets is refused, so paraphrase is impossible by construction.",
+          "P3 cognition-candidates-and-approval: candidate SituatedCognitions are deterministic with content-hash ids citing roots and axes; a cognition hosts tests only with an owner Ed25519 Approval over cognition id and promise id from a KeyStore key; unapproved, wrongly signed or differently keyed approvals are refused.",
+          "P4 generator-sealed-plans: `holden-gen` turns (approved promise, approved cognition, lens draw) into a typed, deterministic plan with encounter steps, a check per step, an absence probe, a permission pair and a targeted broken variant, sealed via holden-seal with a full provenance chain.",
+          "P5 needs-owner-words: when a lens implies a property no approved promise covers, the generator emits NeedsOwnerWords and never a check; lens data alone can never produce a check.",
+          "P6 lens-draw-sealed-and-keyed: lens concepts are chosen by an HMAC-SHA-256 draw under a sealed key over (promise id, cognition id, epoch), weighted by corpus weights, on the sealed side and replayable for audit.",
+          "P7 forge-pack-loader: `holden-cognition` reads the forge-exported domain pack and constitutions purely as files through a typed loader with no crate dependency on the forge; it loads the committed pack losslessly and the domain overlay deterministically changes the candidate cognitions."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "qa_attempts_used": 2,
+          "repair_cycles": 1,
+          "repair_cycles_used": 0
+        },
+        "target_selector": {
+          "base": "21a1c948",
+          "branch": "slice-3"
+        },
+        "done_list": "charter/DONE/slice-3.md"
+      }
+    },
+    {
+      "id": "SLICE-03-QA",
+      "type": "QA",
+      "verifies": "SLICE-03-DEV",
+      "depends_on": [
+        "SLICE-03-DEV"
+      ],
+      "fresh_context": true,
+      "status": "ACCEPTED 2026-11-05; accept commit c803cb2d; receipt qa/slice-3/receipt.json",
+      "qa_receipt": "qa/slice-3/receipt.json"
+    },
+    {
+      "id": "SLICE-04-DEV",
+      "type": "DEV",
+      "title": "Real-product boundary evaluation, signed replayable verdicts and confinement",
+      "depends_on": [
+        "SLICE-03-QA",
+        "SLICE-02-QA",
+        "SLICE-01-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "status": "ACCEPTED 2026-11-05; accept commit 3c11179f; receipt qa/slice-4/receipt.json",
+      "contract": {
+        "objective": "holden-eval runs a sealed plan against a real product at its boundary on macOS and Linux and records a signed, replayable verdict; the MCP server gains submit_observation and verdict. Closed exactly as pinned in charter/DONE/slice-4.md (6 proofs).",
+        "resource_scope": "crates/holden-eval, holden-mcp (submit_observation, verdict), fixtures/products/notes, GUARANTEES.yaml proof-name correction, tests",
+        "acceptance_criterion": [
+          "P1 real-product-run: a fixture Rust CLI is built from source in a scratch worktree at the evaluated commit and observed only at its boundary; keeps/breaks/refuses variants give pass/fail/fail, and each fail diagnostic names the promise and consequence, never the step, value or threshold.",
+          "P2 parameters-from-server-only: the evaluator obtains moment-of-test parameters only through MCP reveal_params under the evaluator role, a run without server-revealed parameters for that evaluated commit is refused, and two commits plant different values.",
+          "P3 signed-replayable-verdict: each verdict record holds plan commit, evaluated commit, parameter proof, bounded hashed observations, rule and engine versions and the decision, signed Ed25519 by the evaluator key; `holden replay` recomputes the decision, and a changed observation or signature is refused.",
+          "P4 confinement-no-docker: the product runs under Landlock (Linux) or a sandbox-exec profile (macOS) plus rlimits; write-outside-world and network attempts fail and are recorded; implementer env vars never reach elevated processes and the product gets a scrubbed environment.",
+          "P5 never-again-controls: tests fail if reintroduced for (a) canary scan on the evaluated commit own tree, (b) public-config diff reported in the verdict, (c) enforced capture-byte and run-second limits, (d) unique world ids per evaluation.",
+          "P6 generated-plans-run: a plan produced by `holden-gen` from the synthetic fixture registers with the MCP server and is evaluated end to end through one typed plan format."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "qa_attempts_used": 2,
+          "repair_cycles": 1,
+          "repair_cycles_used": 1
+        },
+        "target_selector": {
+          "base": "a673282d",
+          "branch": "slice-4"
+        },
+        "done_list": "charter/DONE/slice-4.md"
+      }
+    },
+    {
+      "id": "SLICE-04-QA",
+      "type": "QA",
+      "verifies": "SLICE-04-DEV",
+      "depends_on": [
+        "SLICE-04-DEV"
+      ],
+      "fresh_context": true,
+      "status": "ACCEPTED 2026-11-05; accept commit 3c11179f; receipt qa/slice-4/receipt.json",
+      "qa_receipt": "qa/slice-4/receipt.json"
+    },
+    {
+      "id": "SLICE-05-DEV",
+      "type": "DEV",
+      "title": "Signed ledger, measured controls, authority from pessimistic bounds, feedback and self-test",
+      "depends_on": [
+        "SLICE-04-QA",
+        "SLICE-03-QA",
+        "SLICE-02-QA",
+        "SLICE-01-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "status": "ACCEPTED 2026-11-06; accept commit bee84d4d; receipt qa/slice-5/receipt.json",
+      "contract": {
+        "objective": "Deliver G-MEASURED: holden-ledger (append-only signed ledger), sealed controls with Wilson-bounded catch and false-fail rates, authority from the pessimistic bound, telemetry feedback loops and the MCP telemetry tool. Closed exactly as pinned in charter/DONE/slice-5.md (6 proofs).",
+        "resource_scope": "crates/holden-ledger, holden-mcp (telemetry tool), holden-eval limitation typing, xtask selftest, tests",
+        "acceptance_criterion": [
+          "P1 append-only-ledger: a SQLite ledger in the private-root db/ chains records by SHA-256 and signs each with Ed25519; `holden ledger verify` detects and names any edit, deletion or reorder; appends check only the tip.",
+          "P2 controls-measure-catch-rate: sealed known-broken mutants and known-good builds run through the real evaluator, and the ledger records catch and false-fail rates with Wilson 95% bounds per check, lens concept and cognition from real fixture runs.",
+          "P3 authority-from-pessimistic-bound: authority (advise, recommend, block) comes only from measured Wilson bounds against owner-set bars; block needs lower-bound catch >= bar and upper-bound false-fail <= bar; unmeasured or under-sampled checks are advise-only; a verdict power is the minimum across deciding checks.",
+          "P4 feedback-loops: ledger telemetry (a) recomputes lens draw weights from per-lens yield, demoting but never zeroing, (b) fires re-plan triggers on canary leak, vacuity and proven false results and bumps the holdout version, (c) is reported with sample sizes by the telemetry MCP tool.",
+          "P5 self-test: holden runs its controls against its own code, with fixture mutants of holden-seal, holden-mcp and holden-eval reintroducing known defects (env leak, caller-chosen canary path, empty config diff, skipped role check), each caught and counted in the ledger.",
+          "P6 slice-4-obligations: (a) a confinement-violation attempt gives verdict `fail` with typed reason `confinement_violation`, (b) list, export and delete probes run end to end, (c) Linux verdicts record Landlock limitations as typed limitations capping authority at `recommend`."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "qa_attempts_used": 2,
+          "repair_cycles": 1,
+          "repair_cycles_used": 0
+        },
+        "target_selector": {
+          "base": "51a695f9",
+          "branch": "slice-5"
+        },
+        "done_list": "charter/DONE/slice-5.md"
+      }
+    },
+    {
+      "id": "SLICE-05-QA",
+      "type": "QA",
+      "verifies": "SLICE-05-DEV",
+      "depends_on": [
+        "SLICE-05-DEV"
+      ],
+      "fresh_context": true,
+      "status": "ACCEPTED 2026-11-06; accept commit bee84d4d; receipt qa/slice-5/receipt.json",
+      "qa_receipt": "qa/slice-5/receipt.json"
+    },
+    {
+      "id": "SLICE-06-DEV",
+      "type": "DEV",
+      "title": "Self-contained exportable holden-forge module",
+      "depends_on": [
+        "SLICE-01B-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "status": "ACCEPTED 2026-11-05; accept commit 1bb46fc0; receipt qa/slice-6/receipt.json",
+      "contract": {
+        "objective": "Create modules/holden-forge/ as a self-contained module with its own Cargo workspace (vendored methodology, holdout-engineering domain pack, four agent constitutions, Rust forge binary with pack, constitution and export) that no main-workspace crate depends on. Closed exactly as pinned in charter/DONE/slice-6.md (4 proofs).",
+        "resource_scope": "modules/holden-forge/ (VERSION, UPSTREAM.md, SHA256SUMS, forge binary, pack, constitutions), typed loader boundary in holden-cognition, xtask isolation test",
+        "acceptance_criterion": [
+          "P1 isolation: no main-workspace crate depends on anything under `modules/holden-forge/` and the forge workspace has no path dependency outside its own directory, checked both ways with cargo metadata.",
+          "P2 export-standalone: `forge export <dir>` writes the module to an empty directory, regenerates SHA256SUMS, refuses (naming the file) any absolute path, private identifier or parent-repo reference, and the export builds and tests offline with nothing from the parent repository.",
+          "P3 domain-pack-and-constitutions: `forge pack` validates the holdout-engineering pack against the typed schema; `forge constitution --role <role>` emits a deterministic constitution for each of four roles whose sections all trace to pack fields, and the typed reader round-trips pack and constitutions losslessly.",
+          "P4 provenance-and-license: `UPSTREAM.md` lists the methodology source by generic id and every delta, `SHA256SUMS` covers every forge file, and the module and every export carry PolyForm Noncommercial 1.0.0 with the owner Required Notice."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "qa_attempts_used": 1,
+          "repair_cycles": 1,
+          "repair_cycles_used": 0
+        },
+        "target_selector": {
+          "base": "2d1cd53e",
+          "branch": "slice-6"
+        },
+        "done_list": "charter/DONE/slice-6.md"
+      }
+    },
+    {
+      "id": "SLICE-06-QA",
+      "type": "QA",
+      "verifies": "SLICE-06-DEV",
+      "depends_on": [
+        "SLICE-06-DEV"
+      ],
+      "fresh_context": true,
+      "status": "ACCEPTED 2026-11-05; accept commit 1bb46fc0; receipt qa/slice-6/receipt.json",
+      "qa_receipt": "qa/slice-6/receipt.json"
+    },
+    {
+      "id": "SLICE-07-DEV",
+      "type": "DEV",
+      "title": "Embed, just-in-time run, owner approval, read confinement (repair c5f1903)",
+      "depends_on": [
+        "SLICE-05-QA",
+        "SLICE-04-QA",
+        "SLICE-03-QA",
+        "SLICE-02-QA",
+        "SLICE-01-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "status": "DEV_COMPLETE_QA_PENDING",
+      "contract": {
+        "objective": "Deliver `holden embed <project>`, which installs a separate holden agent into a real host git repository whose post-commit hook triggers a just-in-time sealed holdout run end to end (G-SITUATED, G-UNPREDICTABLE and G-MEASURED in a second project). Closed exactly as pinned in charter/DONE/slice-7.md (5 proofs).",
+        "resource_scope": "crates/holden-embed, holden-cognition (approval), holden-eval and holden-ledger (read confinement, block reachability), fixture host repository under the private root",
+        "acceptance_criterion": [
+          "P1 embed-installs: `holden embed <project>` writes .holden/config.json, .holden/agents/holden.md (forged for the host domain via forge export), public-half cognitions, an implementer-role MCP client config and a post-commit hook, with no sealed plan, keys or parameters in the host, and is idempotent.",
+          "P2 separate-agent-identity: the embedded agent runs as its own process with its own constitution and the evaluator role; the host implementer config gets `forbidden_role` from reveal_params and can call only brief, which returns public halves.",
+          "P3 just-in-time-end-to-end: git commit fires the hook, which runs commit_nonce (committed before the commit), begin_run with the new SHA, reveal_params, the confined holdout, a signed ledger verdict and the fixed diagnostic; consecutive commits get different parameters, audit_reveal verifies and `holden trace` prints the whole chain.",
+          "P4 owner-approved-in-host: host promises and cognitions are approved with the owner real signing key from the owner KeyStore, never by an agent; runs on unapproved items are refused; approval is one `holden approve` command with recorded output.",
+          "P5 read-confinement-enables-block: product processes cannot read the private root, any key store or the sealed side (sandbox-exec file-read denial on macOS, Landlock read grants only to the world directory and system paths on Linux); with reads confined the `file_reads_not_confined` limitation is dropped and a check meeting the block bar reaches `block`."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "qa_attempts_used": 0,
+          "repair_cycles": 1,
+          "repair_cycles_used": 1
+        },
+        "target_selector": {
+          "base": "b875d96c",
+          "branch": "slice-7"
+        },
+        "done_list": "charter/DONE/slice-7.md (on branch slice-7)"
+      }
+    },
+    {
+      "id": "SLICE-07-QA",
+      "type": "QA",
+      "verifies": "SLICE-07-DEV",
+      "depends_on": [
+        "SLICE-07-DEV"
+      ],
+      "fresh_context": true,
+      "status": "QA_PENDING_NOT_STARTED"
+    }
+  ]
+}

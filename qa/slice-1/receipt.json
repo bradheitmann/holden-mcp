@@ -1,0 +1,89 @@
+{
+  "schema_version": "charter.receipt/1",
+  "slice": "slice-1",
+  "verifies": "slice-1",
+  "candidate_commit": "cc677f6f4febc4ffaffc378aac2aea51a796be89",
+  "frozen": {
+    "manifest_sha256": "43454d6d223a8637856121b193ca932d30e5f5ea9b43e3e5c1ee218dbdfe5037",
+    "head": "cc677f6f4febc4ffaffc378aac2aea51a796be89"
+  },
+  "dispatch": {
+    "base_commit": "2d7279901ce4d23cdffc92347b5ed76fa7940377",
+    "brief_sha256": null
+  },
+  "models": {
+    "author": "anthropic/claude-opus-5.5",
+    "verifier": "openai/gpt-6-luna"
+  },
+  "verdict": "accepted",
+  "checks": [
+    {
+      "id": "C01",
+      "description": "Attempt 3: verified all 81 freeze manifest entries against commit cc677f6f4febc4ffaffc378aac2aea51a796be89. Every path, Git object, mode, type, and SHA-256 matched; commit tree 63c91885445d7f57d8ef442db79f87f45fc649a3 and manifest digest 43454d6d223a8637856121b193ca932d30e5f5ea9b43e3e5c1ee218dbdfe5037 matched. patch_sha256 is null in the freeze record.",
+      "classification": "executed"
+    },
+    {
+      "id": "C02",
+      "description": "Required toolchain: PATH included the Cargo bin directory; cargo --version reported cargo 1.95.0 (f2d3ce0bd 2026-03-21).",
+      "classification": "executed"
+    },
+    {
+      "id": "C03",
+      "description": "Clean scratch clone host gate: cargo xtask gate slice-1 --record <private run record>. macOS/aarch64, frozen commit, clean tree, rustc 1.95.0; fmt, Clippy, tests, guard, cargo deny, cargo audit, and Charter safety passed. Result green; 48 passed, 0 failed, 0 ignored. Each gate build step used a distinct target directory under /tmp/holden-mcp-qa1a3-target-host-final.",
+      "classification": "executed"
+    },
+    {
+      "id": "C04",
+      "description": "charter check --strict: charter: ok. It emitted only the existing slice-0 no-cost-row warning.",
+      "classification": "executed"
+    },
+    {
+      "id": "C05",
+      "description": "Clean frozen scratch clone Linux reopen: HOLDEN_VM_ADDR=192.168.64.10 cargo xtask gate slice-1 --linux-vm with tart absent from PATH. Linux/aarch64; fmt, Clippy, and tests passed; guard declared cargo-deny, cargo-audit, and Charter absent, and host gate covered those checks. Result green_with_declared_limitations; 48 passed, 0 failed, 0 ignored. Test names and counts matched the host exactly. seal_fixed_vector passed on both systems and asserts plan_commit bytes 2d368c47d0cdb02515b2225e1509a885844309a504f6c2109b5e525f014b8bb5. VM target directories were verified under /tmp/holden-mcp-qa1a3-target-vm.",
+      "classification": "executed"
+    },
+    {
+      "id": "C06",
+      "description": "M1: removed AAD from plan_commit in an isolated scratch clone; commit_binds_aad failed with mismatched commit bytes. Mutation was discarded.",
+      "classification": "executed"
+    },
+    {
+      "id": "C07",
+      "description": "M2: replaced authenticated decryption with raw XChaCha20 stream decryption that discards the Poly1305 tag. tampered_ciphertext_is_refused failed (PlanMalformed returned where TagRefused was required). Mutation was discarded.",
+      "classification": "executed"
+    },
+    {
+      "id": "C08",
+      "description": "M3: derived parameters as SHA-256(plan_commit || evaluated_commit), without the VRF secret. params_require_server_secret failed because different server keys produced identical parameters. Mutation was discarded.",
+      "classification": "executed"
+    },
+    {
+      "id": "C09",
+      "description": "M4: changed nonce open() to accept any nonce. uncommitted_nonce_is_refused failed with Ok(()) instead of NonceNotCommitted. Mutation was discarded.",
+      "classification": "executed"
+    },
+    {
+      "id": "C10",
+      "description": "M5: disabled the group/world mode check in key loading. world_readable_key_is_refused failed because an insecure key loaded successfully. Mutation was discarded.",
+      "classification": "executed"
+    },
+    {
+      "id": "C11",
+      "description": "M6: made resolve_addr ignore HOLDEN_VM_ADDR. vm_addr_override_skips_tart failed; a real cargo xtask gate slice-1 --linux-vm run with tart absent from PATH and HOLDEN_VM_ADDR set exited 1, refusing because tart ip returned no address. Mutation was discarded. The baseline VM gate above then passed.",
+      "classification": "executed"
+    },
+    {
+      "id": "C12",
+      "description": "Independent verifier P3 mutant: omitted evaluated_commit from the VRF transcript. params_depend_on_evaluated_commit failed. Mutation was discarded.",
+      "classification": "executed"
+    },
+    {
+      "id": "C13",
+      "description": "After mutant runs, reran cargo test --locked --workspace on the clean frozen scratch clone with its own target directory; all 48 tests passed. The earlier complete host gate also passed on the frozen bytes.",
+      "classification": "executed"
+    }
+  ],
+  "defects": [],
+  "new_defects": [],
+  "proofs_reopened": ["1", "2", "3", "4", "5", "6"]
+}

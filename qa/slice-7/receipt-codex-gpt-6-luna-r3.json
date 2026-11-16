@@ -1,0 +1,93 @@
+{
+  "schema_version": "charter.receipt/1",
+  "slice": "slice-7",
+  "verifies": "slice-7 independent re-verification of frozen bytes",
+  "candidate_commit": "376599def3b19f4ac7d24e13f56fc3eb6e98ff0c",
+  "frozen": {
+    "manifest_sha256": "452528ae352cf14b415c3c4bd3b0b609151bf009949a1db91a508e78fb61f03d",
+    "head": "376599def3b19f4ac7d24e13f56fc3eb6e98ff0c"
+  },
+  "dispatch": {
+    "base_commit": "b875d96c0d2d1e3615cc313b13f593697b5280ff",
+    "brief_sha256": null
+  },
+  "models": {
+    "author": "anthropic/claude-opus-5.5",
+    "verifier": "openai/gpt-6-luna"
+  },
+  "verdict": "accepted",
+  "checks": [
+    {
+      "id": "C01",
+      "description": "Frozen input identity: checkout HEAD equals the freeze record head, the freeze record manifest SHA-256 is 452528ae352cf14b415c3c4bd3b0b609151bf009949a1db91a508e78fb61f03d, and charter/DONE/slice-7.md SHA-256 equals dispatch.done_sha256 6fc7a2c5b198c4ab9ef13343385c938ea51d79f703e119094a36dd24cece20df.",
+      "classification": "executed"
+    },
+    {
+      "id": "C02",
+      "description": "Required toolchain: PATH included the Cargo bin directory; cargo --version reported 1.95.0 (f2d3ce0bd 2026-03-21). Cargo runs used distinct CARGO_TARGET_DIR values under /tmp/holden-mcp-codex7-*.",
+      "classification": "executed"
+    },
+    {
+      "id": "C03",
+      "description": "Host gate: cargo xtask gate slice-7 at the frozen HEAD on macOS/aarch64, with an isolated AGENT_PRIVATE_ROOT and the required read-only real-repo seed. Green. Formatting, Clippy, all 182 tests, replay of 37 records, verification of 12 ledgers, selftest (5/5 fail-without mutants caught), and all host guard checks passed. The test run record was saved under the isolated root.",
+      "classification": "executed"
+    },
+    {
+      "id": "C04",
+      "description": "Linux gate: the required perl alarm wrapper ran HOLDEN_VM_ADDR=192.168.64.10 cargo xtask gate slice-7 --linux-vm, with the isolated private root forwarded and the same seed staged on the VM. Linux/aarch64 gate result green_with_declared_limitations: 184 passed, 0 failed, 0 ignored; formatting, Clippy, replay (37 records), ledger verification (12 ledgers), selftest (5/5 catches), and guest guard passed. Guest limitations were cargo_deny_absent, cargo_audit_absent, and charter_absent; the host gate covered those tools. The wrapper's raw-array comparison reports names/counts non-identical (182 host / 184 Linux); the separately reopened name sets match exactly the declared asymmetry in C10.",
+      "classification": "executed"
+    },
+    {
+      "id": "C05",
+      "description": "P1 reopened: installs_expected_files, no_sealed_bytes_in_host, and embed_is_idempotent passed in the host gate. In the scratch worktree, the sealed-plan-into-.holden mutant made tests::no_sealed_bytes_in_host RED; restoring the source made that exact test GREEN (1 passed).",
+      "classification": "executed"
+    },
+    {
+      "id": "C06",
+      "description": "P2 reopened: host_implementer_cannot_reveal passed in the host gate. In the scratch worktree, changing the embedded implementer server role mapping to evaluator made tests::host_implementer_cannot_reveal RED at the role assertion; restoring the source made that exact test GREEN (1 passed). Two preliminary role edits did not affect the embedded role map and were not counted as mutant evidence.",
+      "classification": "executed"
+    },
+    {
+      "id": "C07",
+      "description": "P3 reopened: post_commit_runs_jit_holdout and consecutive_commits_get_different_params passed in the full host gate. The latter test made two real commits and reopened the recorded runs. In the scratch worktree, a JIT trace mutant that reused the prior trace parameters for the same plan made tests::consecutive_commits_get_different_params RED at its parameter inequality assertion; restoring the source made that exact test GREEN (1 passed).",
+      "classification": "executed"
+    },
+    {
+      "id": "C08",
+      "description": "P4 reopened: agent_signed_approval_is_refused passed in the host gate and as a targeted test. A scratch mutant that accepted the approval's signer key made tests::agent_signed_approval_is_refused RED with 'an agent-signed approval was admitted'; restoring the source made it GREEN (1 passed). An independent Rust verifier read only the published owner.pub and the four public demo approval JSON files; all 4/4 Ed25519 signatures verified over the domain, cognition ID, and promise ID. No private key was read or used.",
+      "classification": "executed"
+    },
+    {
+      "id": "C09",
+      "description": "P5 reopened: sealed_read_is_denied and block_reachable_when_bounds_met passed in the host gate and as targeted tests. In the scratch worktree, removing the macOS product read denial and parent-read self-check denial made both named tests RED; restoring the profile made sealed_read_is_denied GREEN (1 passed) and block_reachable_when_bounds_met GREEN (1 passed).",
+      "classification": "executed"
+    },
+    {
+      "id": "C10",
+      "description": "Declared host/VM test-name asymmetry verified from both gate run records, with status suffixes removed: host-only exactly holden-cli::tests::readme_quickstart_leads_to_green_check; Linux-only exactly holden-embed::tests::non_tty_caller_cannot_approve, holden-seal::linux::tests::sealed_roundtrip_uses_argon2id_and_xchacha20poly1305, and holden-seal::linux::tests::unseal_requires_interactive_tty. No other names differed.",
+      "classification": "executed"
+    },
+    {
+      "id": "C11",
+      "description": "Reopen attestation independently verified: charter.reopen/1 binds slice-7, HEAD 376599def3b19f4ac7d24e13f56fc3eb6e98ff0c, manifest SHA-256 452528ae352cf14b415c3c4bd3b0b609151bf009949a1db91a508e78fb61f03d, and the unchanged pinned DONE hash; all proofs 1-5 reference evidence SHA-256 abc115af1ff331f551b0d7c0394dc0ac47490d5149dd37142e50f14b690a3ea9. The evidence file hashes to that value and contains the two named gate records; both record commit 376599def3b19f4ac7d24e13f56fc3eb6e98ff0c with results green and green_with_declared_limitations. D1 is closed.",
+      "classification": "executed"
+    }
+  ],
+  "defects": [
+    {
+      "id": "D1",
+      "severity": "medium",
+      "title": "Reopen attestation is stale for the re-frozen manifest",
+      "status": "closed",
+      "evidence": "The earlier stale-attestation finding is closed: the read-only root now contains a slice-7 reopen attestation bound to manifest SHA-256 452528ae352cf14b415c3c4bd3b0b609151bf009949a1db91a508e78fb61f03d and evidence SHA-256 abc115af1ff331f551b0d7c0394dc0ac47490d5149dd37142e50f14b690a3ea9; independent hash and run-record checks confirm both gate records name the frozen commit and report green / green_with_declared_limitations."
+    }
+  ],
+  "new_defects": [],
+  "proofs_reopened": [
+    "P1: expected files, sealed-byte exclusion, and idempotence passed; sealed-plan mutant was RED and restored test GREEN.",
+    "P2: implementer cannot reveal passed; evaluator-role mutant was RED and restored test GREEN.",
+    "P3: post-commit JIT and consecutive-commit parameter tests passed; prior-trace-parameter mutant was RED and restored test GREEN.",
+    "P4: agent approval refusal passed; signer-trust mutant was RED and restored test GREEN; all four demo approvals verified against owner.pub.",
+    "P5: sealed read denied and block reachability passed; read-confinement mutant made both tests RED and restored tests GREEN."
+  ]
+}

@@ -1,0 +1,2627 @@
+registry_meta:
+  name: holdout_skill_schema_registry
+  version: 2.3.0
+  status: canonical
+  source: holdout_skill_spec_v2_3_0.md
+  notes:
+  - Single source of truth for artifact schemas, input schemas, enum definitions,
+    taxonomy codes, gate names, and discriminator rules
+  - Rendered as YAML for portability; teams may materialize equivalent JSON Schema
+    or other registry formats
+  - Nested object schemas are normative in this version; top-level required-field
+    inventories alone are insufficient
+  - "Optional (REQ-123, SHOULD). evidence_refs entries should be content-pinned
+    as 'sha256:<64hex>:<ref>' so cited evidence cannot be swapped after the
+    fact; a plain unpinned ref remains legal for genuinely ephemeral evidence
+    when it carries an inline '# unpinned: <reason>' comment."
+artifact_type_enum:
+- evaluation_batch
+- encounter_profile
+- scenario
+- scenario_run
+- observation
+- finding
+- regression_anchor
+- waiver
+- gate_result
+- claim_registry
+- praise_signal
+- evidence_manifest
+- metrics_snapshot
+- evaluation_summary
+- builder_packet
+- rendered_work_order
+- canary_suite_result
+- mirror_suite_result
+- coverage_diff
+- drift_report
+- mutation_report
+- topology_spec
+- lattice
+common_enums:
+  status:
+  - draft
+  - active
+  - superseded
+  - archived
+  redaction_status:
+  - none
+  - partial
+  - full
+  retention_class:
+  - ephemeral
+  - standard
+  - audit
+  - legal_hold
+  severity_tier:
+  - release_blocker
+  - supplemental
+  - exploratory
+  confidence:
+  - high
+  - medium
+  - low
+  - contested
+  product_class:
+  - infrastructure_primitive
+  - consumer_application
+  - regulated_workflow
+  - agent_tool_surface
+  - hybrid
+  model_tier:
+  - frontier
+  - strong
+  - mid
+  - quantized
+  mind_type:
+  - human
+  - ai_agent
+  handoff_pattern:
+  - human_to_agent
+  - agent_to_human
+  - agent_to_agent
+  - none
+  side_effect_class:
+  - none
+  - read_only
+  - reversible
+  - irreversible
+  execution_safety_mode:
+  - sandbox
+  - staging
+  - production_read_only
+  - production_write
+  run_outcome:
+  - pass
+  - fail
+  - partial
+  - blocked
+  - degraded
+  - inconclusive
+  - unsafe_success
+  step_status:
+  - pass
+  - fail
+  - partial
+  - blocked
+  - skipped
+  - degraded
+  gate_status:
+  - pass
+  - warn
+  - fail
+  gate_tier:
+  - 0
+  - 1
+  - 2
+  - 3
+  flake_classification:
+  - none
+  - transient
+  - environment
+  - nondeterministic
+  determinism_level:
+  - deterministic
+  - mostly_deterministic
+  - stochastic
+  control_type:
+  - normal
+  - negative_control
+  - mirror
+  - canary
+  - mutation
+  fix_class:
+  - trivial
+  - moderate
+  - significant
+  - architectural
+  coordination_pattern:
+  - sequential
+  - parallel
+  - pipeline
+  - tree
+  - mesh
+  - custom
+  consistency_model:
+  - strong
+  - eventual
+  - none
+  coverage_ring:
+  - ring_1
+  - ring_2
+  - ring_3
+  phase:
+  - phase_0
+  - phase_1
+  - phase_2
+  - phase_3
+  trust_axis:
+  - instruction_authority
+  - evidence_reliability
+  - side_effect_authority
+  change_class:
+  - docs
+  - schema
+  - runtime_logic
+  - provider_adapter
+  - approval_policy
+  - topology_orchestration
+  evaluation_verdict:
+  - pass
+  - fail
+  - pass_with_waivers
+  - incomplete
+  pii_risk:
+  - none
+  - low
+  - medium
+  - high
+  invocation_mode:
+  - core_invocation
+  - exploratory_invocation
+artifact_meta_required:
+- artifact_id
+- artifact_type
+- schema_version
+- status
+- created_at
+- updated_at
+- created_by
+- git_sha
+- trace_id
+- redaction_status
+- retention_class
+artifact_meta_schema:
+  type: object
+  required:
+  - artifact_id
+  - artifact_type
+  - schema_version
+  - status
+  - created_at
+  - updated_at
+  - created_by
+  - git_sha
+  - trace_id
+  - redaction_status
+  - retention_class
+  properties:
+    artifact_id:
+      type: string
+    artifact_type:
+      enum_ref: artifact_type_enum
+    schema_version:
+      type: string
+    status:
+      enum_ref: common_enums.status
+    created_at:
+      type: string
+      format: date-time
+    updated_at:
+      type: string
+      format: date-time
+    created_by:
+      type: string
+    git_sha:
+      type: string
+    trace_id:
+      type: string
+    redaction_status:
+      enum_ref: common_enums.redaction_status
+    retention_class:
+      enum_ref: common_enums.retention_class
+input_schemas:
+  product_class_config:
+    type: object
+    required:
+    - default
+    properties:
+      default:
+        enum_ref: common_enums.product_class
+      overrides:
+        type: array
+        items_ref: product_class_override
+  orchestration_integration:
+    type: object
+    required:
+    - system_name
+    - system_version
+    - work_order_types
+    - available_tools
+    - available_skills
+    - skill_invocation_syntax
+    - agent_task_packet_format
+    - agent_completion_packet_format
+    - artifact_storage_root
+    - work_order_storage_root
+    - naming_conventions
+    - on_finding_created
+    - on_blocker_found
+    - on_gate_failed
+    - on_waiver_expiring
+    - on_praise_signal
+    - memory_update_commands
+    - state_persistence_path
+    - ci_gate_command
+    - merge_gate_integration
+    - operator_notification_channel
+    - operator_approval_mechanism
+    properties:
+      system_name:
+        type: string
+      system_version:
+        type: string
+      work_order_types:
+        type: array
+        items_ref: work_order_type
+      available_tools:
+        type: array
+        items:
+          type: string
+      available_skills:
+        type: array
+        items:
+          type: string
+      skill_invocation_syntax:
+        type: string
+      agent_task_packet_format:
+        type: string
+      agent_completion_packet_format:
+        type: string
+      artifact_storage_root:
+        type: string
+      work_order_storage_root:
+        type: string
+      naming_conventions:
+        type: object
+      on_finding_created:
+        type: array
+        items:
+          type: string
+      on_blocker_found:
+        type: array
+        items:
+          type: string
+      on_gate_failed:
+        type: array
+        items:
+          type: string
+      on_waiver_expiring:
+        type: array
+        items:
+          type: string
+      on_praise_signal:
+        type: array
+        items:
+          type: string
+      memory_update_commands:
+        type: array
+        items:
+          type: string
+      state_persistence_path:
+        type: string
+      ci_gate_command:
+        type: string
+      merge_gate_integration:
+        type: string
+      operator_notification_channel:
+        type: string
+      operator_approval_mechanism:
+        type: string
+  manual_operator_profile:
+    type: object
+    required:
+    - system_name
+    - system_version
+    - artifact_storage_root
+    - operator_notification_channel
+    - operator_approval_mechanism
+    properties:
+      system_name:
+        const: manual_operator
+      system_version:
+        type: string
+      work_order_types:
+        type: array
+        items:
+          type: string
+      available_tools:
+        type: array
+        items:
+          type: string
+      available_skills:
+        type: array
+        items:
+          type: string
+      skill_invocation_syntax:
+        const: direct_manual_invocation
+      agent_task_packet_format:
+        const: none
+      agent_completion_packet_format:
+        const: none
+      artifact_storage_root:
+        type: string
+      work_order_storage_root:
+        const: none
+      naming_conventions:
+        type: object
+      on_finding_created:
+        type: array
+        items:
+          type: string
+      on_blocker_found:
+        type: array
+        items:
+          type: string
+      on_gate_failed:
+        type: array
+        items:
+          type: string
+      on_waiver_expiring:
+        type: array
+        items:
+          type: string
+      on_praise_signal:
+        type: array
+        items:
+          type: string
+      memory_update_commands:
+        type: array
+        items:
+          type: string
+      state_persistence_path:
+        type: string
+      ci_gate_command:
+        type: string
+      merge_gate_integration:
+        const: none
+      operator_notification_channel:
+        type: string
+      operator_approval_mechanism:
+        const: manual
+  evaluation_invocation:
+    type: object
+    required:
+    - invocation_mode
+    - target_system
+    - encounter_profile_ids
+    properties:
+      invocation_mode:
+        enum_ref: common_enums.invocation_mode
+      target_system:
+        type: string
+      product_class_config:
+        ref: input_schemas.product_class_config
+      orchestration_integration:
+        ref: input_schemas.orchestration_integration
+      manual_operator_profile:
+        ref: input_schemas.manual_operator_profile
+      encounter_profile_ids:
+        type: array
+        items:
+          type: string
+      schema_registry_version:
+        type: string
+compound_schemas:
+  product_class_override:
+    type: object
+    required:
+    - subsystem
+    - product_class
+    properties:
+      subsystem:
+        type: string
+      product_class:
+        enum_ref: common_enums.product_class
+  output_budget:
+    type: object
+    required:
+    - max_blockers
+    - max_supplementals
+    - min_negative_controls
+    - min_mirrors
+    - min_praise
+    - max_hidden_waivers
+    properties:
+      max_blockers:
+        type: integer
+      max_supplementals:
+        type: integer
+      min_negative_controls:
+        type: integer
+      min_mirrors:
+        type: integer
+      min_praise:
+        type: integer
+      max_hidden_waivers:
+        const: 0
+  actual_artifact_refs:
+    type: object
+    required:
+    - scenario_run_ids
+    - observation_ids
+    - finding_ids
+    - regression_anchor_ids
+    - waiver_ids
+    - praise_ids
+    - gate_result_ids
+    - builder_packet_ids
+    properties:
+      scenario_run_ids:
+        type: array
+        items:
+          type: string
+      observation_ids:
+        type: array
+        items:
+          type: string
+      finding_ids:
+        type: array
+        items:
+          type: string
+      regression_anchor_ids:
+        type: array
+        items:
+          type: string
+      waiver_ids:
+        type: array
+        items:
+          type: string
+      praise_ids:
+        type: array
+        items:
+          type: string
+      gate_result_ids:
+        type: array
+        items:
+          type: string
+      builder_packet_ids:
+        type: array
+        items:
+          type: string
+  batch_counts:
+    type: object
+    required:
+    - blocker_count
+    - supplemental_count
+    - exploratory_count
+    - negative_control_count
+    - mirror_count
+    - praise_count
+    - waiver_count
+    - hidden_waiver_count
+    properties:
+      blocker_count:
+        type: integer
+      supplemental_count:
+        type: integer
+      exploratory_count:
+        type: integer
+      negative_control_count:
+        type: integer
+      mirror_count:
+        type: integer
+      praise_count:
+        type: integer
+      waiver_count:
+        type: integer
+      hidden_waiver_count:
+        type: integer
+  phase_completion:
+    type: object
+    required:
+    - phase_0
+    - phase_1
+    - phase_2
+    - phase_3
+    properties:
+      phase_0:
+        type: boolean
+      phase_1:
+        type: boolean
+      phase_2:
+        type: boolean
+      phase_3:
+        type: boolean
+  value_hypothesis:
+    type: object
+    required:
+    - beneficiary
+    - value_claim
+    - failure_cost
+    - kill_condition
+    properties:
+      beneficiary:
+        type: string
+      value_claim:
+        type: string
+      failure_cost:
+        type: string
+      kill_condition:
+        type: string
+  scenario_step:
+    type: object
+    required:
+    - step_id
+    - action
+    - expected_signal
+    properties:
+      step_id:
+        type: string
+      action:
+        type: string
+      expected_signal:
+        type: string
+  scenario_run_environment:
+    type: object
+    required:
+    - model
+    - provider
+    - model_tier
+    - host_os
+    - network
+    properties:
+      model:
+        type: string
+      provider:
+        type: string
+      model_tier:
+        enum_ref: common_enums.model_tier
+      host_os:
+        type: string
+      network:
+        type: string
+  raw_outcome_item:
+    type: object
+    required:
+    - step_id
+    - observed
+    - expected
+    - step_status
+    properties:
+      step_id:
+        type: string
+      observed:
+        type: string
+      expected:
+        type: string
+      step_status:
+        enum_ref: common_enums.step_status
+  failing_check:
+    type: object
+    required:
+    - check_id
+    - message
+    - refs
+    properties:
+      check_id:
+        type: string
+      message:
+        type: string
+      refs:
+        type: array
+        items:
+          type: string
+  claim_registry_claim:
+    type: object
+    required:
+    - claim_id
+    - text
+    - source_ref
+    - claim_type
+    - strength
+    - surface
+    - falsification_scenario_ids
+    - status
+    properties:
+      claim_id:
+        type: string
+      text:
+        type: string
+      source_ref:
+        type: string
+      claim_type:
+        enum:
+        - guarantee
+        - non_claim
+        - recovery_path
+        - boundary
+        - performance
+        - marketing
+        - safety
+      strength:
+        enum:
+        - absolute
+        - qualified
+        - aspirational
+      surface:
+        enum:
+        - docs
+        - ui
+        - api
+        - schema
+        - marketing
+        - error_message
+      falsification_scenario_ids:
+        type: array
+        items:
+          type: string
+      status:
+        enum:
+        - active
+        - falsified
+        - superseded
+        - qualified
+      revalidation_trigger:
+        type: string
+        description: Optional (REQ-121, SHOULD). Names the event that re-runs this claim's falsification test, so point-in-time claims do not rot silently as surfaces grow.
+  evidence_file:
+    type: object
+    required:
+    - path
+    - content_type
+    - sha256
+    - redaction_status
+    properties:
+      path:
+        type: string
+      content_type:
+        type: string
+      sha256:
+        type: string
+      step_ref:
+        type: string
+      redaction_status:
+        enum_ref: common_enums.redaction_status
+  metric_item:
+    type: object
+    required:
+    - metric_id
+    - value
+    - threshold
+    - pass
+    properties:
+      metric_id:
+        type: string
+      value:
+        type: number
+      threshold:
+        type: number
+      pass:
+        type: boolean
+  research_guidance:
+    type: object
+    required:
+    - problem_statement
+    - proposed_approach
+    - alternatives_to_evaluate
+    - acceptance_shape
+    - kill_condition
+    properties:
+      problem_statement:
+        type: string
+      proposed_approach:
+        type: string
+      alternatives_to_evaluate:
+        type: array
+        items:
+          type: string
+      acceptance_shape:
+        type: string
+      kill_condition:
+        type: string
+  fix_spec:
+    type: object
+    required:
+    - target_subsystems
+    - target_files
+    - fix_class
+    - preserve_signals
+    - non_goals
+    - required_gates
+    - required_anchors
+    - approval_boundary
+    properties:
+      target_subsystems:
+        type: array
+        items:
+          type: string
+      target_files:
+        type: array
+        items:
+          type: string
+      fix_class:
+        enum_ref: common_enums.fix_class
+      preserve_signals:
+        type: array
+        items:
+          type: string
+      non_goals:
+        type: array
+        items:
+          type: string
+      required_gates:
+        type: array
+        items:
+          type: string
+      required_anchors:
+        type: array
+        items:
+          type: string
+      approval_boundary:
+        type: string
+  failure_chain_item:
+    type: object
+    required:
+    - code
+    - role
+    - explanation
+    properties:
+      code:
+        type: string
+      role:
+        enum:
+        - root
+        - intermediate
+        - terminal
+      explanation:
+        type: string
+  regulatory_ref:
+    type: object
+    required:
+    - framework
+    - section
+    - user_impact
+    properties:
+      framework:
+        type: string
+      section:
+        type: string
+      user_impact:
+        type: string
+  coverage_summary:
+    type: object
+    required:
+    - dimensions_covered
+    - dimensions_uncovered
+    properties:
+      dimensions_covered:
+        type: array
+        items:
+          type: string
+      dimensions_uncovered:
+        type: array
+        items:
+          type: string
+  calibration_summary:
+    type: object
+    properties:
+      canary_detection_rate:
+        type: number
+      mirror_false_alarm_rate:
+        type: number
+      mutation_detection_rate:
+        type: number
+  canary_fault:
+    type: object
+    required:
+    - fault_id
+    - description
+    - expected_detection
+    - detected
+    properties:
+      fault_id:
+        type: string
+      description:
+        type: string
+      expected_detection:
+        const: true
+      detected:
+        type: boolean
+      detecting_gate:
+        type: string
+  mirror_false_alarm:
+    type: object
+    required:
+    - scenario_id
+    - spurious_finding
+    - severity_if_real
+    properties:
+      scenario_id:
+        type: string
+      spurious_finding:
+        type: string
+      severity_if_real:
+        type: string
+  coverage_dimension_entry:
+    type: object
+    required:
+    - dimension
+    - baseline_coverage
+    - current_coverage
+    - delta
+    properties:
+      dimension:
+        type: string
+      baseline_coverage:
+        type: number
+      current_coverage:
+        type: number
+      delta:
+        type: number
+  coverage_surface_entry:
+    type: object
+    required:
+    - surface
+    - constituency
+    - risk_level
+    properties:
+      surface:
+        type: string
+      constituency:
+        type: string
+      risk_level:
+        type: string
+  drift_window:
+    type: object
+    required:
+    - from
+    - to
+    properties:
+      from:
+        type: string
+        format: date-time
+      to:
+        type: string
+        format: date-time
+  drift_source:
+    type: object
+    required:
+    - source
+    - description
+    - affected_scenarios
+    - severity
+    properties:
+      source:
+        enum:
+        - provider_change
+        - model_version
+        - schema_change
+        - docs_change
+        - config_change
+        - time_decay
+      description:
+        type: string
+      affected_scenarios:
+        type: array
+        items:
+          type: string
+      severity:
+        type: string
+  behavioral_delta:
+    type: object
+    required:
+    - scenario_id
+    - previous_outcome
+    - current_outcome
+    - delta_type
+    properties:
+      scenario_id:
+        type: string
+      previous_outcome:
+        type: string
+      current_outcome:
+        type: string
+      delta_type:
+        enum:
+        - regression
+        - improvement
+        - flake_change
+        - new_failure
+  mutation_seed:
+    type: object
+    required:
+    - mutation_id
+    - mutation_type
+    - description
+    - detected
+    - detecting_mechanism
+    properties:
+      mutation_id:
+        type: string
+      mutation_type:
+        enum:
+        - missing_trace_id
+        - missing_remediation
+        - hidden_state
+        - schema_ambiguity
+        - semantic_wrong
+        - removed_checkpoint
+        - dangling_reference
+      description:
+        type: string
+      detected:
+        type: boolean
+      detecting_mechanism:
+        type: string
+  topology_agent:
+    type: object
+    required:
+    - agent_id
+    - role
+    - model_tier
+    - approval_boundary
+    - allowed_side_effects
+    - receives_from
+    - sends_to
+    properties:
+      agent_id:
+        type: string
+      role:
+        enum:
+        - planner
+        - worker
+        - reviewer
+        - monitor
+        - orchestrator
+        - router
+      model_tier:
+        enum_ref: common_enums.model_tier
+      approval_boundary:
+        type: string
+      allowed_side_effects:
+        type: array
+        items:
+          type: string
+      receives_from:
+        type: array
+        items:
+          type: string
+      sends_to:
+        type: array
+        items:
+          type: string
+  topology_checkpoint:
+    type: object
+    required:
+    - checkpoint_id
+    - between
+    - approval_required
+    - escalation_path
+    properties:
+      checkpoint_id:
+        type: string
+      between:
+        type: array
+        items:
+          type: string
+      approval_required:
+        type: boolean
+      escalation_path:
+        type: string
+  topology_shared_state:
+    type: object
+    required:
+    - state_id
+    - owners
+    - readers
+    - consistency_model
+    properties:
+      state_id:
+        type: string
+      owners:
+        type: array
+        items:
+          type: string
+      readers:
+        type: array
+        items:
+          type: string
+      consistency_model:
+        enum_ref: common_enums.consistency_model
+  topology_side_effect_surface:
+    type: object
+    required:
+    - surface_id
+    - type
+    - reversible
+    - authority
+    properties:
+      surface_id:
+        type: string
+      type:
+        enum:
+        - filesystem
+        - api_call
+        - database
+        - external_service
+        - payment
+        - notification
+      reversible:
+        type: boolean
+      authority:
+        type: array
+        items:
+          type: string
+  work_order_type:
+    type: object
+    required:
+    - type
+    - template_path
+    - output_directory
+    - naming_pattern
+    - required_front_matter
+    - required_sections
+    properties:
+      type:
+        type: string
+      template_path:
+        type: string
+      output_directory:
+        type: string
+      naming_pattern:
+        type: string
+      required_front_matter:
+        type: array
+        items_ref: front_matter_field
+      required_sections:
+        type: array
+        items:
+          type: string
+  front_matter_field:
+    type: object
+    required:
+    - field
+    - source
+    properties:
+      field:
+        type: string
+      source:
+        type: string
+  lattice_meta:
+    type: object
+    required:
+    - source_agent
+    - source_task
+    - compacted_at
+    - node_count
+    - edge_count
+    - evidence_count
+    - schema_registry_version
+    properties:
+      source_agent:
+        type: string
+      source_task:
+        type: string
+      research_lines:
+        type:
+        - integer
+        - string
+      compacted_at:
+        type: string
+        format: date-time
+      node_count:
+        type: integer
+      edge_count:
+        type: integer
+      evidence_count:
+        type: integer
+      tension_count:
+        type: integer
+      gap_count:
+        type: integer
+      recommendation_count:
+        type: integer
+      schema_registry_version:
+        type: string
+        description: Must match the schema registry version in use for the lattice being produced.
+  compactor_provenance:
+    type: object
+    required:
+    - prompt_version
+    - model
+    - provider
+    properties:
+      prompt_version:
+        type: string
+      model:
+        type: string
+      provider:
+        type: string
+      temperature:
+        type: number
+      retry_count:
+        type: integer
+      validator_version:
+        type: string
+  lattice_domain:
+    type: object
+    required:
+    - id
+    - name
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+  claim_scope:
+    type: object
+    properties:
+      jurisdiction:
+        type: string
+      population:
+        type: string
+      system_version:
+        type: string
+      conditions:
+        type: string
+  lattice_claim:
+    type: object
+    required:
+    - id
+    - stable_id
+    - claim
+    - domain
+    - type
+    - confidence
+    - priority
+    - sources
+    - tags
+    properties:
+      id:
+        type: string
+      stable_id:
+        type: string
+      claim:
+        type: string
+      domain:
+        type: string
+      type:
+        enum:
+        - factual
+        - causal
+        - prescriptive
+        - definitional
+        - comparative
+        - conditional
+      confidence:
+        enum:
+        - high
+        - medium
+        - low
+        - contested
+      priority:
+        enum:
+        - critical
+        - high
+        - medium
+        - low
+      sources:
+        type: array
+        items:
+          type: string
+      tags:
+        type: array
+        items:
+          type: string
+      scope:
+        ref: compound_schemas.claim_scope
+  lattice_edge:
+    type: object
+    required:
+    - id
+    - from
+    - to
+    - type
+    - strength
+    properties:
+      id:
+        type: string
+      from:
+        type: string
+      to:
+        type: string
+      type:
+        enum:
+        - causes
+        - enables
+        - prevents
+        - contradicts
+        - refines
+        - depends_on
+        - exemplifies
+        - derives_from
+        - tensions_with
+        - supersedes
+        - requires
+        - contains
+      strength:
+        enum:
+        - strong
+        - moderate
+        - weak
+        - hypothesized
+      note:
+        type: string
+  lattice_evidence:
+    type: object
+    required:
+    - id
+    - type
+    - content
+    - source
+    properties:
+      id:
+        type: string
+      type:
+        enum:
+        - specification_reference
+        - citation
+        - data_point
+        - empirical
+        - expert_opinion
+        - logical_derivation
+      content:
+        type: string
+      source:
+        type: string
+      freshness:
+        enum:
+        - current
+        - recent
+        - dated
+        - historical
+      tier:
+        enum:
+        - primary
+        - secondary
+        - tertiary
+  lattice_tension:
+    type: object
+    required:
+    - id
+    - claims
+    - nature
+    - description
+    properties:
+      id:
+        type: string
+      claims:
+        type: array
+        items:
+          type: string
+        minItems: 2
+      nature:
+        enum:
+        - contradiction
+        - scope_disagreement
+        - emphasis_difference
+        - unresolved_question
+        - definitional_conflict
+      description:
+        type: string
+      evidence:
+        type: array
+        items:
+          type: string
+      resolution_hint:
+        type: string
+      resolution_strategy:
+        enum:
+        - needs_definition
+        - needs_scope
+        - needs_new_source
+        - needs_experiment
+        - productive_tension
+  lattice_gap:
+    type: object
+    required:
+    - id
+    - description
+    properties:
+      id:
+        type: string
+      description:
+        type: string
+      why_it_matters:
+        type: string
+      suggested_source:
+        type: string
+  lattice_recommendation:
+    type: object
+    required:
+    - id
+    - recommendation
+    - rationale_claims
+    - priority
+    - effort
+    properties:
+      id:
+        type: string
+      recommendation:
+        type: string
+      rationale_claims:
+        type: array
+        items:
+          type: string
+      requirement_refs:
+        type: array
+        items:
+          type: string
+      priority:
+        enum:
+        - critical
+        - high
+        - medium
+        - low
+      effort:
+        enum:
+        - trivial
+        - moderate
+        - significant
+        - architectural
+      target_section:
+        type: string
+artifacts:
+  evaluation_batch:
+    type: object
+    required:
+    - artifact_meta
+    - batch_id
+    - target_system
+    - change_class
+    - product_class_config
+    - active_taxonomy_subset
+    - ring_activation
+    - constituencies_in_scope
+    - trust_axes_in_scope
+    - encounter_profile_ids
+    - schema_registry_version
+    - output_budget
+    - planned_scenario_ids
+    - actual_artifact_refs
+    - counts
+    - phase_completion
+    - verdict
+    - verdict_rationale
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      batch_id:
+        type: string
+      target_system:
+        type: string
+      change_class:
+        enum_ref: common_enums.change_class
+      product_class_config:
+        ref: input_schemas.product_class_config
+      active_taxonomy_subset:
+        type: array
+        items:
+          type: string
+      ring_activation:
+        enum_ref: common_enums.coverage_ring
+      constituencies_in_scope:
+        type: array
+        items:
+          enum:
+          - human
+          - agent
+          - seam
+      trust_axes_in_scope:
+        type: array
+        items:
+          enum_ref: common_enums.trust_axis
+      encounter_profile_ids:
+        type: array
+        items:
+          type: string
+      schema_registry_version:
+        type: string
+      orchestration_integration_ref:
+        type: string
+      output_budget:
+        ref: compound_schemas.output_budget
+      planned_scenario_ids:
+        type: array
+        items:
+          type: string
+      actual_artifact_refs:
+        ref: compound_schemas.actual_artifact_refs
+      counts:
+        ref: compound_schemas.batch_counts
+      phase_completion:
+        ref: compound_schemas.phase_completion
+      verdict:
+        enum_ref: common_enums.evaluation_verdict
+      verdict_rationale:
+        type: string
+  encounter_profile:
+    type: object
+    required:
+    - artifact_meta
+    - encounter_profile_id
+    - mind_type
+    - label
+    - product_class
+    - what_they_perceive
+    - what_they_cannot_assume
+    - what_they_are_trying_to_do
+    - what_failure_costs_them
+    - ambiguity_tolerance
+    - recovery_paths_needed
+    - handoff_pattern
+    conditional_required:
+      human:
+      - device_class
+      - bandwidth_class
+      - locale
+      - accessibility_modes
+      - privacy_context
+      - task_stakes
+      - time_pressure
+      - prior_knowledge
+      ai_agent:
+      - provider
+      - model_version
+      - memory_policy
+      - routing_mode
+      - tool_budget
+      - allowed_side_effects
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      encounter_profile_id:
+        type: string
+      mind_type:
+        enum_ref: common_enums.mind_type
+      label:
+        type: string
+      product_class:
+        enum_ref: common_enums.product_class
+      what_they_perceive:
+        type: array
+        items:
+          type: string
+      what_they_cannot_assume:
+        type: array
+        items:
+          type: string
+      what_they_are_trying_to_do:
+        type: array
+        items:
+          type: string
+      what_failure_costs_them:
+        type: array
+        items:
+          type: string
+      ambiguity_tolerance:
+        enum:
+        - low
+        - medium
+        - high
+      recovery_paths_needed:
+        type: array
+        items:
+          type: string
+      handoff_pattern:
+        enum_ref: common_enums.handoff_pattern
+      device_class:
+        type: string
+      bandwidth_class:
+        type: string
+      locale:
+        type: string
+      accessibility_modes:
+        type: array
+        items:
+          type: string
+      privacy_context:
+        type: string
+      task_stakes:
+        enum:
+        - low
+        - medium
+        - high
+        - critical
+      time_pressure:
+        enum:
+        - none
+        - low
+        - moderate
+        - high
+        - extreme
+      prior_knowledge:
+        enum:
+        - none
+        - basic
+        - intermediate
+        - expert
+      provider:
+        type: string
+      model_version:
+        type: string
+      memory_policy:
+        enum:
+        - none
+        - session
+        - persistent
+      routing_mode:
+        enum:
+        - direct
+        - gateway
+        - fallback_chain
+      tool_budget:
+        type: integer
+      allowed_side_effects:
+        type: array
+        items:
+          type: string
+      current_context_occupancy_pct:
+        type: number
+  scenario:
+    type: object
+    required:
+    - artifact_meta
+    - scenario_id
+    - encounter_profile_id
+    - product_class
+    - objective
+    - control_type
+    - value_hypothesis
+    - primary_taxonomy_targets
+    - side_effect_class
+    - execution_safety_mode
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      scenario_id:
+        type: string
+      encounter_profile_id:
+        type: string
+      product_class:
+        enum_ref: common_enums.product_class
+      subsystem:
+        type: string
+      objective:
+        type: string
+      critical_journey:
+        type: string
+      control_type:
+        enum_ref: common_enums.control_type
+      mirror_reference:
+        type: string
+      topology_ref:
+        type: string
+      trust_axes_under_test:
+        type: array
+        items:
+          enum_ref: common_enums.trust_axis
+      side_effect_class:
+        enum_ref: common_enums.side_effect_class
+      execution_safety_mode:
+        enum_ref: common_enums.execution_safety_mode
+      preconditions:
+        type: array
+        items:
+          type: string
+      steps:
+        type: array
+        items_ref: scenario_step
+      primary_taxonomy_targets:
+        type: array
+        items:
+          type: string
+      value_hypothesis:
+        ref: compound_schemas.value_hypothesis
+  scenario_run:
+    type: object
+    required:
+    - artifact_meta
+    - run_id
+    - scenario_id
+    - timestamp
+    - environment
+    - commands_executed
+    - raw_outcomes
+    - outcome
+    - evidence_manifest
+    - retry_count
+    - flake_classification
+    - determinism_level
+    - duration_seconds
+    - model_version
+    - api_family
+    - system_prompt_hash
+    - input_tokens
+    - output_tokens
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      run_id:
+        type: string
+      scenario_id:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+      environment:
+        ref: compound_schemas.scenario_run_environment
+      commands_executed:
+        type: array
+        items:
+          type: string
+      raw_outcomes:
+        type: array
+        items_ref: raw_outcome_item
+      outcome:
+        enum_ref: common_enums.run_outcome
+      evidence_manifest:
+        type: array
+        items:
+          type: string
+      retry_count:
+        type: integer
+      flake_classification:
+        enum_ref: common_enums.flake_classification
+      determinism_level:
+        enum_ref: common_enums.determinism_level
+      duration_seconds:
+        type: number
+      acceptable_variance_bounds:
+        type: string
+      model_version:
+        type: string
+      api_family:
+        type: string
+      temperature:
+        type: number
+      top_p:
+        type: number
+      seed:
+        type: integer
+      system_prompt_hash:
+        type: string
+      input_tokens:
+        type: integer
+      output_tokens:
+        type: integer
+      context_occupancy_pct:
+        type: number
+  observation:
+    type: object
+    required:
+    - artifact_meta
+    - observation_id
+    - run_id
+    - scenario_id
+    - encounter_profile_id
+    - primary_code
+    - severity_tier
+    - confidence
+    - evidence_refs
+    - summary
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      observation_id:
+        type: string
+      run_id:
+        type: string
+      scenario_id:
+        type: string
+      encounter_profile_id:
+        type: string
+      primary_code:
+        type: string
+      failure_chain:
+        type: array
+        items:
+          type: string
+      severity_tier:
+        enum_ref: common_enums.severity_tier
+      confidence:
+        enum_ref: common_enums.confidence
+      evidence_refs:
+        type: array
+        items:
+          type: string
+      summary:
+        type: string
+      requirement_refs:
+        type: array
+        items:
+          type: string
+      trust_axis_violated:
+        type: array
+        items:
+          enum_ref: common_enums.trust_axis
+      dissent_with:
+        type: string
+  finding:
+    type: object
+    required:
+    - artifact_meta
+    - finding_id
+    - observation_ids
+    - title
+    - summary
+    - primary_code
+    - root_code
+    - terminal_code
+    - severity_tier
+    - confidence
+    - confidence_basis
+    - product_class
+    - encounter_profile_ids
+    - evidence_refs
+    - recommendation
+    - fix_class
+    - waiver_eligible
+    - pattern_tags
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      finding_id:
+        type: string
+      observation_ids:
+        type: array
+        items:
+          type: string
+      title:
+        type: string
+      summary:
+        type: string
+      primary_code:
+        type: string
+      root_code:
+        type: string
+      terminal_code:
+        type: string
+      failure_chain:
+        type: array
+        items_ref: failure_chain_item
+      severity_tier:
+        enum_ref: common_enums.severity_tier
+      confidence:
+        enum_ref: common_enums.confidence
+      confidence_basis:
+        type: string
+      product_class:
+        enum_ref: common_enums.product_class
+      encounter_profile_ids:
+        type: array
+        items:
+          type: string
+      regulatory_refs:
+        type: array
+        items_ref: regulatory_ref
+      evidence_refs:
+        type: array
+        items:
+          type: string
+      requirement_refs:
+        type: array
+        items:
+          type: string
+      trust_axis_violated:
+        type: array
+        items:
+          enum_ref: common_enums.trust_axis
+      recommendation:
+        type: string
+      fix_class:
+        enum_ref: common_enums.fix_class
+      owner_hint:
+        type: string
+      waiver_eligible:
+        type: boolean
+      pattern_tags:
+        type: array
+        items:
+          type: string
+      preserve_signal:
+        type: string
+      observer_effect_discount:
+        type: string
+      terminal_code_alternatives:
+        type: array
+        items:
+          type: string
+        description: Optional (REQ-124, SHOULD). Competing plausible terminal codes when the harm-family tie-break does not resolve; record with confidence 'contested' rather than silently choosing one.
+  regression_anchor:
+    type: object
+    required:
+    - artifact_meta
+    - anchor_id
+    - finding_id
+    - anchor_type
+    - implementation_target
+    - command_or_query
+    - blocking
+    - expected_signal
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      anchor_id:
+        type: string
+      finding_id:
+        type: string
+      anchor_type:
+        enum:
+        - test
+        - lint_rule
+        - schema_guard
+        - monitor
+        - copy_guard
+        - policy_guard
+        - preserve_guard
+      implementation_target:
+        type: string
+      command_or_query:
+        type: string
+      blocking:
+        type: boolean
+      expected_signal:
+        type: string
+  waiver:
+    type: object
+    required:
+    - artifact_meta
+    - waiver_id
+    - finding_id
+    - gates_suppressed
+    - approved_by
+    - rationale
+    - risk_accepted
+    - expiry
+    - follow_up_required
+    - status
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      waiver_id:
+        type: string
+      finding_id:
+        type: string
+      gates_suppressed:
+        type: array
+        items:
+          type: string
+      approved_by:
+        type: string
+      rationale:
+        type: string
+      risk_accepted:
+        type: string
+      expiry:
+        type: string
+        format: date
+      follow_up_required:
+        type: string
+      status:
+        enum:
+        - active
+        - expired
+        - resolved
+  gate_result:
+    type: object
+    required:
+    - artifact_meta
+    - gate_id
+    - gate_name
+    - tier
+    - status
+    - blocking_severity
+    - subject_artifacts
+    - failing_checks
+    - next_action
+    - validator_version
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      gate_id:
+        type: string
+      gate_name:
+        type: string
+      tier:
+        enum_ref: common_enums.gate_tier
+      status:
+        enum_ref: common_enums.gate_status
+      blocking_severity:
+        enum:
+        - release_blocker
+        - supplemental
+        - exploratory
+        - none
+      subject_artifacts:
+        type: array
+        items:
+          type: string
+      failing_checks:
+        type: array
+        items_ref: failing_check
+      requirement_refs:
+        type: array
+        items:
+          type: string
+      suppressed_by_waiver_id:
+        type: string
+      next_action:
+        type: string
+      validator_version:
+        type: string
+  claim_registry:
+    type: object
+    required:
+    - artifact_meta
+    - claims
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      claims:
+        type: array
+        items_ref: claim_registry_claim
+  praise_signal:
+    type: object
+    required:
+    - artifact_meta
+    - praise_id
+    - property
+    - why_it_matters
+    - evidence_refs
+    - encounter_profile_id
+    - changes_that_would_break_it
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      praise_id:
+        type: string
+      property:
+        type: string
+      why_it_matters:
+        type: string
+      evidence_refs:
+        type: array
+        items:
+          type: string
+      encounter_profile_id:
+        type: string
+      preserve_anchor_id:
+        type: string
+      changes_that_would_break_it:
+        type: array
+        items:
+          type: string
+  evidence_manifest:
+    type: object
+    required:
+    - artifact_meta
+    - run_id
+    - trace_id
+    - captured_at
+    - capture_tools
+    - files
+    - pii_risk
+    - retention_class
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      run_id:
+        type: string
+      trace_id:
+        type: string
+      captured_at:
+        type: string
+        format: date-time
+      capture_tools:
+        type: array
+        items:
+          type: string
+      files:
+        type: array
+        items_ref: evidence_file
+      pii_risk:
+        enum_ref: common_enums.pii_risk
+      retention_class:
+        enum_ref: common_enums.retention_class
+  metrics_snapshot:
+    type: object
+    required:
+    - artifact_meta
+    - run_id
+    - product_class
+    - metrics
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      run_id:
+        type: string
+      product_class:
+        enum_ref: common_enums.product_class
+      metrics:
+        type: array
+        items_ref: metric_item
+      trace_id:
+        type: string
+        description: Optional (REQ-122). Correlation id joining this row to a distributed trace; null when not traced.
+      session_id:
+        type: string
+        description: Optional (REQ-122). Correlation id joining this row to a submission/session; null when not traced.
+      service_name:
+        type: string
+        description: Optional (REQ-122). Emitting service name for trace correlation; null when not traced.
+  evaluation_summary:
+    type: object
+    required:
+    - artifact_meta
+    - batch_id
+    - blocker_count
+    - supplemental_count
+    - exploratory_count
+    - negative_control_count
+    - mirror_count
+    - praise_count
+    - waiver_count
+    - hidden_waiver_count
+    - coverage_summary
+    - overall_verdict
+    - next_actions
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      batch_id:
+        type: string
+      blocker_count:
+        type: integer
+      supplemental_count:
+        type: integer
+      exploratory_count:
+        type: integer
+      negative_control_count:
+        type: integer
+      mirror_count:
+        type: integer
+      praise_count:
+        type: integer
+      waiver_count:
+        type: integer
+      hidden_waiver_count:
+        type: integer
+      coverage_summary:
+        ref: compound_schemas.coverage_summary
+      calibration_summary:
+        ref: compound_schemas.calibration_summary
+      overall_verdict:
+        enum_ref: common_enums.evaluation_verdict
+      next_actions:
+        type: array
+        items:
+          type: string
+  builder_packet:
+    type: object
+    required:
+    - artifact_meta
+    - packet_id
+    - finding_id
+    - finding_summary
+    - severity_tier
+    - research_guidance
+    - fix_spec
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      packet_id:
+        type: string
+      finding_id:
+        type: string
+      finding_summary:
+        type: string
+      severity_tier:
+        enum_ref: common_enums.severity_tier
+      requirement_refs:
+        type: array
+        items:
+          type: string
+      research_guidance:
+        ref: compound_schemas.research_guidance
+      fix_spec:
+        ref: compound_schemas.fix_spec
+  rendered_work_order:
+    type: object
+    required:
+    - artifact_meta
+    - work_order_id
+    - source_packet_id
+    - system
+    - work_order_type
+    - template_ref
+    - output_path
+    - naming_convention
+    - rendered_content
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      work_order_id:
+        type: string
+      source_packet_id:
+        type: string
+      system:
+        type: string
+      work_order_type:
+        type: string
+      template_ref:
+        type: string
+      output_path:
+        type: string
+      naming_convention:
+        type: string
+      rendered_content:
+        type: string
+      required_front_matter:
+        type: object
+      required_tool_calls:
+        type: array
+        items:
+          type: string
+      required_skill_invocations:
+        type: array
+        items:
+          type: string
+      required_hooks:
+        type: array
+        items:
+          type: string
+      required_memories:
+        type: array
+        items:
+          type: string
+  canary_suite_result:
+    type: object
+    required:
+    - artifact_meta
+    - suite_id
+    - run_timestamp
+    - seeded_faults
+    - detection_rate
+    - missed_faults
+    - new_false_positives
+    - verdict
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      suite_id:
+        type: string
+      run_timestamp:
+        type: string
+        format: date-time
+      seeded_faults:
+        type: array
+        items_ref: canary_fault
+      detection_rate:
+        type: number
+      missed_faults:
+        type: array
+        items:
+          type: string
+      new_false_positives:
+        type: array
+        items:
+          type: string
+      verdict:
+        enum:
+        - healthy
+        - degraded
+        - stale
+  mirror_suite_result:
+    type: object
+    required:
+    - artifact_meta
+    - suite_id
+    - reference_system
+    - run_timestamp
+    - scenarios_run
+    - false_alarms
+    - false_alarm_rate
+    - verdict
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      suite_id:
+        type: string
+      reference_system:
+        type: string
+      run_timestamp:
+        type: string
+        format: date-time
+      scenarios_run:
+        type: integer
+      false_alarms:
+        type: array
+        items_ref: mirror_false_alarm
+      false_alarm_rate:
+        type: number
+      verdict:
+        enum:
+        - calibrated
+        - over_triggering
+        - under_discriminating
+  coverage_diff:
+    type: object
+    required:
+    - artifact_meta
+    - baseline_snapshot
+    - current_snapshot
+    - dimensions
+    - uncovered_surfaces
+    - new_surfaces_since_baseline
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      baseline_snapshot:
+        type: string
+      current_snapshot:
+        type: string
+      dimensions:
+        type: array
+        items_ref: coverage_dimension_entry
+      uncovered_surfaces:
+        type: array
+        items_ref: coverage_surface_entry
+      new_surfaces_since_baseline:
+        type: array
+        items_ref: coverage_surface_entry
+  drift_report:
+    type: object
+    required:
+    - artifact_meta
+    - comparison_window
+    - drift_sources
+    - behavioral_deltas
+    - verdict
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      comparison_window:
+        ref: compound_schemas.drift_window
+      drift_sources:
+        type: array
+        items_ref: drift_source
+      behavioral_deltas:
+        type: array
+        items_ref: behavioral_delta
+      verdict:
+        enum:
+        - stable
+        - drifting
+        - requires_investigation
+  mutation_report:
+    type: object
+    required:
+    - artifact_meta
+    - suite_id
+    - run_timestamp
+    - mutations_seeded
+    - detection_rate
+    - missed_mutations
+    - verdict
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      suite_id:
+        type: string
+      run_timestamp:
+        type: string
+        format: date-time
+      mutations_seeded:
+        type: array
+        items_ref: mutation_seed
+      detection_rate:
+        type: number
+      missed_mutations:
+        type: array
+        items:
+          type: string
+      verdict:
+        enum:
+        - healthy
+        - degraded
+        - holdout_system_stale
+  topology_spec:
+    type: object
+    required:
+    - artifact_meta
+    - topology_id
+    - description
+    - agents
+    - human_checkpoints
+    - shared_state
+    - side_effect_surfaces
+    - coordination_pattern
+    - known_risks
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      topology_id:
+        type: string
+      description:
+        type: string
+      agents:
+        type: array
+        items_ref: topology_agent
+      human_checkpoints:
+        type: array
+        items_ref: topology_checkpoint
+      shared_state:
+        type: array
+        items_ref: topology_shared_state
+      side_effect_surfaces:
+        type: array
+        items_ref: topology_side_effect_surface
+      coordination_pattern:
+        enum_ref: common_enums.coordination_pattern
+      known_risks:
+        type: array
+        items:
+          type: object
+          required:
+          - risk
+          - related_ma_codes
+          properties:
+            risk:
+              type: string
+            related_ma_codes:
+              type: array
+              items:
+                type: string
+  lattice:
+    type: object
+    required:
+    - artifact_meta
+    - lattice_meta
+    - compactor_provenance
+    - domains
+    - claims
+    - edges
+    - evidence
+    - tensions
+    - gaps
+    - recommendations
+    properties:
+      artifact_meta:
+        ref: artifact_meta_schema
+      lattice_meta:
+        ref: compound_schemas.lattice_meta
+      compactor_provenance:
+        ref: compound_schemas.compactor_provenance
+      domains:
+        type: array
+        items_ref: lattice_domain
+      claims:
+        type: array
+        items_ref: lattice_claim
+      edges:
+        type: array
+        items_ref: lattice_edge
+      evidence:
+        type: array
+        items_ref: lattice_evidence
+      tensions:
+        type: array
+        items_ref: lattice_tension
+      gaps:
+        type: array
+        items_ref: lattice_gap
+      recommendations:
+        type: array
+        items_ref: lattice_recommendation
+gate_names:
+- integrity_preflight
+- ring_1_daily_spine
+- ring_2_calibration
+- ring_3_synthesis
+taxonomy_codes:
+  F:
+  - F-1
+  - F-2
+  - F-3
+  - F-4
+  - F-5
+  - F-6
+  C:
+  - C-1
+  - C-2
+  - C-3
+  - C-4
+  - C-5
+  - C-6
+  B:
+  - B-1
+  - B-2
+  - B-3
+  - B-4
+  - B-5
+  - B-6
+  A:
+  - A-1
+  - A-2
+  - A-3
+  - A-4
+  - A-5
+  - A-6
+  - A-7
+  S:
+  - S-1
+  - S-2
+  - S-3
+  - S-4
+  - S-5
+  - S-6
+  X:
+  - X-1
+  - X-2
+  - X-3
+  - X-4
+  - X-5
+  - X-6
+  - X-7
+  - X-8
+  AG:
+  - AG-1
+  - AG-2
+  - AG-3
+  - AG-4
+  - AG-5
+  - AG-6
+  - AG-7
+  - AG-8
+  - AG-9
+  - AG-10
+  - AG-11
+  - AG-12
+  - AG-13
+  - AG-14
+  - AG-15
+  - AG-16
+  - AG-17
+  - AG-18
+  - AG-19
+  - AG-20
+  MA:
+  - MA-1
+  - MA-2
+  - MA-3
+  - MA-4
+  - MA-5
+  - MA-6
+active_taxonomy_subsets:
+  infrastructure_primitive:
+  - C-1
+  - C-5
+  - X-3
+  - X-6
+  - X-7
+  - X-8
+  - S-2
+  - S-5
+  - A-7
+  - AG-2
+  - AG-4
+  - AG-18
+  - AG-19
+  - AG-20
+  - F-3
+  consumer_application:
+  - C-1
+  - C-3
+  - B-1
+  - B-2
+  - A-1
+  - A-3
+  - A-5
+  - A-6
+  - S-1
+  - S-6
+  - X-1
+  - X-2
+  - X-5
+  - X-7
+  - F-5
+  regulated_workflow:
+  - C-1
+  - C-5
+  - A-1
+  - A-3
+  - A-6
+  - S-3
+  - S-5
+  - S-6
+  - X-4
+  - X-6
+  - X-7
+  - X-8
+  - AG-18
+  - MA-6
+  - F-5
+  agent_tool_surface:
+  - C-1
+  - C-4
+  - A-7
+  - S-5
+  - X-6
+  - X-7
+  - X-8
+  - AG-2
+  - AG-3
+  - AG-4
+  - AG-18
+  - AG-19
+  - AG-20
+  - MA-5
+  - F-3
+  hybrid_rule: choose the union of in-scope subsystem subsets; include at least one
+    human, one AX, and one seam code
+code_discriminators:
+- pair: A-6 vs X-5
+  discriminator: A-6 means control existed and was actively removed; X-5 means the
+    control path was never built.
+- pair: A-5 vs S-6
+  discriminator: A-5 is the manipulative interface tactic; S-6 is the systemic incentive
+    misalignment that makes such tactics likely.
+- pair: AG-8 vs AG-18
+  discriminator: AG-8 means the model literally cannot do the task; AG-18 means it
+    could if the system accommodated it.
+- pair: C-2 vs C-3
+  discriminator: C-2 is a wrong cause for one event; C-3 is a persistent wrong model
+    of the system.
+- pair: AG-11 vs AG-17
+  discriminator: AG-11 is unconscious proxy optimization; AG-17 is deliberate eval
+    gaming.
+- pair: X-4 vs AG-20
+  discriminator: X-4 means the approval boundary does not exist at all; AG-20 means
+    it exists but is not machine-legible.
+- pair: X-6 vs AG-19
+  discriminator: X-6 means provenance is not tracked or exposed anywhere; AG-19 means
+    provenance exists but is not visible to agents.
+- pair: A-7 vs AG-18
+  discriminator: A-7 is technically valid but gratuitously hostile packaging; AG-18
+    is failure to provide the structure an agent needs to participate.
+- pair: A-7 vs C-4
+  discriminator: A-7 is hostility as the primary harm; C-4 is overload as the primary
+    harm.
+- pair: F-6 vs AG-15
+  discriminator: F-6 means the system appeared to succeed while crossing a boundary;
+    AG-15 means the agent crossed a clearly legible boundary.
+requirements:
+  yaml_safety: single document, no anchors, no aliases, no custom tags, no duplicate
+    keys, UTF-8 only
+  registry_truth_rule: fields named mandatory in the specification must exist in the
+    registry
+  core_invocation_rule: core_invocation requires product_class_config; exploratory_invocation
+    may infer a temporary default but must record it in evaluation_batch
+  mirror_reference_rule: scenario.mirror_reference is optional and used when a meaningful
+    mirror target exists
+  builder_adapter_rule: builder_packet is orchestration-neutral; rendered_work_order
+    is adapter output

@@ -1,0 +1,41 @@
+{
+  "schema_version": "charter.receipt/1",
+  "slice": "slice-4",
+  "verifies": "slice-4",
+  "candidate_commit": "047a0000153b857a38d6e589051501c810b1a641",
+  "frozen": {
+    "manifest_sha256": "fa62c79cf2d59c244eb15a155d9c87866f8235be6194add862fe1d6eee2d5f9d",
+    "head": "047a0000153b857a38d6e589051501c810b1a641"
+  },
+  "dispatch": {
+    "base_commit": "a673282d3a1deb0ebd63b091186cc8be58db6835",
+    "brief_sha256": null
+  },
+  "models": {
+    "author": "anthropic/claude-opus-5.5",
+    "verifier": "openai/gpt-6-luna"
+  },
+  "verdict": "accepted",
+  "checks": [
+    {"id":"C01","description":"Attempt 1 executed: verified the frozen tree at 047a0000153b857a38d6e589051501c810b1a641, 211 manifest entries, Git tree 96eb5bfc8c95adb8355c76dbf4c5377c1672e28a, manifest SHA-256 fa62c79cf2d59c244eb15a155d9c87866f8235be6194add862fe1d6eee2d5f9d, per-file hashes and blob identities; patch SHA-256 aa9038654cce40fb4c9120a21372f42a4259805e3b329485297913b3d01cee70. Confirmed by archived attempt-1 evidence.","classification":"executed"},
+    {"id":"C02","description":"Attempt 1 executed: PATH included Cargo bin; cargo --version reported 1.95.0 (f2d3ce0bd 2026-03-21). Confirmed by archived receipt. Attempt 2 used the same version.","classification":"executed"},
+    {"id":"C03","description":"Executed in attempt 2 from the main checkout, read only: Charter receipt verification against clean frozen scratch clones reported tree matches the recorded freeze for slices 1, 2 and 3 (heads cc677f6f4febc4ffaffc378aac2aea51a796be89, c4d998e5ab8315c5aec5a3ec82bd71d9d9454796, 99a5bbfe14c935f470acec8bd6adac78f058bc20).","classification":"executed"},
+    {"id":"C04","description":"Executed in attempt 2: on clean scratch clone /tmp/holden-mcp-qa4b-host.I47ywe at frozen HEAD, cargo xtask gate slice-4 passed fmt, clippy, tests, s4-replay and guard; proof 1 through proof 6 tests passed; test counts 111 passed, 0 failed, 0 ignored; 24/24 verdict records replayed; gate result green. CARGO_TARGET_DIR and HOLDEN_TARGET_BASE were under /tmp/holden-mcp-qa4b-*.","classification":"executed"},
+    {"id":"C05","description":"Attempt 1 executed: Linux VM gate passed 111/111 and replayed 24/24 records; escape_attempt_is_blocked and product_env_is_scrubbed passed. VM guard declared cargo-deny, cargo-audit and charter unavailable; the host guard passed all three. Executed comparison of the archived Linux run record and attempt-2 host run record confirmed all 111 ordered test names and pass/fail counts match.","classification":"executed"},
+    {"id":"C06","description":"Attempt 1 executed: M1 changed the check to the builder-visible card; breaks_variant_fails was red under mutation and green after revert.","classification":"executed"},
+    {"id":"C07","description":"Attempt 1 executed: M2 computed parameters locally; params_must_come_from_server was red under mutation and green after revert.","classification":"executed"},
+    {"id":"C08","description":"Attempt 1 executed: M3 dropped observations from the record; replay_reproduces_decision was red under mutation and green after revert.","classification":"executed"},
+    {"id":"C09","description":"Attempt 2 executed on macOS: M4 bypassed confinement by launching the product directly; escape_attempt_is_blocked failed (exit 101, missing confinement report after direct unconfined run). Restored the frozen source and reran the targeted test; it passed. Attempt 1 also executed the Linux M4 red/green pair.","classification":"executed"},
+    {"id":"C10","description":"Attempt 1 executed: M5 scanned HEAD instead of the evaluated tree; canary_scan_uses_evaluated_tree was red under mutation and green after revert.","classification":"executed"},
+    {"id":"C11","description":"Attempt 1 executed: M6 restricted registration to the slice-1 plan type; generated_plan_registers_and_runs was red under mutation and green after revert.","classification":"executed"},
+    {"id":"C12","description":"Attempt 1 executed: independent P3 mutant skipped evaluator signature verification; tampered_record_is_refused was red under mutation and green after revert.","classification":"executed"},
+    {"id":"C13","description":"Attempt 1 inspected the repair: SSL_CERT_DIR and SSL_CERT_FILE are exempted from the build-child watched set. The exact product environment allow-list and runtime env_clear remain. Orchestrator accepts the narrowed build-child leak watch as medium obligation D2 for a later slice.","classification":"inspected"},
+    {"id":"C14","description":"Attempt 1 inspected and executed: fixture is a committed Rust CLI built from source at the evaluated fixture commit and observed at the process/file boundary; no mocks or stubs were found in the evaluation path. Host and Linux gate integration tests now pass.","classification":"executed"},
+    {"id":"C15","description":"Executed in attempt 2: final receipt validation with Charter against this checkout reported the tree matches the recorded slice-4 freeze.","classification":"executed"}
+  ],
+  "defects": [],
+  "new_defects": [
+    {"id":"D2","severity":"medium","title":"Build-child leak regression check excludes SSL_CERT_DIR and SSL_CERT_FILE","status":"obligation","evidence":"Attempt-1 repair review; crates/holden-eval/tests/eval.rs watched-variable set. The product exact allow-list remains enforced. Accepted by orchestrator as a medium obligation for a later slice."}
+  ],
+  "proofs_reopened": ["1", "2", "3", "4", "5", "6"]
+}

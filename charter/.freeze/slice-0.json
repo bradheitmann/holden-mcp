@@ -1,0 +1,503 @@
+{
+  "commit": "79ebd64b5052af29e85d92906a38063658a654b4",
+  "entries": [
+    {
+      "mode": "100644",
+      "object": "35049cbcb13c204648d1f7897162492f05123199",
+      "path": ".cargo/config.toml",
+      "sha256": "783fdc447abb5b8f8b5652157aa9ede64da640813fa89679c29c5251c8e0cbe6",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "7e944becf3b803b7e4b8fb96197fe4f9ea47692d",
+      "path": ".gitattributes",
+      "sha256": "3f9b0d90257d5f43fd298c8c33134054a40e5f2390c166e8f22e91c95d7cde08",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "a111af2424354b7fbc7bb6b4796499adc43cf8fb",
+      "path": ".gitignore",
+      "sha256": "80c97ca0d22369724eae7be6b215c7acb50288551ec7c835f1c7e26efc03eb3c",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "2eeea2626a8c0ad537ab6fa89b5307c42b27f1bb",
+      "path": "AGENTS.md",
+      "sha256": "34c36d4b69e7a55bf56bb83c341a8a921a334283b791ea205e74a93180bd33fb",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "6a1341b9f0a76192c09d7e7b334c7f7ba9a6f6b7",
+      "path": "CLAUDE.md",
+      "sha256": "cb5147eb5d2a18a3ca640ba2b1f3e111e5c873bfba62ca39f8524134cac79005",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "3a527a3383ebf83e6e6f908a5d703f9a099bb58d",
+      "path": "Cargo.lock",
+      "sha256": "85515d4bfb8cea70710bdb5145562fa350c452b21befed2ba07248e8e205f859",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "ba5d91fc1ca494541023dee89d5020b8185c7570",
+      "path": "Cargo.toml",
+      "sha256": "8d1b7776e49955c680f1c739e4d5ed17d00af8985d413122e4e051f8f4a6445f",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "f17847c580d6d2458963bbecd4691ec5bb816d66",
+      "path": "LICENSE",
+      "sha256": "ca9f02e84b2eb5248909258c27eaf07c0e9090190fa10a35a7b01620e3268db8",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "df0325770e33f3689ba27432ebceeef630daebbe",
+      "path": "README.md",
+      "sha256": "03ad790b190cadf77b7a91f360e4208060e3d7c4280f44af76d39ca77a4ee7d1",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "437f2b629bb5d6d5157e3713d43737d318178ab3",
+      "path": "canon/CANON-PIN.txt",
+      "sha256": "1481ec5633221176e3cb7f8dabc4cc5eb32ef0357e5aaca7644b1341882e9782",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "c2884c6ab5331018524a11eb618fb5c7f6c0a5e8",
+      "path": "canon/LENS-DELTAS.md",
+      "sha256": "2835eacbf165394d8cde5211715ee6ebc0ecef4f7c23f6631239dac16e0db9df",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "fc547d4b81f1bced4a42a7a3570bf1395d67c7af",
+      "path": "canon/README.md",
+      "sha256": "662fcc59e029c9d3c8caa83cf4fe889c662f37cb0b60b822d83d6e5df6d7a9a5",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "bce21e8479c03e8b891d18fdefb2b79908bbcf62",
+      "path": "canon/lens-manifest.sha256",
+      "sha256": "4c11332a6e896640636980a51d6049dcc571c90483759ce6b0927edad5f63877",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "88bffb8aabf945a80440be5789ceb6377414ab3a",
+      "path": "charter/.dispatch/slice-0.json",
+      "sha256": "9a64084bc1be1e10bcb5651aa666c8d4e7349e201f641e35f8942f5d63791311",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "65d8ec4024c7c4b3f3409f15cb6c9bbca576fb68",
+      "path": "charter/.dispatch/slice-0.sha256",
+      "sha256": "a1c4d88e2b9a85568f9283b01ec6046f81b2f8e3593fe0bebc888ee949766e5d",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "936ddd382e1d00469164e9eb34cbf7954db370df",
+      "path": "charter/DONE/_template.md",
+      "sha256": "c24b94ad3c162c913fa8e4282bc88e01c23aa56522ef94d1f3f99ebca6d8dd83",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "396d67aa2bedc239b702e5166b494d2dd6028af7",
+      "path": "charter/DONE/slice-0.md",
+      "sha256": "90859b9604a6f9d69c74b9dfe37baf5afd8a0610ad1f0b7eaa817891c1d24a34",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "cfaefc1eb0a459b68339ae1f6845401c22f25684",
+      "path": "charter/GUARANTEES.yaml",
+      "sha256": "7e681eb7c2e069179c3ade68f2b2d7099e366555eadcb1af54df4e1738e4bd68",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "cf53b51698220a42e69b4f0125e95454964afeb3",
+      "path": "charter/INTENT.md",
+      "sha256": "41278a274d6d18c6a6d864b1941a002ce9fd00fe94c153838d8bed519a4e2bff",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "4c38e367cdcb9261d040175a5b38bc5488e84866",
+      "path": "charter/LOOPS.yaml",
+      "sha256": "71f0da01d1911cc1a0dcc879e8bbcf4184649080b6ded3eecc6c15fd1c9371bc",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "ba2760c17387e95502b559c0efaecc09885b9873",
+      "path": "charter/SPEC.md",
+      "sha256": "56f03db23c95e1f9cbdbe63b52386ddc4de24dc83680b976de8ae10655b20ba2",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "7ddf6ef43ab5bff5c094935c0d48983847a618f4",
+      "path": "charter/STANDARD-ADOPTION.md",
+      "sha256": "d7578dae7e43428ac3cae0d567fb5843341ad83fcdd856ede86c7ef1089be112",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "de8e55f9713eddaded320a6ee6edb6e48c3469d9",
+      "path": "charter/STATE.md",
+      "sha256": "82cb24b15cffabef1e52bdec0d48a4d55bc65c7d5d6e06b2f40983ac25ac082c",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "ce42a6f9756ea54c49114ff853e70f965f2ac06f",
+      "path": "charter/STOP-RULES.md",
+      "sha256": "3b6259278076f23d2444d7ec9aa2fbaf3e33815909f1e2866830e7fcda4f8d5e",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "7a54cbf9b8203b5d89ba0be551ae989b5cf37751",
+      "path": "charter/charter.toml",
+      "sha256": "a606043fbf4648210ed2da5c3db12a6af2656dabfb69a216219df3a2f946dc53",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "f3183f5fcde7bcf278778b26449648cfa58ee4f7",
+      "path": "charter/owner-decisions/2026-11-04-owner-approval-and-defaults.md",
+      "sha256": "6f5f12215c523488a398885576da5cce6d94a1174ac44a46b22b382b3cf08b3d",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "d9dc65c19ee58972b0cc7b514a969bee65dca9aa",
+      "path": "charter/owner-decisions/2026-11-04-trust-policy-activation.md",
+      "sha256": "9b5a0716b27a71d1ec6182b8e46a5fa2e995ce6aac33bd146eaacbbfee373d0e",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "edcdfbec44268fdc2aec8325df5a51a911d2a6b5",
+      "path": "charter/safety-allow.txt",
+      "sha256": "85f9e6336caadfaf11474af370a9146c74e6d5bb32740db06911aca9705cf556",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "7bada5473be51ed1cb8e03009f020d0c80458ae8",
+      "path": "clippy.toml",
+      "sha256": "8ec7e3fb41b2f1432047753297048c99b1f62a1b9aef81f4042d20590fbf313c",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "9d850a5100165d8c9b2003951b59ac744cf7f746",
+      "path": "crates/holden-canon/Cargo.toml",
+      "sha256": "793243ec160ad428a0310de8129a7b739a7c6679e587bc433810059a69c6d885",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "dcb4a81a03e5d64d1454de70171481c2bafe387e",
+      "path": "crates/holden-canon/fixtures/canon-synthetic/CANON-PIN.txt",
+      "sha256": "792f47ed66b83647d32c36631dde5ea81c05023e21d1aa864d5e2da49127a853",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "6ed8a05cbc88f7a331a2aa6583dc877595d7f510",
+      "path": "crates/holden-canon/fixtures/canon-synthetic/root/doctrine.md",
+      "sha256": "fac7d6aadd6e8291d4dd8bef8538200fd93e220313f8b8d9bd45e05f00dd03df",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "a8da869f2d0e6905316ee17df236434ec0d33c29",
+      "path": "crates/holden-canon/fixtures/canon-synthetic/root/schema.yaml",
+      "sha256": "50b57ab934bd59d125d414074721d779471efca1b4d0bc39913d3f9beb968a0d",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "e79b3ff75f5bb16ddf08788fdb83b1ddce455dbf",
+      "path": "crates/holden-canon/fixtures/canon-synthetic/root/taxonomy/codes.md",
+      "sha256": "c57608c16e0eb473935481e6c903a20f9c885cbfdb88ce3ea6fda92878773c12",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "b465c4cb1d5192949a2031e2c12af540fb9f9932",
+      "path": "crates/holden-canon/fixtures/lens-source-synthetic/concept-registry.json",
+      "sha256": "c6cffec4579e478454d0a5e1cf2f960ef120acf514934845d692e73647a1e658",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "1bae9ced46ab0d750fd950d2d32ef30873835fe4",
+      "path": "crates/holden-canon/fixtures/lens-source-synthetic/draw-script.txt",
+      "sha256": "e5f9fb22fe4b805ab75217ac21519732646133a36e2b09062d7f90eefee99358",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "bff5de8459acc89436c865c4da31427954e57134",
+      "path": "crates/holden-canon/fixtures/lens-source-synthetic/meta-registry.json",
+      "sha256": "80d1a91680059ebe5e4442e71193f7674b0a6e80842400ed1428caa80bf007f3",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "e9bc7ae1570a3c4da9416cddc0665e77992c9181",
+      "path": "crates/holden-canon/fixtures/lens-source-synthetic/remainders.json",
+      "sha256": "a95704f3851baaa06204e43326063b851831a1d186c4eb22eab136e30ca9c66d",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "164e71286a80490bf22a6013dd348e8696c7bccf",
+      "path": "crates/holden-canon/fixtures/lens-source-synthetic/retired.json",
+      "sha256": "1d714e7eeeeefaafbf62e2e00383cc10de5169bc493858cea306d494db97ef81",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "3e21b47d9e16458e746edeeaa0b22c41a514eeb4",
+      "path": "crates/holden-canon/fixtures/lens-source-synthetic/situated-cognitions.json",
+      "sha256": "1347650a956ef49741923ee639591c38b59190d13ea8cdf131fd4963d4f1a76e",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "889c71e144736c7369af252d8aac82a7c8014b4d",
+      "path": "crates/holden-canon/fixtures/lens-synthetic/MANIFEST.sha256",
+      "sha256": "17748f313e8d635653e62bb20de3c898beff40c355b81bbacc8d953409a1cdf6",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "041c9298f8e55f2bd084aad4df925e5fb61e7605",
+      "path": "crates/holden-canon/fixtures/lens-synthetic/corpus/cognitions.json",
+      "sha256": "f6f7588954243c49253a47d54b547fae6561b3da175ec6b66e619b1be9daf002",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "805634281033e5edef8d68427a2367a53359a919",
+      "path": "crates/holden-canon/fixtures/lens-synthetic/corpus/concepts.json",
+      "sha256": "f7295915ef042de05913636b883172ae8f0186a235e1971816708585b7abe9bb",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "acc64003a0dff777376dda8f1d776cb7a38e1615",
+      "path": "crates/holden-canon/fixtures/lens-synthetic/corpus/deltas.json",
+      "sha256": "d549f769215e660dc10511758ab69ba0ec339731c2d0c12a139516923da4c005",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "b6b2bc202711089231c465c082d2505da3dbed5c",
+      "path": "crates/holden-canon/fixtures/lens-synthetic/corpus/retired.json",
+      "sha256": "39f172414c3c01d394368f4be8fefff55e5f1a4a09fece22ff8430dad365f3cb",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "696d3104fd67400d6ff2f1e6c41a100c3c6670c2",
+      "path": "crates/holden-canon/src/digest.rs",
+      "sha256": "fc73256d365d54e10ec91a2646742201ae880a71d263a7067e385779f025b8a3",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "a38515d3913571cb7f49c3aacad3142430c76c71",
+      "path": "crates/holden-canon/src/hosted.rs",
+      "sha256": "e8c6cfd624f35f836dde456bb9e571c8def4564e17fa7425e7ece5622fdb27a6",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "5308aea3090f50ef0214b26fbef23a38fac38af8",
+      "path": "crates/holden-canon/src/import.rs",
+      "sha256": "8d0581c675690449e2e2311fa6d15d0fed5e0f21e289707794aa26cea621d46e",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "397d8c9bf2c874ac5607ad2ec08704ffc216cb12",
+      "path": "crates/holden-canon/src/lens.rs",
+      "sha256": "f167fdada701b85fdecda12d5aacce49dfdc8737785200e2848278569651bec9",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "d6fea6312102912fdfad31249f369099a4d2c91d",
+      "path": "crates/holden-canon/src/lib.rs",
+      "sha256": "c3ba9296cac5bc0991c31a4e980524973484fd0af367e946dc5799b8cc3d4012",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "0e266aea6bda243d1ceae283f3079a4842e618aa",
+      "path": "crates/holden-canon/src/pin.rs",
+      "sha256": "f20586a8f57d0a663df89bebf528ff97837e55bb5cf4dc712960a80301cef761",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "e379379ab88c0d22cdf847e56eecab139f3bf169",
+      "path": "crates/holden-canon/src/verify.rs",
+      "sha256": "f27d1e10292056d6be65df3b081cdfcd819865b641258b9b4d9458af651bbdfb",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "0c98f07cf80ed21f7e1cd58ff552b737205fd326",
+      "path": "crates/holden-cli/Cargo.toml",
+      "sha256": "dbee74cc39743c18d16c903f40271f9fc68188094e928310d824b7ee113390ec",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "892db5041c938e1b8e8669fef758c19c00d09ca2",
+      "path": "crates/holden-cli/src/main.rs",
+      "sha256": "330bc9f5965831cb6513706826730ef19916af366c9272cd02cfba662da58d14",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "c88dcbbc7bb219dafccf8423edc5209324558174",
+      "path": "crates/holden-cli/tests/cli.rs",
+      "sha256": "ea9accf7d820d5ba7240d4f85185591a0c65dbf3f23b15748a3d35dfb5e855b1",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "5bcf333f640c02f69f627b6757dea16d94eb5176",
+      "path": "crates/holden-seal/Cargo.toml",
+      "sha256": "6deb4dbcd332ef8390d3d6eb9fc759936feca18d6b6ae145da1e2c8f77c79bff",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "ae9233be035cf12ac338c72744bd6cceeb588cd6",
+      "path": "crates/holden-seal/src/lib.rs",
+      "sha256": "60aaaa9e350e944592e12069ac94a86dd435879e933ada3f6948378a0737806d",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "08dcb79d75013c6d9e87b432bfac9e67f3ed49e6",
+      "path": "deny.toml",
+      "sha256": "17f19bfc7f862ed808eb58aa581b3916206294c06ed949b2537a7a9e27a48bab",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "8c4940fab8943aafebd2c4dcf94750ab077d1b0f",
+      "path": "docs/ARCHITECTURE.md",
+      "sha256": "d709b1acfd9da5fe4ed84aff6192349240120800cec1a873b16c1d52d229dbdb",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "46b1902ba9b5ef985a1a005c1a2d283aa39deb3c",
+      "path": "docs/evidence/MANIFESTS.sha256",
+      "sha256": "37865fb8318723da17cf62524ec66744d09f865dbd4768a15c12a30caa2bbd4d",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "ea20d41717f661271fd9cd43abe700e8fb26735c",
+      "path": "docs/evidence/canon-mcp-pin-2026-11-04.txt",
+      "sha256": "fdc953fb66c685139b1c5dcdb23e55032bf3826d50d5039656f94d1b42ddb274",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "f49c771aecefe1a9c0ccc12bb59c22472b17a9e4",
+      "path": "doppler.yaml",
+      "sha256": "2f954928bee8b3198087328122f77bec73b4573afe18fd95f98c8e45d34360a5",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "8934eb4a5fabfca2502492140bfb51e89f9e0394",
+      "path": "rust-toolchain.toml",
+      "sha256": "e3a213e0d222e94d213cafbc20932eb3f76c643b4dd63756acf95192df2aa310",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "f216078d96fdb19df0b120685e346b3197a47e89",
+      "path": "rustfmt.toml",
+      "sha256": "f32d2f03b3f4b1e295c79ed49d543f1205c7dac7c3dc74f05a5a27af4fea0584",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "20cfc1263ff4b524c2f8ba33cf0614afd7461c03",
+      "path": "xtask/Cargo.toml",
+      "sha256": "5ae05cda1d252e836615df2c4da65db59b282290e5f4b204bdc9d46ee4b60f24",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "dfe0cc984f1f8e17994bfdd6216f8385728b6d89",
+      "path": "xtask/src/gate.rs",
+      "sha256": "f4f552c593a0ecbcc9f1b84684529ccee5d381b692aa56bd2c46055fa778b35c",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "edcf0c80112b7404c99d92d0105794982892636b",
+      "path": "xtask/src/guard.rs",
+      "sha256": "f8f9c5839fa79cd3ecf595e7fa037b0ae98a7633e5248b1a7c980ee7737f7dce",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "9d7587a091cee09437645924d9c2684891fed570",
+      "path": "xtask/src/main.rs",
+      "sha256": "1227c7672d285e891022ca33f52cd79e1bfc5d8bf7adfcdff9d54f7dbddbed81",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "b4e79ff87bc3ff5032ae7f57ac8bb249b0b7b5e1",
+      "path": "xtask/src/util.rs",
+      "sha256": "eba247f6fcdcde101ab191463b0c5f43a5d373b32633907d397187ece07b0093",
+      "type": "blob"
+    },
+    {
+      "mode": "100644",
+      "object": "f58f8c752e086d1430d2d61f097276bfbbface9a",
+      "path": "xtask/src/vm.rs",
+      "sha256": "80705dfa89f32779016febec791b7cfe4e242746a6c8b732bbd1e289bd9f5fb5",
+      "type": "blob"
+    }
+  ],
+  "entry_count": 70,
+  "head": "79ebd64b5052af29e85d92906a38063658a654b4",
+  "kind": "git-commit-tree",
+  "manifest_sha256": "6a35cfd43527e6368e4beb64bb4ef2ffc745430caa234a027c50f559845fc2c8",
+  "schema_version": "charter.freeze/2",
+  "selector": "git-ls-tree:HEAD",
+  "slice": "slice-0",
+  "tree": "c59ecf9f378742055accb244dd6447ea71e22f26"
+}

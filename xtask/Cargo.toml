@@ -1,0 +1,19 @@
+[package]
+name = "xtask"
+description = "Gates, guard and the Linux VM gate driver for holden-mcp"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license = "PolyForm-Noncommercial-1.0.0"
+publish.workspace = true
+
+[dependencies]
+holden-eval.workspace = true
+holden-ledger.workspace = true
+holden-seal.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+
+[lints]
+workspace = true
