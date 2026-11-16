@@ -2,11 +2,11 @@
   "schema": "holden-mcp.integration-dispatch/1",
   "format_note": "Planning overlay in the plangraph dispatch-graph shape (JSON is valid YAML 1.2). Every DEV node carries the PlanGraph v5 authoring-form fields (objective, resource_scope, acceptance_criterion, budget, target_selector). Not a claim of canonical PlanGraph validation; the v5 schema pin is open obligation O-STD-6.",
   "epic": "E-HOLDEN-INTEGRATION",
-  "revision": 29,
+  "revision": 31,
   "authority": "Owner instruction 2026-11-06: plan all remaining work as plangraph-shaped DEV/QA contracts; DEV/QA executed by A/DROID-MISSION-1 as one mission; sealed graph-shaped holdouts at checkpoints run by A/HLDT-1; holden must work inside other projects through MCP, as part of the client repo's own planning process, or via a single / command, with tools self-composing into standard workflows from the MCP server instructions alone.",
   "predecessor_plan": "plans/2026-11-03-foundation/dispatch-graph.json (slices 0, 1, 1b, 1c, 2, 3, 4, 5, 6 accepted; slice 7 built)",
   "stories": 6,
-  "dev_qa_pairs": 22,
+  "dev_qa_pairs": 24,
   "nodes": [
     {
       "id": "SLICE-07-DEV",
@@ -553,7 +553,8 @@
         "SLICE-18C-QA",
         "SLICE-18E-QA",
         "SLICE-18F-QA",
-        "SLICE-18G-QA"
+        "SLICE-18G-QA",
+        "SLICE-18H-QA"
       ],
       "qa_contract_authored_before_implementation": true,
       "contract": {
@@ -682,10 +683,11 @@
       "type": "HOLDOUT",
       "title": "Checkpoint 5 (final for this plan): client planning faults and a TypeScript host",
       "depends_on": [
-        "SLICE-21-QA"
+        "SLICE-21-QA",
+        "SLICE-22-QA"
       ],
       "contract": {
-        "objective": "Sealed holdout by A/HLDT-1 over slices 19 and 21: holden catches the client planning faults seeded for slice 19 without false findings on a known-good control, and binds at the root of a pnpm/TypeScript host offline.",
+        "objective": "Sealed holdout by A/HLDT-1 over slices 19, 21 and 22: holden catches the client planning faults seeded for slice 19 without false findings on a known-good control, binds at the root of a pnpm/TypeScript host offline, and stops an embed whose proof count differs from the planning tool's own while never refusing when that tool is absent or older.",
         "acceptance_criterion": "HOLDOUT_ACCEPTED from A/HLDT-1. The next release tag only after this node."
       }
     },
@@ -928,6 +930,90 @@
         "SLICE-18G-DEV"
       ],
       "fresh_context": true
+    },
+    {
+      "id": "SLICE-22-DEV",
+      "type": "DEV",
+      "title": "Embed checks its proof counts against charter's",
+      "depends_on": [
+        "SLICE-18C-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "holden and charter each parse a host's charter/DONE lists with their own parser. Five client findings in a row (wrapped items, lettered numbers, prose after a label, unlabeled lists, bold names) were holden's parser reading fewer proofs than the list holds, and each was found by a person counting by hand. A second team asked for the count to be checked by machine. charter gains a read-only command, charter done-count --json, that prints for every charter/DONE/*.md the number of proofs its own parser finds (object with schema_version charter.done-count/1, charter_commit, and lists[]: slice, path relative to the repository root, proofs as an integer, proof_ids). After this slice an embed of a charter host compares, list by list, the number of proof items holden's adapter recognised with charter's number, says so in its report, and refuses to propose cognitions from a list the two tools count differently. A charter that is absent, older than the command, or prints something holden cannot read never makes the embed refuse: the report says the counts were not cross-checked and why.",
+        "resource_scope": "crates/holden-embed/src/** (a count cross-check module and its call in embed), crates/holden-cognition/src/adapters.rs (expose the per-list count of recognised proof items before the length filter; no change to which items are candidates), crates/holden-cli/src/** (report lines, exit code, usage text), README, fixtures/clients/** (stub charter executables as shell scripts and their JSON), tests",
+        "acceptance_criterion": [
+          "P1 on a charter host, embed runs charter done-count --json once with the host as its root, finding charter by HOLDEN_CHARTER_BIN when set and otherwise on PATH, with a time limit of 30 seconds; it reads only schema_version, lists[].path and lists[].proofs and ignores unknown fields; a test with a stub charter pins the invocation and the parse.",
+          "P2 the number compared for each list is the number of proof items holden's adapter recognised in that file BEFORE the 40-character minimum removes short ones, so a list with short proofs does not look like a mismatch; the report states per list how many recognised items were too short to be candidates; a fixture with one short proof pins equal counts.",
+          "P3 when every list's count equals charter's, the report says so in one line naming the number of lists compared and charter's commit as printed in charter_commit, and embed continues unchanged; a test pins the line.",
+          "P4 when a list's counts differ, embed exits 1, writes no promise proposals and no cognition files, and prints one line per differing list with the list path, holden's number and charter's number, then one line saying the two parsers disagree and the owner should not approve from this embed; the candidate report file is still written so the difference can be inspected; a test with a stub charter that reports one more proof than the fixture holds pins the exit code, the lines and the absence of proposals.",
+          "P5 a list present in charter's output and absent from holden's sources, or the reverse, is reported as a difference by path and counts as a mismatch under P4; a test pins both directions.",
+          "P6 charter absent (not on PATH and HOLDEN_CHARTER_BIN unset or naming no file), charter exiting non-zero (the older build's unrecognized subcommand, exit 2), charter exceeding the time limit, output that is not JSON, or a schema_version holden does not know: embed does NOT refuse; it prints one line starting counts not cross-checked: followed by the reason, and continues to the same result as an embed without the check; one test per case pins the line and that the proposals are identical to a run with the check skipped.",
+          "P7 a host with no charter/ directory makes no call to charter at all; a test with a stub that fails if called pins it.",
+          "P8 no line printed by the check contains an absolute path or the user home directory; the charter binary is named as charter, never by its resolved path; a test with a sentinel home scans the output.",
+          "P9 the README says what the check compares, that a mismatch stops the embed and why, and that an absent or older charter only prints the not-cross-checked line; the usage text of holden embed names HOLDEN_CHARTER_BIN.",
+          "P10 macOS and Linux gates are green with identical test names; no test calls an installed charter, only the stub executables in fixtures."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-22"
+        },
+        "done_list": "charter/DONE/slice-22.md"
+      }
+    },
+    {
+      "id": "SLICE-22-QA",
+      "type": "QA",
+      "verifies": "SLICE-22-DEV",
+      "depends_on": [
+        "SLICE-22-DEV"
+      ],
+      "fresh_context": true
+    },
+    {
+      "id": "SLICE-18H-DEV",
+      "type": "DEV",
+      "title": "Proofs whose head line is a short name, and lists the adapter skipped, are found or reported",
+      "depends_on": [
+        "SLICE-18G-QA"
+      ],
+      "qa_contract_authored_before_implementation": true,
+      "contract": {
+        "objective": "A re-embed of the first client after 18g gives 1610 cognitions from 287 of 290 DONE sources, and four DONE files with real numbered proofs still give none. Read at that client commit, they show three causes. (a) Two files write each proof as a short name on the numbered line (1. D1: or 1. **Reproduces the stored verdict.**) and put the claim in indented sub-items; 18g rightly stops an item's text before its sub-items, so the text is shorter than the 40-character minimum and the proof is dropped. (b) One file has its numbered proofs under the title and, far below, a sub-heading whose text contains the word proof (evidence, not a proof); the word makes the file count as labeled, the labeled block holds no items, and the title list is never read. (c) One file has its numbered proofs under a second-level heading that does not contain the word proof; every item carries an indented reopened: line. In all three the embed says only that the source has no candidates, the same words it uses for a document that truly has none, so each gap was found by a person. After this slice the three shapes yield their proofs, and a DONE file that holds numbered top-level items of which none became a candidate says so by name and count.",
+        "resource_scope": "crates/holden-cognition/src/adapters.rs (the charter planning adapter only), crates/holden-cli/src/** (the per-source report line only), fixtures/clients/**, tests",
+        "acceptance_criterion": [
+          "P1 a proof item whose own text (before its first indented sub-item) is shorter than the 40-character minimum and which has at least one indented sub-item is a candidate; its text and span run from the item through the end of its first sub-item that does not start with Reopen, reopened, Fail-without, Mutant or Test (compared without case), or through its first sub-item when all of them do; a fixture with 1. D1: and three sub-items, and one with a bold short name, pins the text and the span.",
+          "P2 an item whose own text reaches the minimum is unchanged: same text, same span, same id as after 18g; the 18b, 18e, 18f and 18g fixture pins stay green without edits.",
+          "P3 a short item with no sub-item is still not a candidate, and the report counts it under too short (P6).",
+          "P4 when a file's labeled proof blocks (label lines and headings containing the word proof) yield no item at all, the adapter reads the file as unlabeled under the 18g title rule: top-level numbered items under the title heading before the first second-level heading; a fixture with title items and a later sub-heading containing the word proof and no items pins them. A file whose labeled block yields at least one item is unchanged.",
+          "P5 when a file still yields no item, a top-level numbered list outside code fences in which at least one item has an indented sub-line starting with reopened:, Reopen or Fail-without (compared without case) is a proof list wherever it sits; lists without such a line (Steps, Gates, Schedule, Landing) are still not; a fixture with both under second-level headings pins the proof list in and the decoys out.",
+          "P6 for every DONE source the report states the number of top-level numbered items seen outside code fences, the number taken as candidates, and the number left out by reason (too short, outside any proof list); a source with numbered items and no candidate is listed under its own heading numbered items found, none taken with its path and count, distinct from sources with no numbered items; a test pins the three wordings.",
+          "P7 the cross-check of 18g P8 is repeated by the QA on the three client clones at named commits, and for the first client at the commit of this finding the four named files yield 5, 6, 6 and 4 candidates; the QA lists every DONE file where numbered items seen exceeds candidates taken, with the reason counts.",
+          "P8 macOS and Linux gates are green with identical test names."
+        ],
+        "budget": {
+          "qa_attempts": 3,
+          "repair_cycles": 1
+        },
+        "target_selector": {
+          "base": "main",
+          "branch": "slice-18h"
+        },
+        "done_list": "charter/DONE/slice-18h.md"
+      }
+    },
+    {
+      "id": "SLICE-18H-QA",
+      "type": "QA",
+      "verifies": "SLICE-18H-DEV",
+      "depends_on": [
+        "SLICE-18H-DEV"
+      ],
+      "fresh_context": true
     }
   ],
   "dependency_frontiers": [
@@ -1042,10 +1128,18 @@
       "SLICE-18G-QA"
     ],
     [
-      "SLICE-20-DEV"
+      "SLICE-18H-DEV"
     ],
     [
-      "SLICE-20-QA"
+      "SLICE-18H-QA"
+    ],
+    [
+      "SLICE-20-DEV",
+      "SLICE-22-DEV"
+    ],
+    [
+      "SLICE-20-QA",
+      "SLICE-22-QA"
     ],
     [
       "SLICE-19-DEV",
