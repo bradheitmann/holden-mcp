@@ -506,7 +506,126 @@ enum ProofBlock {
     Title,
 }
 
-fn done_promises(document: &PlanningDocument) -> Result<Vec<Promise>, AdapterError> {
+/// Per-DONE-source accounting for the detection report. Only top-level
+/// numbered items outside code fences are counted; bulleted candidates are
+/// intentionally outside this numbered-item cross-check.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct DoneSourceAccounting {
+    /// Every top-level numbered item seen outside a code fence.
+    pub seen: usize,
+    /// Numbered items admitted as candidates.
+    pub taken: usize,
+    /// Selected items without a sub-item whose own text was too short.
+    pub too_short: usize,
+    /// Numbered items outside the proof list ultimately selected.
+    pub outside_proof_list: usize,
+}
+
+#[derive(Clone, Copy)]
+enum DonePass {
+    Labeled,
+    TitleFallback,
+    MarkedLists,
+}
+
+#[derive(Default)]
+struct DoneExtraction {
+    promises: Vec<Promise>,
+    numbered_seen: usize,
+    numbered_selected: usize,
+    too_short: usize,
+    proof_items_seen: usize,
+}
+
+struct PendingDoneItem {
+    start: usize,
+    end: usize,
+    numbered: bool,
+    own_short: bool,
+    first_subitem_end: Option<usize>,
+    claim_end: Option<usize>,
+}
+
+fn proof_metadata(line: &str) -> bool {
+    let trimmed = line.trim_start();
+    let content = trimmed
+        .strip_prefix("- ")
+        .or_else(|| trimmed.strip_prefix("* "))
+        .unwrap_or(trimmed);
+    let lower = content.to_ascii_lowercase();
+    ["reopen", "fail-without", "mutant", "test"]
+        .iter()
+        .any(|prefix| lower.starts_with(prefix))
+}
+
+fn proof_list_marker(line: &str) -> bool {
+    let trimmed = line.trim_start();
+    let content = trimmed
+        .strip_prefix("- ")
+        .or_else(|| trimmed.strip_prefix("* "))
+        .unwrap_or(trimmed);
+    let lower = content.to_ascii_lowercase();
+    lower.starts_with("reopen") || lower.starts_with("fail-without")
+}
+
+fn marked_numbered_items(document: &PlanningDocument) -> std::collections::BTreeSet<usize> {
+    let mut marked = std::collections::BTreeSet::new();
+    let mut group = Vec::<usize>::new();
+    let mut group_marked = false;
+    let mut fenced = false;
+    let mut offset = 0usize;
+    let mut flush_group = |group: &mut Vec<usize>, group_marked: &mut bool| {
+        if *group_marked {
+            marked.extend(group.drain(..));
+        } else {
+            group.clear();
+        }
+        *group_marked = false;
+    };
+    for line in document.bytes.split_inclusive(|byte| *byte == b'\n') {
+        let bare = line.strip_suffix(b"\n").unwrap_or(line);
+        let bare = bare.strip_suffix(b"\r").unwrap_or(bare);
+        let Ok(text) = std::str::from_utf8(bare) else {
+            flush_group(&mut group, &mut group_marked);
+            offset += line.len();
+            continue;
+        };
+        let trimmed = text.trim_start();
+        let indent = text.len() - trimmed.len();
+        if trimmed.starts_with("```") || trimmed.starts_with("~~~") {
+            flush_group(&mut group, &mut group_marked);
+            fenced = !fenced;
+            offset += line.len();
+            continue;
+        }
+        if fenced {
+            offset += line.len();
+            continue;
+        }
+        let numbered = trimmed.split_once(". ").is_some_and(|(number, _)| {
+            let digits = number.bytes().take_while(u8::is_ascii_digit).count();
+            digits > 0
+                && (number.len() == digits
+                    || (number.len() == digits + 1
+                        && number.as_bytes()[digits].is_ascii_lowercase()))
+        });
+        if indent == 0 && numbered {
+            group.push(offset);
+        } else if indent > 0 && proof_list_marker(trimmed) && !group.is_empty() {
+            group_marked = true;
+        } else if indent == 0 && !trimmed.is_empty() {
+            flush_group(&mut group, &mut group_marked);
+        }
+        offset += line.len();
+    }
+    flush_group(&mut group, &mut group_marked);
+    marked
+}
+
+fn extract_done(
+    document: &PlanningDocument,
+    pass: DonePass,
+) -> Result<DoneExtraction, AdapterError> {
     let has_proof_label = document
         .bytes
         .split_inclusive(|byte| *byte == b'\n')
@@ -521,23 +640,40 @@ fn done_promises(document: &PlanningDocument) -> Result<Vec<Promise>, AdapterErr
                     .is_some_and(u8::is_ascii_whitespace))
             .then(|| trimmed[level + 1..].trim_start());
             trimmed.starts_with("Proofs")
-                || heading.is_some_and(|text| text.to_ascii_lowercase().contains("proof"))
+                || (level > 1
+                    && heading.is_some_and(|text| text.to_ascii_lowercase().contains("proof")))
         });
+    let marked_items = marked_numbered_items(document);
+    let title_rule = match pass {
+        DonePass::Labeled => !has_proof_label,
+        DonePass::TitleFallback => true,
+        DonePass::MarkedLists => false,
+    };
     let mut block = None;
-    let mut pending: Option<(usize, usize)> = None;
-    let mut promises = Vec::new();
+    let mut pending: Option<PendingDoneItem> = None;
+    let mut extracted = DoneExtraction::default();
     let mut offset = 0usize;
     let mut fenced = false;
 
     fn flush(
         document: &PlanningDocument,
-        pending: &mut Option<(usize, usize)>,
-        promises: &mut Vec<Promise>,
+        pending: &mut Option<PendingDoneItem>,
+        extracted: &mut DoneExtraction,
     ) -> Result<(), AdapterError> {
-        if let Some((start, end)) = pending.take() {
-            let promise = Promise::slice(document, start as u64, end as u64)?;
-            if promise.text.chars().count() > 40 {
-                promises.push(promise);
+        if let Some(mut item) = pending.take() {
+            if item.own_short {
+                if let Some(first) = item.first_subitem_end {
+                    item.end = item.claim_end.unwrap_or(first);
+                    let promise = Promise::slice(document, item.start as u64, item.end as u64)?;
+                    extracted.promises.push(promise);
+                } else if item.numbered {
+                    extracted.too_short += 1;
+                }
+            } else {
+                let promise = Promise::slice(document, item.start as u64, item.end as u64)?;
+                if promise.text.chars().count() > 40 {
+                    extracted.promises.push(promise);
+                }
             }
         }
         Ok(())
@@ -547,7 +683,7 @@ fn done_promises(document: &PlanningDocument) -> Result<Vec<Promise>, AdapterErr
         let bare = line.strip_suffix(b"\n").unwrap_or(line);
         let bare = bare.strip_suffix(b"\r").unwrap_or(bare);
         let Ok(text) = std::str::from_utf8(bare) else {
-            flush(document, &mut pending, &mut promises)?;
+            flush(document, &mut pending, &mut extracted)?;
             offset += line.len();
             continue;
         };
@@ -572,10 +708,12 @@ fn done_promises(document: &PlanningDocument) -> Result<Vec<Promise>, AdapterErr
                 .get(heading_level)
                 .is_some_and(u8::is_ascii_whitespace))
         .then(|| trimmed[heading_level + 1..].trim_start());
-        let proof_heading = heading.is_some_and(|text| text.to_ascii_lowercase().contains("proof"));
+        let proof_heading = !matches!(pass, DonePass::TitleFallback | DonePass::MarkedLists)
+            && heading_level > 1
+            && heading.is_some_and(|text| text.to_ascii_lowercase().contains("proof"));
 
         if trimmed.starts_with("```") || trimmed.starts_with("~~~") {
-            flush(document, &mut pending, &mut promises)?;
+            flush(document, &mut pending, &mut extracted)?;
             if matches!(block, Some(ProofBlock::Label { seen_item: true })) {
                 block = None;
             }
@@ -588,7 +726,7 @@ fn done_promises(document: &PlanningDocument) -> Result<Vec<Promise>, AdapterErr
             continue;
         }
         if heading.is_some() {
-            flush(document, &mut pending, &mut promises)?;
+            flush(document, &mut pending, &mut extracted)?;
             if proof_heading {
                 block = Some(ProofBlock::Heading {
                     level: heading_level,
@@ -602,21 +740,21 @@ fn done_promises(document: &PlanningDocument) -> Result<Vec<Promise>, AdapterErr
                     Some(ProofBlock::Title) if heading_level == 2 => block = None,
                     _ => {}
                 }
-                if !has_proof_label && heading_level == 1 && block.is_none() {
+                if title_rule && heading_level == 1 && block.is_none() {
                     block = Some(ProofBlock::Title);
                 }
             }
             offset += line.len();
             continue;
         }
-        if trimmed.starts_with("Proofs") {
-            flush(document, &mut pending, &mut promises)?;
+        if trimmed.starts_with("Proofs") && matches!(pass, DonePass::Labeled) {
+            flush(document, &mut pending, &mut extracted)?;
             block = Some(ProofBlock::Label { seen_item: false });
             offset += line.len();
             continue;
         }
         if trimmed.is_empty() {
-            flush(document, &mut pending, &mut promises)?;
+            flush(document, &mut pending, &mut extracted)?;
             offset += line.len();
             continue;
         }
@@ -626,19 +764,40 @@ fn done_promises(document: &PlanningDocument) -> Result<Vec<Promise>, AdapterErr
                 "Gates" | "Steps" | "Out of scope" | "Schedule" | "Landing"
             )
         {
-            flush(document, &mut pending, &mut promises)?;
+            flush(document, &mut pending, &mut extracted)?;
             block = None;
             offset += line.len();
             continue;
         }
 
+        if indent == 0 && numbered.is_some() {
+            extracted.numbered_seen += 1;
+            if matches!(pass, DonePass::MarkedLists) {
+                block = marked_items
+                    .contains(&offset)
+                    .then_some(ProofBlock::Label { seen_item: false });
+            }
+        }
         let top_level_item = indent == 0
             && (numbered.is_some()
-                || (!matches!(block, Some(ProofBlock::Title)) && bulleted.is_some()));
+                || (!matches!(pass, DonePass::MarkedLists)
+                    && !matches!(block, Some(ProofBlock::Title))
+                    && bulleted.is_some()));
         if block.is_some() && top_level_item {
-            flush(document, &mut pending, &mut promises)?;
+            flush(document, &mut pending, &mut extracted)?;
+            extracted.proof_items_seen += 1;
             let body_start = numbered.or(bulleted).unwrap_or(0);
-            pending = Some((offset + body_start, offset + bare.len()));
+            if numbered.is_some() {
+                extracted.numbered_selected += 1;
+            }
+            pending = Some(PendingDoneItem {
+                start: offset + body_start,
+                end: offset + bare.len(),
+                numbered: numbered.is_some(),
+                own_short: text[body_start..].chars().count() <= 40,
+                first_subitem_end: None,
+                claim_end: None,
+            });
             if let Some(ProofBlock::Label { seen_item }) = block.as_mut() {
                 *seen_item = true;
             }
@@ -647,26 +806,72 @@ fn done_promises(document: &PlanningDocument) -> Result<Vec<Promise>, AdapterErr
         }
 
         let structural = trimmed.starts_with('|') || trimmed.starts_with('<');
-        let continuation = pending.is_some()
-            && indent > 0
-            && numbered.is_none()
-            && bulleted.is_none()
-            && !structural;
-        if continuation {
-            if let Some((_, end)) = pending.as_mut() {
-                *end = offset + bare.len();
+        if indent > 0
+            && !structural
+            && let Some(item) = pending.as_mut()
+        {
+            if item.own_short && bulleted.is_some() {
+                if item.claim_end.is_none() {
+                    item.first_subitem_end.get_or_insert(offset + bare.len());
+                    if !proof_metadata(trimmed) {
+                        item.claim_end = Some(offset + bare.len());
+                    }
+                }
+            } else if numbered.is_none() && bulleted.is_none() {
+                item.end = offset + bare.len();
             }
             offset += line.len();
             continue;
         }
-        flush(document, &mut pending, &mut promises)?;
+        flush(document, &mut pending, &mut extracted)?;
         if indent == 0 && matches!(block, Some(ProofBlock::Label { seen_item: true })) {
             block = None;
         }
         offset += line.len();
     }
-    flush(document, &mut pending, &mut promises)?;
-    Ok(promises)
+    flush(document, &mut pending, &mut extracted)?;
+    Ok(extracted)
+}
+
+fn done_extraction(document: &PlanningDocument) -> Result<DoneExtraction, AdapterError> {
+    let labeled = extract_done(document, DonePass::Labeled)?;
+    if labeled.proof_items_seen == 0 {
+        let title = extract_done(document, DonePass::TitleFallback)?;
+        if !title.promises.is_empty() {
+            return Ok(title);
+        }
+        let marked = extract_done(document, DonePass::MarkedLists)?;
+        if !marked.promises.is_empty() {
+            return Ok(marked);
+        }
+        return Ok(title);
+    }
+    if labeled.promises.is_empty() {
+        let marked = extract_done(document, DonePass::MarkedLists)?;
+        if !marked.promises.is_empty() {
+            return Ok(marked);
+        }
+    }
+    Ok(labeled)
+}
+
+fn done_promises(document: &PlanningDocument) -> Result<Vec<Promise>, AdapterError> {
+    Ok(done_extraction(document)?.promises)
+}
+
+/// Account for every top-level numbered item in a DONE source using the
+/// same selected proof list and short-item rules as candidate extraction.
+pub fn done_source_accounting(
+    document: &PlanningDocument,
+) -> Result<DoneSourceAccounting, AdapterError> {
+    let extracted = done_extraction(document)?;
+    let taken = extracted.numbered_selected - extracted.too_short;
+    Ok(DoneSourceAccounting {
+        seen: extracted.numbered_seen,
+        taken,
+        too_short: extracted.too_short,
+        outside_proof_list: extracted.numbered_seen - extracted.numbered_selected,
+    })
 }
 
 /// A charter publishes only its top-level numbered or bulleted DONE proofs

@@ -178,6 +178,18 @@ mod tests {
             fx
         }
 
+        /// The real blind-spot charter Cargo host, including short items,
+        /// marked fallback lists, decoy lists and a source with no items.
+        fn blindspot_client(tag: &str) -> Self {
+            let fx = Self::new(tag);
+            copy_tree(
+                &workspace().join("fixtures/clients/blindspot-charter"),
+                &fx.host,
+            );
+            committed(&fx, "blind-spot charter client");
+            fx
+        }
+
         /// The notes host fixture: a real Cargo product whose planning
         /// document carries the owner's marked promises. Embed succeeds.
         fn notes_host(tag: &str) -> Self {
@@ -508,6 +520,37 @@ mod tests {
         assert!(stdout.contains(&format!(
             "files: {written} written, {unchanged} unchanged, 1 removed\nnext steps:"
         )));
+    }
+
+    /// slice-18h P6. Fail-without mutant: drop per-source accounting; the
+    /// three exact report wordings and all reason counts disappear.
+    #[test]
+    fn per_source_report_counts_items_taken_and_left_out() {
+        let fx = Fixture::blindspot_client("s18h-source-accounting");
+        let out = fx.embed();
+        assert_eq!(out.status.code(), Some(0), "{}", text(&out));
+        let lines = report_lines(&out);
+        for expected in [
+            "detection: source numbered items charter/DONE/slice-short.md seen 4 taken 3 too short 1 outside any proof list 0",
+            "detection: source numbered items charter/DONE/slice-plain-continuations.md seen 1 taken 0 too short 1 outside any proof list 0",
+            "detection: numbered items found, none taken charter/DONE/slice-plain-continuations.md 1",
+            "detection: source numbered items charter/DONE/slice-empty-label.md seen 2 taken 2 too short 0 outside any proof list 0",
+            "detection: source numbered items charter/DONE/slice-anywhere.md seen 6 taken 2 too short 0 outside any proof list 4",
+            "detection: source numbered items charter/DONE/slice-title-proof.md seen 5 taken 5 too short 0 outside any proof list 0",
+            "detection: source numbered items charter/DONE/slice-outside.md seen 2 taken 0 too short 0 outside any proof list 2",
+            "detection: source numbered items charter/DONE/slice-none.md seen 0 taken 0 too short 0 outside any proof list 0",
+            "detection: numbered items found, none taken charter/DONE/slice-outside.md 2",
+            "detection: no numbered items charter/DONE/slice-none.md",
+        ] {
+            assert!(
+                lines.contains(&expected.to_owned()),
+                "missing report line '{expected}': {lines:#?}"
+            );
+        }
+        assert!(!lines.iter().any(|line| {
+            line.starts_with("detection: numbered items found, none taken ")
+                && line.contains("slice-none.md")
+        }));
     }
 
     /// slice-18a P4: the report carries no machine path and no sealed

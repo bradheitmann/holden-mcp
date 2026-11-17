@@ -2,6 +2,7 @@
 //! `connect` and `demo-host`. Each is a thin shell over `holden-embed`.
 
 use std::collections::BTreeMap;
+use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode};
@@ -72,10 +73,207 @@ fn no_candidate_reason<'a>(r: &'a DetectionReport, document: &str) -> &'a str {
     }
 }
 
-fn print_detection_report(r: &DetectionReport) {
+#[derive(Clone, Copy)]
+struct NumberedAccounting {
+    seen: usize,
+    taken: usize,
+    too_short: usize,
+    outside_proof_list: usize,
+}
+
+struct NumberedItem {
+    line: u64,
+    group: usize,
+    own_short: bool,
+    has_subitem: bool,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum SourceBlock {
+    None,
+    Proof,
+    Title,
+}
+
+struct ItemGroup {
+    kind: SourceBlock,
+    taken: usize,
+}
+
+fn numbered_accounting(
+    host: &Path,
+    r: &DetectionReport,
+    document: &str,
+) -> Option<NumberedAccounting> {
+    if r.process != "charter" || !document.starts_with("charter/DONE/") {
+        return None;
+    }
+    let source = fs::read_to_string(host.join(document)).ok()?;
+    let mut fenced = false;
+    let visible = source
+        .lines()
+        .enumerate()
+        .filter_map(|(index, line)| {
+            let trimmed = line.trim_start();
+            if trimmed.starts_with("```") || trimmed.starts_with("~~~") {
+                fenced = !fenced;
+                return None;
+            }
+            (!fenced).then_some((index, line))
+        })
+        .collect::<Vec<_>>();
+    let has_proof_label = visible.iter().any(|(_, line)| {
+        let trimmed = line.trim_start();
+        let level = trimmed.bytes().take_while(|byte| *byte == b'#').count();
+        trimmed.starts_with("Proofs")
+            || (level > 1
+                && level <= 6
+                && trimmed.as_bytes().get(level) == Some(&b' ')
+                && trimmed[level + 1..].to_ascii_lowercase().contains("proof"))
+    });
+    let candidate_lines = r
+        .candidates
+        .iter()
+        .filter(|candidate| candidate.source == document)
+        .map(|candidate| candidate.line)
+        .collect::<std::collections::BTreeSet<_>>();
+    let mut items = Vec::<NumberedItem>::new();
+    let mut groups = Vec::<ItemGroup>::new();
+    let mut kind = SourceBlock::None;
+    let mut proof_seen_item = false;
+    let mut in_list = false;
+    let mut current_group = None;
+    for (index, line) in visible.iter().copied() {
+        let trimmed = line.trim_start();
+        let indent = line.len() - trimmed.len();
+        let level = trimmed.bytes().take_while(|byte| *byte == b'#').count();
+        let heading = (1..=6).contains(&level) && trimmed.as_bytes().get(level) == Some(&b' ');
+        if heading {
+            in_list = false;
+            current_group = None;
+            if level <= 2 {
+                proof_seen_item = false;
+            }
+            kind = if level > 1 && trimmed[level + 1..].to_ascii_lowercase().contains("proof") {
+                SourceBlock::Proof
+            } else if level == 1 && !has_proof_label {
+                SourceBlock::Title
+            } else if level <= 2 {
+                SourceBlock::None
+            } else {
+                kind
+            };
+            continue;
+        }
+        if trimmed.starts_with("Proofs") {
+            kind = SourceBlock::Proof;
+            proof_seen_item = false;
+            in_list = false;
+            current_group = None;
+            continue;
+        }
+        if indent == 0
+            && matches!(
+                trimmed.trim_end_matches(':'),
+                "Gates" | "Steps" | "Out of scope" | "Schedule" | "Landing"
+            )
+        {
+            kind = SourceBlock::None;
+            proof_seen_item = false;
+            in_list = false;
+            current_group = None;
+            continue;
+        }
+        let numbered = indent == 0
+            && trimmed.split_once(". ").is_some_and(|(number, _)| {
+                let digits = number.bytes().take_while(u8::is_ascii_digit).count();
+                digits > 0
+                    && (number.len() == digits
+                        || (number.len() == digits + 1
+                            && number.as_bytes()[digits].is_ascii_lowercase()))
+            });
+        if numbered {
+            if kind == SourceBlock::Proof {
+                proof_seen_item = true;
+            }
+            if !in_list {
+                groups.push(ItemGroup { kind, taken: 0 });
+                current_group = Some(groups.len() - 1);
+            }
+            let group = current_group?;
+            let body = trimmed.split_once(". ")?.1;
+            items.push(NumberedItem {
+                line: (index + 1) as u64,
+                group,
+                own_short: body.chars().count() <= 40,
+                has_subitem: false,
+            });
+            in_list = true;
+            continue;
+        }
+        if indent > 0 && (trimmed.starts_with("- ") || trimmed.starts_with("* ")) && in_list {
+            if let Some(item) = items.last_mut() {
+                item.has_subitem = true;
+            }
+        } else if indent == 0 && !trimmed.is_empty() {
+            in_list = false;
+            current_group = None;
+            if kind == SourceBlock::Proof && proof_seen_item {
+                kind = SourceBlock::None;
+                proof_seen_item = false;
+            }
+        }
+    }
+    for item in &items {
+        if candidate_lines.contains(&item.line) {
+            groups[item.group].taken += 1;
+        }
+    }
+    let labeled_items = groups.iter().any(|group| group.kind == SourceBlock::Proof);
+    let selected = |group: &ItemGroup| {
+        group.taken > 0
+            || group.kind == SourceBlock::Proof
+            || (!labeled_items && group.kind == SourceBlock::Title)
+    };
+    let taken = items
+        .iter()
+        .filter(|item| candidate_lines.contains(&item.line))
+        .count();
+    let too_short = items
+        .iter()
+        .filter(|item| {
+            item.own_short
+                && !item.has_subitem
+                && selected(&groups[item.group])
+                && !candidate_lines.contains(&item.line)
+        })
+        .count();
+    Some(NumberedAccounting {
+        seen: items.len(),
+        taken,
+        too_short,
+        outside_proof_list: items.len() - taken - too_short,
+    })
+}
+
+fn print_detection_report(r: &DetectionReport, host: &Path) {
     println!("detection: planning process {}", r.process);
     for d in &r.documents {
         println!("detection: source document {d}");
+        if let Some(counts) = numbered_accounting(host, r, d) {
+            println!(
+                "detection: source numbered items {d} seen {} taken {} too short {} outside any proof list {}",
+                counts.seen, counts.taken, counts.too_short, counts.outside_proof_list
+            );
+            if counts.seen == 0 {
+                println!("detection: no numbered items {d}");
+            } else if counts.taken == 0 {
+                println!(
+                    "detection: numbered items found, none taken {d} {}",
+                    counts.seen
+                );
+            }
+        }
         if !r.candidates.iter().any(|candidate| candidate.source == *d) {
             println!(
                 "detection: no candidates {d}: {}",
@@ -103,10 +301,24 @@ fn print_detection_report(r: &DetectionReport) {
 /// The refusal path's printer (slice-18a): the same fields, in the same
 /// order, on stderr before the refusal line. Deliberately its own printer,
 /// not a wrapper: the shape-parity proof exists because the two can drift.
-fn eprint_detection_report(r: &DetectionReport) {
+fn eprint_detection_report(r: &DetectionReport, host: &Path) {
     eprintln!("detection: planning process {}", r.process);
     for d in &r.documents {
         eprintln!("detection: source document {d}");
+        if let Some(counts) = numbered_accounting(host, r, d) {
+            eprintln!(
+                "detection: source numbered items {d} seen {} taken {} too short {} outside any proof list {}",
+                counts.seen, counts.taken, counts.too_short, counts.outside_proof_list
+            );
+            if counts.seen == 0 {
+                eprintln!("detection: no numbered items {d}");
+            } else if counts.taken == 0 {
+                eprintln!(
+                    "detection: numbered items found, none taken {d} {}",
+                    counts.seen
+                );
+            }
+        }
         if !r.candidates.iter().any(|candidate| candidate.source == *d) {
             eprintln!(
                 "detection: no candidates {d}: {}",
@@ -218,7 +430,7 @@ fn cmd_embed(args: &[String]) -> Result<ExitCode, String> {
     };
     Ok(match embed::embed(&options) {
         Ok(r) => {
-            print_detection_report(&r.detection);
+            print_detection_report(&r.detection, Path::new(project));
             println!(
                 "embedded: {} (state {})",
                 r.host.display(),
@@ -256,7 +468,7 @@ fn cmd_embed(args: &[String]) -> Result<ExitCode, String> {
         }
         Err(f) => {
             if let Some(report) = &f.detection {
-                eprint_detection_report(report);
+                eprint_detection_report(report, Path::new(project));
             }
             refused(&f.error)
         }

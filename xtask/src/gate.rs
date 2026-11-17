@@ -75,7 +75,7 @@ pub struct RunRecord {
 
 /// The slices that have a gate. Every slice runs the same steps; slices in
 /// [`FORGE_SLICES`] also run the forge module's steps.
-pub const SLICES: [&str; 26] = [
+pub const SLICES: [&str; 27] = [
     "slice-0",
     "slice-1",
     "slice-1b",
@@ -102,6 +102,7 @@ pub const SLICES: [&str; 26] = [
     "slice-18e",
     "slice-18f",
     "slice-18g",
+    "slice-18h",
 ];
 
 /// Slices whose gate also replays every verdict record the tests wrote
