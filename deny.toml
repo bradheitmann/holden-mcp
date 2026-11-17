@@ -6,7 +6,13 @@ all-features = false
 [advisories]
 version = 2
 yanked = "deny"
-ignore = []
+# One exception, owner decision charter/owner-decisions/2026-11-17-chrono-unmaintained.md.
+# RUSTSEC-2026-0543 is informational: chrono is unmaintained (no vulnerability, no
+# patched version). It reaches holden only through rmcp, and every rmcp release
+# through 3.11.0 depends on it. Remove this entry when rmcp stops depending on chrono.
+ignore = [
+    { id = "RUSTSEC-2026-0543", reason = "chrono unmaintained; transitive via rmcp only; owner decision 2026-11-17" },
+]
 
 [licenses]
 version = 2

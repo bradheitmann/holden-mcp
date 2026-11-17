@@ -1,0 +1,5 @@
+# Read by `cargo audit`. One exception: RUSTSEC-2026-0543 (chrono unmaintained,
+# transitive via rmcp). Owner decision charter/owner-decisions/2026-11-17-chrono-unmaintained.md;
+# the same entry is in deny.toml. Remove both when rmcp stops depending on chrono.
+[advisories]
+ignore = ["RUSTSEC-2026-0543"]
